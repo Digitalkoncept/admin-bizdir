@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import UnAuth from "@/components/UnAuth";
 const page = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -26,6 +27,7 @@ const page = () => {
     }
   }
   return (
+    <UnAuth>
     <section className="login-reg ad-login-reg">
       <div className="container">
         <div className="row">
@@ -122,6 +124,7 @@ const page = () => {
         </div>
       </div>
     </section>
+    </UnAuth>
   );
 };
 

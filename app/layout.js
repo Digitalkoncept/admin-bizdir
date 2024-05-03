@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { usePathname } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
+import Auth from "@/components/Auth";
 import "@/styles/admin-style.css"
 import "@/styles/globals.css";
 import "@/css/bootstrap.css";
@@ -23,6 +24,7 @@ export default function RootLayout({ children, session }) {
   }
   return (
         <SessionProvider session={session}>
+          <Auth>
         <html>
           <body>
             <div>
@@ -34,6 +36,7 @@ export default function RootLayout({ children, session }) {
             </div>
           </body>
         </html>
+        </Auth>
         </SessionProvider>
   );
 }
