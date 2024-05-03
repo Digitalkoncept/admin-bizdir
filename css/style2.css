@@ -1,0 +1,87 @@
+.ban-short-links {
+    position: relative;
+    margin-top: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+}
+.ban-short-links ul {}
+
+ul {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+}
+.ban-short-links.ani ul li:nth-child(1) {
+    transition-delay: 0.2s;
+}
+.ban-short-links.ani ul li {
+    transform: translateY(0px);
+    opacity: 1;
+}
+.ban-short-links ul li {
+    float: left;
+    /* width: 25%; */
+    padding: 5px;
+    transition: all 0.5s ease;
+    transform: translateY(30px);
+    opacity: 0;
+}
+.ban-short-links ul li div {
+    text-align: center;
+    border: 1px solid #626262;
+    padding: 17px;
+    border-radius: 10px;
+    min-width: 100px;
+    background: #181818c7;
+    position: relative;
+    transition: all 0.4s ease-in-out;
+    position: relative;
+    z-index: 1;
+}
+.ban-short-links ul li div img {
+    width: 30px;
+    margin-bottom: 14px;
+}
+.ban-short-links ul li div h4 {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+.fclick {
+    position: absolute;
+    cursor: pointer;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    z-index: 5;
+}
+img {
+    -ms-interpolation-mode: bicubic;
+    display: inline-block;
+    height: auto;
+    max-width: 100%;
+    vertical-align: middle;
+}
+.ban-short-links ul li div:hover {
+    border: 1px solid #8297ff;
+    background: #0d2cc3;
+    box-shadow: 0px 6px 13px 6px #00000042;
+}
+.ban-short-links.ani ul li:nth-child(1) {
+    transition-delay: 0.2s;
+}
+@media screen and (max-width: 480px){
+.ban-short-links ul li {
+    width: 33.333%;
+}
+}
+@media screen and (max-width: 1150px){
+.ban-short-links ul li {
+    padding: 2px;
+}
+}
