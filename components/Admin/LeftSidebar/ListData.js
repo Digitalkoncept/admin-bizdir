@@ -73,8 +73,8 @@ export const SidebarData = [
         path: "/admin-add-new-listings",
       },
       {
-        name: "Create duplicate listings",
-        path: "/admin-create-duplicate-listing",
+        name: "New Listing Request",
+        path: "/new-listing-request",
       },
       {
         name: "All Claim Requests",
