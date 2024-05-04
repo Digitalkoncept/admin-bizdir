@@ -2,19 +2,29 @@
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Approve_Modal from "@/components/Admin/Approve_Modal";
 
 const Table = () => {
   const [listingData, setListingData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
-
+  const [showModal,setShowModal] = useState(null);
+  const [message,setMessage] = useState('');
+  const [approvalStatus, setApprovalStatus] = useState('pending');
+  const [id,setId] = useState('')
+  const openModal = (item) => {
+    setShowModal(item);
+  };
+  const closeModal = () =>{
+    setShowModal(null);
+  }
   console.log(session);
   const getListingData = async () => {
     try {
       setLoading(true);
       console.log("inside getlisting", session.jwt);
       const res = await fetch(
-        process.env.BACKEND_URL + "/api/listing/?approved_listing=true",
+        process.env.BACKEND_URL + "/api/listing/?pending_listing=true",
         {
           headers: {
             authorization: "Bearer " + session.jwt,
@@ -55,38 +65,58 @@ const Table = () => {
     }
   };
 
-  const approveListing = async (id) => {
+  
+
+ 
+  const handleApprove = async (e, id) => {
+    e.preventDefault();
+    setApprovalStatus('approved');
+    setShowModal(false);
     try {
       const res = await fetch(
-        process.env.BACKEND_URL + "/api/listing/approve/" + id,
+        process.env.BACKEND_URL + "/api/listing/approve_status/" + id,
         {
+          method:'PATCH',
           headers: {
-            authorization: "Bearer " + session.jwt,
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + session.jwt,
           },
+          body: JSON.stringify({ message, approvalStatus: 'approved' }),
         }
       );
-      getListingData();
+      console.log(res);
+      getListingData(); // Assuming this function fetches the updated listing data
+      setMessage(''); // Reset message
+      setApprovalStatus('pending'); // Reset approval status
     } catch (error) {
       console.error(error);
     }
   };
-
-  const rejectListing = async (id) => {
+  
+  const handleReject = async (e, id) => {
+    e.preventDefault();
+    setShowModal(false);
+    setApprovalStatus('rejected');
     try {
       const res = await fetch(
-        process.env.BACKEND_URL + "/api/listing/reject/" + id,
+        process.env.BACKEND_URL + "/api/listing/approve_status/" + id,
         {
+          method:'PATCH',
           headers: {
-            authorization: "Bearer " + session.jwt,
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + session.jwt,
           },
+          body: JSON.stringify({ message, approvalStatus: 'rejected' }),
         }
       );
-      getListingData();
+      console.log(res);
+      getListingData(); // Assuming this function fetches the updated listing data
+      setMessage(''); // Reset message
+      setApprovalStatus('pending'); // Reset approval status
     } catch (error) {
       console.error(error);
     }
   };
-
   if (loading) return <>Loading</>;
 
   console.log(listingData);
@@ -99,9 +129,7 @@ const Table = () => {
           <th>Rating</th>
           <th>Views</th>
           <th>Created by</th>
-          {/*<th>Promote</th>*/}
-          <th>Approve</th>
-          <th>Delete</th>
+          <th>Status</th>
           <th>Preview</th>
         </tr>
       </thead>
@@ -140,29 +168,37 @@ const Table = () => {
                 </a>
               </td>
               <td>
-                <Link
-                  href=""
-                  className="db-list-edit"
-                  onClick={() => approveListing(listing._id)}
-                >
-                  Approve
-                </Link>
+              <td className="relative" >{listing.approval} 
+               <button onClick={() =>openModal(listing)} className="db-list-edit ml-2" disabled={listing.status === 'approved'?'true':false}>update </button>
+                  {showModal && showModal._id === listing._id && (
 
-                <Link
-                  href=""
-                  className="db-list-edit"
-                  onClick={() => rejectListing(listing._id)}
-                >
-                  Reject
-                </Link>
+                      <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
+                      <div className="mx-auto box-border w-[250px] border bg-white p-2">
+                        <div className="flex items-center justify-between relative">
+                        
+                          <button onClick={closeModal} className="cursor-pointer border rounded-[4px] absolute right-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-[15px] w-[15px] text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                        <form id="approvalForm" >
+                        <div className="my-2 flex flex-col justify-between space-y-2">
+                        <div className="col-span-2">
+                  <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 ">Message</label>
+                  <textarea id="description" rows={4} name="message" value={message} onChange={(e) => setMessage(e.target.value)}   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500   " placeholder="write a description here"  />                    
+                </div>
+                          <button onClick={(e)=>handleApprove(e,listing._id)} className="w-4/2 cursor-pointer rounded-[4px] bg-green-700 px-3 py-[6px] text-center font-base text-xs text-white">Approve</button>
+                          <button onClick={(e)=> handleReject(e,listing._id)} className="w-4/2 cursor-pointer rounded-[4px] bg-red-700 px-3 py-[6px] text-center font-base text-xs text-white">Reject</button>
+                        </div>
+                        </form>
+                      </div>
+                    </div>
+                )}
+                {/* <button onClick={() =>openModal(listing)} className="db-list-edit" disabled={listing.status === 'approved'?'true':false}>update</button> */}
+                
+
               </td>
-              <td>
-                <a
-                  href="admin-delete-listings.html?code=LIST396"
-                  className="db-list-edit"
-                >
-                  Delete
-                </a>
               </td>
               <td>
                 <a
@@ -177,6 +213,7 @@ const Table = () => {
           );
         })}
       </tbody>
+      {/* <Approve_Modal closeModal={closeModal} /> */}
     </table>
   );
 };
