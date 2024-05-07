@@ -1,6 +1,7 @@
 import React from 'react'
-
+import { useSession } from 'next-auth/react'
 const TopNav = ({toggleCart,showadMenu}) => {
+  const {data:session,status} = useSession();
   return (
     <section>
   <div className="ad-head">
@@ -14,7 +15,7 @@ const TopNav = ({toggleCart,showadMenu}) => {
         
       </div>
       <div className="logo">
-        <img src="/logo-b.png" />
+        <img src="/Logo-W-200x45.webp" alt='' />
       </div>
     </div>
     <div className="head-s2">
@@ -428,7 +429,7 @@ const TopNav = ({toggleCart,showadMenu}) => {
       <div className="head-pro">
         <img src="/user/3.jpg" alt="" /> <b>Profile by</b>
         <br />
-        <h4>BUSINESS DIRECTORY</h4>
+        <h4>{session?.user?.name}</h4>
         <a href="admin-setting.html" className="fclick" />
       </div>
     </div>
