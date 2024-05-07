@@ -4,7 +4,7 @@ const TopNav = ({toggleCart,showadMenu}) => {
   const {data:session,status} = useSession();
   return (
     <section>
-  <div className="ad-head">
+  <div className="ad-head block">
     <div className="head-s1">
       <div className="menu">
         {" "}
