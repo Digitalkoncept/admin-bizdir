@@ -47,23 +47,7 @@ const Table = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  const deleteListing = async (id) => {
-    try {
-      const res = await fetch(process.env.BACKEND_URL + "/api/listing/" + id, {
-        headers: {
-          authorization: "Bearer " + session.jwt,
-        },
-        method: "DELETE",
-      });
-
-      if (res.status === 204) {
-        // Call getListingData to update the listing data
-        getListingData();
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  
 
   
 
@@ -164,7 +148,7 @@ const Table = () => {
                   className="db-list-ststus"
                   target="_blank"
                 >
-                  Rn53 Themes
+                  {listing.user_name}
                 </a>
               </td>
               <td>
