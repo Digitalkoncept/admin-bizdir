@@ -5,59 +5,24 @@ export const SidebarData = [
     class: "ic-db",
   },
   {
-    title: " Users",
+    title: " Employee",
     path: "#",
     class: "ic-user",
     subNav: [
       {
-        name: "New User Requests",
-        path: "/admin-new-user-requests",
+        name: "All Employee",
+        path: "/all-employee",
       },
       {
-        name: " New COD Payment Requests",
-        path: "/admin-new-cod-requests",
-      },
-      {
-        name: "All Users",
-        path: "/admin-all-users",
-      },
-      {
-        name: "All Users - General",
-        path: "/admin-all-users-general",
-      },
-      {
-        name: "All Users - Service Providers",
-        path: "/admin-all-users-service-provider",
-      },
-      {
-        name: "Free Users",
-        path: "/admin-free-users",
-      },
-      {
-        name: "Standard Users",
-        path: "/admin-standard-users",
-      },
-      {
-        name: "Premium Users",
-        path: "/admin-premium-users",
-      },
-      {
-        name: "Premium Plus Users",
-        path: "/admin-premium-plus-users",
-      },
-      {
-        name: "All Non-Paid Users",
-        path: "/admin-non-paid-users",
-      },
-      {
-        name: "All Paid Users",
-        path: "/admin-paid-users",
-      },
-      {
-        name: "Add new User",
-        path: "/admin-add-new-user",
-      },
+        name: "Employee Roles",
+        path: "/employee-role",
+      }
     ],
+  },
+  {
+    title: "Users",
+    path: "#",
+    class: "ic-user",
   },
   {
     title: "listings",
@@ -75,38 +40,7 @@ export const SidebarData = [
       {
         name: "New Listing Request",
         path: "/new-listing-request",
-      },
-      {
-        name: "All Claim Requests",
-        path: "/admin-claim-listing",
-      },
-      {
-        name: "Trash listings",
-        path: "/admin-trash-listing",
-      },
-    ],
-  },
-  {
-    title: " Listing Promotions",
-    path: "#",
-    class: "ic-poi",
-    subNav: [
-      {
-        name: "All Promotions",
-        path: "/admin-all-promotions",
-      },
-      {
-        name: "Create New Promotions",
-        path: "/admin-promote-now",
-      },
-      {
-        name: "All Points History",
-        path: "/admin-all-points",
-      },
-      {
-        name: "Points Setting",
-        path: "/admin-point-setting",
-      },
+      }
     ],
   },
   {
@@ -122,37 +56,16 @@ export const SidebarData = [
         name: "Add New Events",
         path: "/admin-add-new-event",
       },
-    ],
-  },
-  {
-    title: "Blogs",
-    path: "#",
-    class: "ic-blo",
-    subNav: [
       {
-        name: "All Blogs",
-        path: "/admin-all-blogs",
-      },
-      {
-        name: "Add new Blogs",
-        path: "/admin-add-new-blogs",
-      },
+        name:"New Event Request",
+        path:"/new-event-request"
+      }
     ],
   },
   {
     title: "Products",
-    path: "#",
+    path: "/all-products",
     class: "ic-prod",
-    subNav: [
-      {
-        name: "All Products",
-        path: "/admin-all-products",
-      },
-      {
-        name: "Add new Product",
-        path: "/admin-add-new-product",
-      },
-    ],
   },
   {
     title: "All Payments",
@@ -229,10 +142,6 @@ export const SidebarData = [
         name: "All Enquiry",
         path: "/admin-all-enquiry",
       },
-      {
-        name: "Saved Enquiry",
-        path: "/admin-saved-enquiry",
-      },
     ],
   },
   {
@@ -243,10 +152,6 @@ export const SidebarData = [
       {
         name: "All Reviews",
         path: "/admin-all-reviews",
-      },
-      {
-        name: "Saved Reviews",
-        path: "/admin-saved-reviews",
       },
     ],
   },
@@ -262,19 +167,9 @@ export const SidebarData = [
     ],
   },
   {
-    title: "Send Notifications",
-    path: "#",
+    title: "All Notifications",
+    path: "/admin-notification-all",
     class: "ic-noti",
-    subNav: [
-      {
-        name: "All Notifications",
-        path: "/admin-notification-all",
-      },
-      {
-        name: "Create New Notifications",
-        path: "/admin-create-notification",
-      },
-    ],
   },
   {
     title: "Ads",
@@ -369,21 +264,6 @@ export const SidebarData = [
     ],
   },
   {
-    title: "Listing Filter",
-    path: "#",
-    class: "ic-fil",
-    subNav: [
-      {
-        name: "All Filters",
-        path: "/admin-all-filters",
-      },
-      {
-        name: "Features",
-        path: "/admin-filter-features",
-      },
-    ],
-  },
-  {
     title: "Invoice",
     path: "#",
     class: "ic-inv",
@@ -402,36 +282,7 @@ export const SidebarData = [
       },
     ],
   },
-  {
-    title: "Import &amp; Export",
-    path: "#",
-    class: "ic-imp",
-    subNav: [
-      {
-        name: "Import Data",
-        path: "/admin-import",
-      },
-      {
-        name: "Export Data",
-        path: "/admin-export",
-      },
-    ],
-  },
-  {
-    title: "Sub Admin",
-    path: "#",
-    class: "ic-sub",
-    subNav: [
-      {
-        name: "All Sub Admins",
-        path: "/admin-sub-admin-all",
-      },
-      {
-        name: "Create new Sub Admin",
-        path: "/admin-sub-admin-create",
-      },
-    ],
-  },
+ 
   {
     title: "Footer",
     path: "#",

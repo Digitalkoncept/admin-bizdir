@@ -4,7 +4,10 @@ import { signOut } from "next-auth/react";
 import SubMenu from "./SubMenu";
 import Link from "next/link";
 import { SidebarData } from "@/components/Admin/LeftSidebar/ListData";
+import { useSession } from "next-auth/react";
 const LeftSidebar = ({ showadMenu }) => {
+    const {data:session} = useSession();
+    console.log(session)
     return (
         <section>
             <div className={`ad-menu-lhs ${showadMenu ? "mshow" : ""}`}>
