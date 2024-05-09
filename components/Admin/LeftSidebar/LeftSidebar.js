@@ -7,19 +7,25 @@ import { SidebarData } from "@/components/Admin/LeftSidebar/ListData";
 import { useSession } from "next-auth/react";
 const LeftSidebar = ({ showadMenu }) => {
     const {data:session} = useSession();
+    const permissions = session?.user?.role?.permissions;
     console.log(session)
     return (
         <section>
             <div className={`ad-menu-lhs ${showadMenu ? "mshow" : ""}`}>
                 <div className="ad-menu">
-                    <ul>
+                    <ul><li className="ic-db">
+                        <Link
+                        href={'/'} >
+                    Dashboard
+                    </Link>
+                    </li>
                         {SidebarData.map((item, index) => {
-                            return <SubMenu item={item} key={index} />;
+                            return <SubMenu item={item} key={index} permissions={permissions} />;
                         })}
                         <li className="ic-lgo">
-                        <Link onClick={() => signOut()}  href="">
+                        <span onClick={() => signOut({ callbackUrl: '/login' })} >
                          Log Out
-                        </Link>
+                        </span>
                         </li>    
                     </ul>
                 </div>

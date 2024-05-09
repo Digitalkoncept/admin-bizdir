@@ -302,6 +302,15 @@ a:hover {
     position: relative;
     font-weight: 500;
 }
+.ad-menu ul li span{
+    display: block;
+    color: #818a94;
+    font-size: 12px;
+    padding: 10px 20px 10px 50px;
+    position: relative;
+    cursor:pointer;
+    font-weight: 500;
+}
 .ad-menu ul li a.mact{
     background: #e4f5f7;
     color: #31c18c;

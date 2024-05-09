@@ -1,20 +1,27 @@
-import React from 'react'
+import React,{useState} from 'react'
 
 const page = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    mobile:'',
+    roleId:''
+  });
   return (
   <section>
   <div className="ad-com">
     <div className="ad-dash leftpadd">
       <div className="ud-cen">
         <div className="log-bor">&nbsp;</div>
-        <span className="udb-inst">Add new Sub Admin</span>
+        <span className="udb-inst">Add new Employee</span>
         <div className="ud-cen-s2 ud-pro-edit">
-          <h2>Sub admin details</h2>
+          <h2>Employee Details</h2>
           <table className="responsive-table bordered">
             <form name="admin_sub_admin_form" action="insert_admin_sub_admin.html" method="post" encType="multipart/form-data" />
             <tbody>
               <tr>
-                <td>Sub admin name</td>
+                <td>Employee Name</td>
                 <td>
                   <div className="form-group">
                     <input type="text" name="admin_name" required="required" className="form-control" placeholder="Name" />
@@ -22,10 +29,10 @@ const page = () => {
                 </td>
               </tr>
               <tr>
-                <td>User name</td>
+                <td>Employee Email</td>
                 <td>
                   <div className="form-group">
-                    <input type="text" name="admin_email" required="required" className="form-control" placeholder="Enter user name" />
+                    <input type="text" name="admin_email" required="required" className="form-control" placeholder="Email" />
                   </div>
                 </td>
               </tr>

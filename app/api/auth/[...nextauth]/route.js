@@ -38,10 +38,10 @@ const authOptions = {
                     return {
                         token: data.token,
                         id: data.id,
-                        name: data.manager.name,
-                        email: data.manager.email,
-                        image: data.manager.image,
-                        role: data.manager.role
+                        name: data.employee.name,
+                        email: data.employee.email,
+                        image: data.employee.image,
+                        role: data.employee.role
                         
                     };
                 } catch (error) {

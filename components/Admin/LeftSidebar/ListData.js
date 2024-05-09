@@ -1,11 +1,6 @@
 export const SidebarData = [
   {
-    title: "Dashboard",
-    path: "#",
-    class: "ic-db",
-  },
-  {
-    title: " Employee",
+    title: "Employee",
     path: "#",
     class: "ic-user",
     subNav: [
@@ -21,21 +16,17 @@ export const SidebarData = [
   },
   {
     title: "Users",
-    path: "#",
+    path: "/all-users",
     class: "ic-user",
   },
   {
-    title: "listings",
+    title: "Listings",
     path: "#",
     class: "ic-li",
     subNav: [
       {
-        name: "All listings",
+        name: "All Listings",
         path: "/admin-all-listings",
-      },
-      {
-        name: "Add new listings",
-        path: "/admin-add-new-listings",
       },
       {
         name: "New Listing Request",
@@ -53,10 +44,6 @@ export const SidebarData = [
         path: "/admin-event",
       },
       {
-        name: "Add New Events",
-        path: "/admin-add-new-event",
-      },
-      {
         name:"New Event Request",
         path:"/new-event-request"
       }
@@ -66,6 +53,16 @@ export const SidebarData = [
     title: "Products",
     path: "/all-products",
     class: "ic-prod",
+    subNav:[
+      {
+        name:"All Products",
+        path:"#",
+      },
+      {
+        name:"New Product Request",
+        path:"#"
+      }
+    ]
   },
   {
     title: "All Payments",
