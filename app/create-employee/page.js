@@ -1,13 +1,68 @@
-import React,{useState} from 'react'
-
+'use client'
+import React,{useState,useEffect} from 'react'
+import { useSession } from 'next-auth/react';
 const page = () => {
+  const [roles,setRoles] = useState();
+  const {data:session} = useSession();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    mobile:'',
-    roleId:''
+    role_id:''
   });
+
+  const getRoles = async () => {
+    try {
+      const res = await fetch(
+        process.env.BACKEND_URL + "/api/role",
+        {
+          headers: {
+            authorization: "Bearer " + session?.jwt,
+          },
+        }
+      );
+
+      const data = await res.json();
+      console.log(data);
+      setRoles(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+     getRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+  const handleChange = (event) => {
+      setFormData({
+        ...formData,
+        [event.target.name]: event.target.value,
+        
+      });
+      console.log(formData);
+    
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const res = await fetch(
+        process.env.BACKEND_URL + "/api/auth/admin/register",
+        {
+          method:'POST',
+          headers: {
+            authorization: "Bearer " + session.jwt,
+          },
+          body: JSON.stringify(formData)
+        }
+      );
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   return (
   <section>
   <div className="ad-com">
@@ -15,16 +70,17 @@ const page = () => {
       <div className="ud-cen">
         <div className="log-bor">&nbsp;</div>
         <span className="udb-inst">Add new Employee</span>
+
         <div className="ud-cen-s2 ud-pro-edit">
+          <form name="admin_sub_admin_form" onSubmit={handleSubmit}   encType="multipart/form-data" >
           <h2>Employee Details</h2>
           <table className="responsive-table bordered">
-            <form name="admin_sub_admin_form" action="insert_admin_sub_admin.html" method="post" encType="multipart/form-data" />
             <tbody>
               <tr>
                 <td>Employee Name</td>
                 <td>
                   <div className="form-group">
-                    <input type="text" name="admin_name" required="required" className="form-control" placeholder="Name" />
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} required="required" className="form-control" placeholder="Name" />
                   </div>
                 </td>
               </tr>
@@ -32,7 +88,7 @@ const page = () => {
                 <td>Employee Email</td>
                 <td>
                   <div className="form-group">
-                    <input type="text" name="admin_email" required="required" className="form-control" placeholder="Email" />
+                    <input type="text" name="email" value={formData.email} onChange={handleChange} required="required" className="form-control" placeholder="Email" />
                   </div>
                 </td>
               </tr>
@@ -40,7 +96,7 @@ const page = () => {
                 <td>Password</td>
                 <td>
                   <div className="form-group">
-                    <input type="text" name="admin_password" required="required" className="form-control" placeholder="Enter password" />
+                    <input type="text" name="password" value={formData.password} onChange={handleChange} required="required" className="form-control" placeholder="Enter password" />
                   </div>
                 </td>
               </tr>
@@ -53,6 +109,21 @@ const page = () => {
                 </td>
               </tr>
               <tr>
+                <td>Role</td>
+                <td>
+                <div className="form-group">
+                  <div className='col-md-6 pl-0'>
+                <select onChange={handleChange} value={formData.role_id} name="role_id" id="category_id" className="form-control">
+                  <option value>Select Category</option>
+                  {roles?.map(role =>(<option key={role._id} value={role._id}>{role.role_name}</option>))}
+                  
+                </select>
+                </div>
+                </div>
+
+                </td>
+              </tr>
+              {/* <tr>
                 <td>Credentials</td>
                 <td>
                   <div className="ad-sub-cre">
@@ -216,15 +287,11 @@ const page = () => {
                     </ul>
                   </div>
                 </td>
-              </tr>
-              <tr>
-                <td>
-                  <button type="submit" name="sub_admin_submit" className="db-pro-bot-btn">Add User</button>
-                </td>
-                <td />
-              </tr>
+              </tr> */}
             </tbody>
           </table>
+                  <button type="submit" name="sub_admin_submit" className="db-pro-bot-btn">Add Employee</button>
+        </form>
         </div>
       </div>
     </div>

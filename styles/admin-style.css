@@ -1468,7 +1468,8 @@ a:hover {
     top: 13px;
 }
 .db-pro-bot-btn{
-    background: #ffa778;
+    background: #ffa778!important;
+    width: 134px;
     border: 0px;
     font-weight: 600;
     font-size: 14px;

@@ -62,7 +62,7 @@ const page = () => {
                 <tr>
                 <td>1</td>
                 <td><img src="../images/user/6.jpg" alt=""/>{item.name}<span>08, Jan 2020</span></td>
-                <td>{item.role.role_name}</td>
+                <td>{item?.role?.role_name}</td>
                 <td>**********</td>
                 <td><a href="admin-sub-admin-edit.html?row=7" className="db-list-edit">Edit</a></td>
                 <td><a href="admin-sub-admin-delete.html?row=7" className="db-list-edit">Delete</a></td>
