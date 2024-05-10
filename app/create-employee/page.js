@@ -1,6 +1,7 @@
 'use client'
 import React,{useState,useEffect} from 'react'
 import { useSession } from 'next-auth/react';
+import {toast } from 'react-toastify';
 const page = () => {
   const [roles,setRoles] = useState();
   const {data:session} = useSession();
@@ -51,13 +52,19 @@ const page = () => {
         {
           method:'POST',
           headers: {
-            authorization: "Bearer " + session.jwt,
+            'Content-Type': 'application/json',
+            authorization: "Bearer " + session?.jwt,
           },
           body: JSON.stringify(formData)
         }
       );
       const data = await res.json();
-      console.log(data);
+      if(res.status ===201){
+        toast.success(data.message)
+      } else {
+        toast.error("something went wrong");
+      }
+      console.log(res);
     } catch (error) {
       console.error(error);
     }
@@ -74,6 +81,7 @@ const page = () => {
         <div className="ud-cen-s2 ud-pro-edit">
           <form name="admin_sub_admin_form" onSubmit={handleSubmit}   encType="multipart/form-data" >
           <h2>Employee Details</h2>
+          
           <table className="responsive-table bordered">
             <tbody>
               <tr>
@@ -96,7 +104,7 @@ const page = () => {
                 <td>Password</td>
                 <td>
                   <div className="form-group">
-                    <input type="text" name="password" value={formData.password} onChange={handleChange} required="required" className="form-control" placeholder="Enter password" />
+                    <input type="password" name="password" value={formData.password} onChange={handleChange} required="required" className="form-control" placeholder="Enter password" />
                   </div>
                 </td>
               </tr>
