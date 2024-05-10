@@ -9,8 +9,8 @@ export const SidebarData = [
         path: "/all-employee",
       },
       {
-        name: "Employee Roles",
-        path: "/employee-role",
+        name: "Roles",
+        path: "/all-roles",
       },
     ],
   },

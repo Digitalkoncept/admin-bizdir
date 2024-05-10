@@ -2,15 +2,41 @@
 import React,{useState,useEffect} from 'react'
 import { useSession } from 'next-auth/react';
 import {toast } from 'react-toastify';
-const page = () => {
-  const {data:session} = useSession();
+const page = ({params}) => {
+  const {data:session,status} = useSession();
+  const [loading,setLoading] = useState();
+  
   const [formData, setFormData] = useState({
     role_name: '',
     description: '',
     permissions: [],
   });
 
+  const getRole = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        process.env.BACKEND_URL + `/api/role/${params.id}`,
+        {
+          headers: {
+            authorization: "Bearer " + session.jwt,
+          },
+        }
+      );
 
+      const data = await res.json();
+      const {role_name,description,permissions} = await data;
+      setFormData({role_name,description,permissions})
+      console.log(data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (status === "authenticated") getRole();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -39,9 +65,9 @@ const page = () => {
     event.preventDefault();
     try {
       const res = await fetch(
-        process.env.BACKEND_URL + "/api/role",
+        process.env.BACKEND_URL + `/api/role/${params.id}`,
         {
-          method:'POST',
+          method:'PATCH',
           headers: {
             'Content-Type': 'application/json',
             authorization: "Bearer " + session?.jwt,
@@ -50,7 +76,7 @@ const page = () => {
         }
       );
       const data = await res.json();
-      if(res.status ===201){
+      if(res.status ===200){
         toast.success(data.message)
       } else {
         toast.error("something went wrong");
@@ -60,7 +86,7 @@ const page = () => {
       console.error(error);
     }
   };
-  
+  if (loading) return <>Loading</>;
   return (
   <section>
   <div className="ad-com">
@@ -71,7 +97,7 @@ const page = () => {
 
         <div className="ud-cen-s2 ud-pro-edit">
           <form name="admin_sub_admin_form" onSubmit={handleSubmit}   encType="multipart/form-data" >
-          <h2>Create Role</h2>
+          <h2>Update Role</h2>
           
           <table className="responsive-table bordered">
             <tbody>

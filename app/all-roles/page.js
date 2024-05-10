@@ -2,6 +2,7 @@
 import React,{useState,useEffect} from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { toast } from 'react-toastify'
 const page = () => {
     const [roles,setRoles] = useState();
     const [loading,setLoading] = useState();
@@ -31,6 +32,30 @@ const page = () => {
         if (status === "authenticated") getRoles();
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [session]);
+
+      const deleteRole = async (id) => {
+        try {
+          setLoading(true);
+          const res = await fetch(
+            process.env.BACKEND_URL + `/api/role/${id}`,
+            {
+              method:'DELETE',
+              headers: {
+                authorization: "Bearer " + session.jwt,
+              },
+            }
+          );
+          const data = await res.json();
+          if(res.status=== 200){
+            toast.success(data.message)
+          }
+          getRoles();
+          setLoading(false);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      
       if (loading) return <>Loading</>;
   return (
     <section>
@@ -60,8 +85,8 @@ const page = () => {
                 <td>{item?.role_name}</td>
                 <td>{item?.description}</td>
                 <td>{item?.permissions.join(', ')}</td>
-                <td><a href="admin-sub-admin-edit.html?row=7" className="db-list-edit">Update</a></td>
-                <td><a href="admin-sub-admin-delete.html?row=7" className="db-list-edit">Delete</a></td>
+                <td><Link href={`/update-role/${item._id}`} className="db-list-edit">Update</Link></td>
+                <td><Link href="#!" className="db-list-edit"  onClick={() => deleteRole(item._id)}>Delete</Link></td>
                 </tr>
                 </>
               ))}
