@@ -11,7 +11,7 @@ export const SidebarData = [
       {
         name: "Employee Roles",
         path: "/employee-role",
-      }
+      },
     ],
   },
   {
@@ -31,7 +31,23 @@ export const SidebarData = [
       {
         name: "New Listing Request",
         path: "/new-listing-request",
-      }
+      },
+      {
+        name: "Listing Category",
+        path: "/admin-all-category",
+      },
+      {
+        name: "Add Listing Category",
+        path: "/admin-add-new-category",
+      },
+      {
+        name: "Listing Sub Category",
+        path: "/admin-all-sub-category",
+      },
+      {
+        name: "Add Listing Sub Category",
+        path: "/admin-add-new-sub-category",
+      },
     ],
   },
   {
@@ -44,25 +60,41 @@ export const SidebarData = [
         path: "/admin-event",
       },
       {
-        name:"New Event Request",
-        path:"/new-event-request"
-      }
+        name: "New Event Request",
+        path: "/new-event-request",
+      },
     ],
   },
   {
     title: "Products",
     path: "/all-products",
     class: "ic-prod",
-    subNav:[
+    subNav: [
       {
-        name:"All Products",
-        path:"#",
+        name: "All Products",
+        path: "#",
       },
       {
-        name:"New Product Request",
-        path:"#"
-      }
-    ]
+        name: "New Product Request",
+        path: "#",
+      },
+      {
+        name: "Product Category",
+        path: "/admin-all-product-category",
+      },
+      {
+        name: "Add Product Category",
+        path: "/admin-add-new-product-category",
+      },
+      {
+        name: "Product Sub Category",
+        path: "/admin-all-product-sub-category",
+      },
+      {
+        name: "Add Product Sub Category",
+        path: "/admin-add-new-product-sub-category",
+      },
+    ],
   },
   {
     title: "All Payments",
@@ -79,59 +111,14 @@ export const SidebarData = [
         path: "/admin-coupons",
       },
       {
-        name: "Add new coupon",
+        name: "Add New Coupon",
         path: "/admin-add-new-coupons",
       },
     ],
   },
+
   {
-    title: "Listing Category",
-    path: "#",
-    class: "ic-cat",
-    subNav: [
-      {
-        name: "All Category",
-        path: "/admin-all-category",
-      },
-      {
-        name: "Add new Category",
-        path: "/admin-add-new-category",
-      },
-      {
-        name: "All Sub Category",
-        path: "/admin-all-sub-category",
-      },
-      {
-        name: "Add new Sub Category",
-        path: "/admin-add-new-sub-category",
-      },
-    ],
-  },
-  {
-    title: "Product Category",
-    path: "#",
-    class: "ic-cat",
-    subNav: [
-      {
-        name: "All Category",
-        path: "/admin-all-product-category",
-      },
-      {
-        name: "Add new Category",
-        path: "/admin-add-new-product-category",
-      },
-      {
-        name: "All Sub Category",
-        path: "/admin-all-product-sub-category",
-      },
-      {
-        name: "Add new Sub Category",
-        path: "/admin-add-new-product-sub-category",
-      },
-    ],
-  },
-  {
-    title: "  Enquiry & Get Quote",
+    title: "Enquiry & Get Quote",
     path: "#",
     class: "ic-enq",
     subNav: [
@@ -231,25 +218,18 @@ export const SidebarData = [
     ],
   },
   {
-    title: "Country",
+    title: "Location",
     path: "#",
     class: "ic-cou",
     subNav: [
       {
-        name: "All Country",
-        path: "/admin-all-country",
+        name: "All State",
+        path: "/admin-all-state",
       },
       {
-        name: "Add New Country",
-        path: "/admin-add-country",
+        name: "Add New State",
+        path: "/admin-add-state",
       },
-    ],
-  },
-  {
-    title: "City",
-    path: "#",
-    class: "ic-cit",
-    subNav: [
       {
         name: "All City",
         path: "/admin-all-city",
@@ -257,6 +237,14 @@ export const SidebarData = [
       {
         name: "Add New City",
         path: "/admin-add-city",
+      },
+      {
+        name: "All Area",
+        path: "/admin-all-area",
+      },
+      {
+        name: "Add New Area",
+        path: "/admin-add-area",
       },
     ],
   },
@@ -279,7 +267,7 @@ export const SidebarData = [
       },
     ],
   },
- 
+
   {
     title: "Footer",
     path: "#",

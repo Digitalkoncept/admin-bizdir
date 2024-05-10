@@ -12,7 +12,7 @@ const page = () => {
       <div className="ad-dash-s1">
         <div className="cd-cen-intr-inn">
           <h2>
-            Hi Welcome <b>BUSINESS DIRECTORY</b>
+            Hi Welcome <b>{session?.user?.name}</b>
           </h2>
           <p>
             Stay up to date reports in your listing, products, events and blog
