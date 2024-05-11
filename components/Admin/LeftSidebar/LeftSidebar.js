@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 const LeftSidebar = ({ showadMenu }) => {
     const {data:session} = useSession();
     const permissions = session?.user?.role?.permissions;
-    console.log(session)
     return (
         <section>
             <div className={`ad-menu-lhs ${showadMenu ? "mshow" : ""}`}>

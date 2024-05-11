@@ -3,6 +3,8 @@ import React,{useState,useEffect} from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { toast } from 'react-toastify'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 const page = () => {
     const [roles,setRoles] = useState();
     const [loading,setLoading] = useState();
@@ -56,7 +58,7 @@ const page = () => {
         }
       };
       
-      if (loading) return <>Loading</>;
+      
   return (
     <section>
   <div className="ad-com">
@@ -67,6 +69,9 @@ const page = () => {
         <div className="ud-cen-s2">
           <h2>All Roles</h2>
           <Link href="/create-role" className="db-tit-btn">Add new Role</Link>
+          {loading ? (
+            <Skeleton count={4} />
+          ):(
           <table className="responsive-table bordered">
             <thead>
               <tr>
@@ -85,7 +90,7 @@ const page = () => {
                 <td>{item?.role_name}</td>
                 <td>{item?.description}</td>
                 <td>{item?.permissions.join(', ')}</td>
-                <td><Link href={`/update-role/${item._id}`} className="db-list-edit">Update</Link></td>
+                <td><Link href={`/all-roles/${item._id}`} className="db-list-edit">Update</Link></td>
                 <td><Link href="#!" className="db-list-edit"  onClick={() => deleteRole(item._id)}>Delete</Link></td>
                 </tr>
                 </>
@@ -93,6 +98,7 @@ const page = () => {
                 
             </tbody>
           </table>
+          )}
         </div>
       </div>
     </div>

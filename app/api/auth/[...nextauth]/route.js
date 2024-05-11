@@ -26,6 +26,7 @@ const authOptions = {
                     );
 
                     if (!response.ok) {
+                        console.log(response)
                         throw new Error("Invalid credentials");
                     }
 

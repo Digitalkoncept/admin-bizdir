@@ -1,5 +1,7 @@
 'use client'
 import React,{useEffect,useState} from 'react';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
@@ -35,7 +37,6 @@ const page = () => {
     if (status === "authenticated") getEmployee();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-  if (loading) return <>Loading</>;
   const deleteEmployee = async (id) => {
     try {
       setLoading(true);
@@ -58,18 +59,21 @@ const page = () => {
       console.error(error);
     }
   };
-  if (loading) return <>Loading</>;
+  // if (loading) return <><Skeleton count={5} /></>;
   return (
     <section>
   <div className="ad-com">
     <div className="ad-dash leftpadd">
       <div className="ud-cen">
         <div className="log-bor">&nbsp;</div>
-        <span className="udb-inst">All Employee</span>
+         <span className="udb-inst">All Employee</span>
         <div className="ud-cen-s2">
           <h2>All Employee</h2>
           <Link href="/create-employee" className="db-tit-btn">Add new Employee</Link>
-          <table className="responsive-table bordered">
+          {loading ? (
+            <Skeleton count={5} />
+          ):(
+            <table className="responsive-table bordered">
             <thead>
               <tr>
                 <th>No</th>
@@ -82,7 +86,7 @@ const page = () => {
               </tr>
             </thead>
             <tbody>
-                {employee.map((item,index)=>(<>
+                {employee?.map((item,index)=>(<>
                 <tr>
                 <td>1</td>
                 <td><img src="../images/user/6.jpg" alt=""/>{item.name}<span>08, Jan 2020</span></td>
@@ -97,6 +101,8 @@ const page = () => {
                 
             </tbody>
           </table>
+          )}
+          
         </div>
       </div>
     </div>
