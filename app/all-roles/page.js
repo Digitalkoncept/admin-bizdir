@@ -86,7 +86,7 @@ const page = () => {
             <tbody>
                 {roles?.map((item,index)=>(<>
                 <tr>
-                <td>1</td>
+                <td>{index + 1}</td>
                 <td>{item?.role_name}</td>
                 <td>{item?.description}</td>
                 <td>{item?.permissions.join(', ')}</td>

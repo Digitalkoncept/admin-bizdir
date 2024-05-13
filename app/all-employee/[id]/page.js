@@ -10,7 +10,7 @@ const page = ({params}) => {
     name: '',
     email: '',
     password: '',
-    role_id:''
+    role:''
   });
 
   const getEmployee = async () => {
@@ -26,8 +26,8 @@ const page = ({params}) => {
       );
 
       const data = await res.json();
-      const {name,email,role_id} = await data;
-      setFormData({name,email,role_id})
+      const {name,email,role} = await data;
+      setFormData({name,email,role})
       console.log(data);
       setLoading(false);
     } catch (error) {
@@ -144,7 +144,7 @@ const page = ({params}) => {
                 <td>
                 <div className="form-group">
                   <div className='col-md-6 pl-0'>
-                <select onChange={handleChange} value={formData.role_id} name="role_id" id="category_id" className="form-control">
+                <select onChange={handleChange} value={formData.role} name="role" id="category_id" className="form-control">
                   <option value>Select Role</option>
                   {roles?.map(role =>(<option key={role._id} value={role._id}>{role.role_name}</option>))}
                   
@@ -321,7 +321,7 @@ const page = ({params}) => {
               </tr> */}
             </tbody>
           </table>
-                  <button type="submit" name="sub_admin_submit" className="db-pro-bot-btn">Add Employee</button>
+                  <button type="submit" name="sub_admin_submit" className="db-pro-bot-btn">Update Employee</button>
         </form>
         </div>
       </div>

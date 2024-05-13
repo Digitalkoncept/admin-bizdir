@@ -11,7 +11,7 @@ const Table = () => {
   const [showModal,setShowModal] = useState(null);
   const [message,setMessage] = useState('');
   const [approvalStatus, setApprovalStatus] = useState('pending');
-  const [id,setId] = useState('')
+
   const openModal = (item) => {
     setShowModal(item);
   };
@@ -124,7 +124,7 @@ const Table = () => {
             <tr key={listing._id}>
               <td>{idx + 1}</td>
               <td>
-                <img src="../images/listings/82551rn53.png" alt="" />
+                <img src={listing.listing_image} alt="default image" />
                 {listing.listing_name}{" "}
                 <span>
                   {inputDate.toLocaleDateString("en-US", {

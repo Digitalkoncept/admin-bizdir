@@ -9,8 +9,13 @@ const page = () => {
   const [employee,setEmployee] = useState();
   const {data:session,status} =  useSession();
   const [loading, setLoading] = useState(true);
-
-  
+  const [showModal,setShowModal] = useState(null);
+  const openModal = (item) => {
+    setShowModal(item);
+  };
+  const closeModal = () =>{
+    setShowModal(null);
+  }
   const getEmployee = async () => {
     try {
       setLoading(true);
@@ -82,19 +87,41 @@ const page = () => {
                 <th>Password</th>
                 <th>Edit</th>
                 <th>Delete</th>
-                <th>View log</th>
               </tr>
             </thead>
             <tbody>
                 {employee?.map((item,index)=>(<>
                 <tr>
-                <td>1</td>
-                <td><img src="../images/user/6.jpg" alt=""/>{item.name}<span>08, Jan 2020</span></td>
+                <td>{index + 1}</td>
+                <td><img src={item?.image} alt=""/>{item.name}<span>08, Jan 2020</span></td>
                 <td>{item?.role?.role_name}</td>
                 <td>**********</td>
                 <td><Link href={`/all-employee/${item._id}`} className="db-list-edit">Update</Link></td>
-                <td><span href="#!" className="db-list-edit"  onClick={() => deleteEmployee(item._id)}>Delete</span></td>
-                <td><a href="admin-sub-admin-log.html?row=7" className="db-list-edit">View log</a></td>
+                <td className='relative'><span href="#!" className="db-list-edit"  onClick={() =>openModal(item)}>Delete</span>
+                {showModal && showModal._id === item._id && (
+
+<div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
+<div className="mx-auto box-border w-[180px] border bg-white p-2">
+  <div className="flex items-center justify-between relative">
+  
+    <button onClick={closeModal} className="cursor-pointer border rounded-[4px] absolute right-0">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-[15px] w-[15px] text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <form id="approvalForm" >
+<label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 ">you want to delete {item.name}</label>
+  <div className="my-2 flex  justify-around ">
+  <button onClick={closeModal} className="w-[50px] cursor-pointer rounded-[4px] bg-green-700 px-1 py-[6px] text-center font-base text-xs text-white">close</button>
+    <button onClick={()=> deleteEmployee(item._id)} className="w-[50px] cursor-pointer rounded-[4px] bg-red-700 px-1 py-[6px] text-center font-base text-xs text-white">delete</button>
+  </div>
+  </form>
+</div>
+</div>
+)}
+                </td>
+
                 </tr>
                 </>
               ))}

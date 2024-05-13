@@ -9,7 +9,7 @@ const page = () => {
     name: '',
     email: '',
     password: '',
-    role_id:''
+    role:''
   });
 
   const getRoles = async () => {
@@ -121,7 +121,7 @@ const page = () => {
                 <td>
                 <div className="form-group">
                   <div className='col-md-6 pl-0'>
-                <select onChange={handleChange} value={formData.role_id} name="role_id" id="category_id" className="form-control">
+                <select onChange={handleChange} value={formData.role} name="role" id="category_id" className="form-control">
                   <option value>Select Category</option>
                   {roles?.map(role =>(<option key={role._id} value={role._id}>{role.role_name}</option>))}
                   

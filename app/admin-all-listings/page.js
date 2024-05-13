@@ -19,9 +19,6 @@ const page = () => {
                   placeholder="Search this page.."
                 />
               </div>
-              <a href="admin-add-new-listings.html" className="db-tit-btn">
-                Add new listing
-              </a>
               <Table />
             </div>
           </div>

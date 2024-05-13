@@ -52,6 +52,10 @@ const page = ({ params }) => {
                     <td>{user?.name}</td>
                   </tr>
                   <tr>
+                    <td>Status</td>
+                    <td>{user?.user_status}</td>
+                  </tr>
+                  <tr>
                     <td>Plan type</td>
                     <td>
                       <span className="db-list-rat">{user?.user_plan}</span>

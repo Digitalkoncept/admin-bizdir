@@ -124,110 +124,116 @@ const page = ({params}) => {
                     <ul>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_user_options" checked={formData.permissions.includes("All Employee")} value="All Employee" onChange={handleChange} id="sac1"  />
-                          <label htmlFor="sac1">All Employee </label>
+                          <input type="checkbox" name="admin_user_options" checked={formData.permissions.includes("All Employee")} value="All Employee" onChange={handleChange} id="0"  />
+                          <label htmlFor="0">All Employee </label> 
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_listing_options"  checked={formData.permissions.includes("Employee Roles")} value="Employee Roles" onChange={handleChange}  id="sac2"  />
-                          <label htmlFor="sac2">Employee Roles</label>
+                          <input type="checkbox" name="admin_listing_options"  checked={formData.permissions.includes("Roles")} value="Roles" onChange={handleChange}  id="1"  />
+                          <label htmlFor="1">Employee Roles</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_event_options" checked={formData.permissions.includes("Users")} value="Users" onChange={handleChange} id="sac3"  />
-                          <label htmlFor="sac3">Users</label>
+                          <input type="checkbox" name="admin_event_options" checked={formData.permissions.includes("Users")} value="Users" onChange={handleChange} id="2"  />
+                          <label htmlFor="2">Users</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_blog_options" checked={formData.permissions.includes("All Listings")} value="All Listings" onChange={handleChange} id="sac4"  />
-                          <label htmlFor="sac4">All Listings</label>
+                          <input type="checkbox" name="admin_blog_options" checked={formData.permissions.includes("All Listings")} value="All Listings" onChange={handleChange} id="3"  />
+                          <label htmlFor="3">All Listings</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_product_options" checked={formData.permissions.includes("New Listing Request")} value="New Listing Request" onChange={handleChange} id="sac24"  />
-                          <label htmlFor="sac24">Listing Approval</label>
+                          <input type="checkbox" name="admin_product_options" checked={formData.permissions.includes("New Listing Request")} value="New Listing Request" onChange={handleChange} id="4"  />
+                          <label htmlFor="4">Listing Approval</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_category_options" checked={formData.permissions.includes("All Events")} value="All Events" onChange={handleChange} id="sac5"  />
-                          <label htmlFor="sac5">All Events</label>
+                          <input type="checkbox" name="admin_product_options" checked={formData.permissions.includes("Delete Listing")} value="Delete Listing" onChange={handleChange} id="5"  />
+                          <label htmlFor="5">Delete Listing</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_product_category_options" checked={formData.permissions.includes("New Event Request")} value="New Event Request" onChange={handleChange} id="sac25"  />
-                          <label htmlFor="sac25">Event Approval</label>
+                          <input type="checkbox" name="admin_category_options" checked={formData.permissions.includes("All Events")} value="All Events" onChange={handleChange} id="6"  />
+                          <label htmlFor="6">All Events</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_enquiry_options" checked={formData.permissions.includes("All Products")} value="All Products" onChange={handleChange} id="sac6"  />
-                          <label htmlFor="sac6">All Products</label>
+                          <input type="checkbox" name="admin_product_category_options" checked={formData.permissions.includes("New Event Request")} value="New Event Request" onChange={handleChange} id="7"  />
+                          <label htmlFor="7">Event Approval</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_review_options" checked={formData.permissions.includes("New Product Request")} value="New Product Request" onChange={handleChange} id="sac7"  />
-                          <label htmlFor="sac7">Product Approval</label>
+                          <input type="checkbox" name="admin_enquiry_options" checked={formData.permissions.includes("All Products")} value="All Products" onChange={handleChange} id="8"  />
+                          <label htmlFor="8">All Products</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_feedback_options" checked={formData.permissions.includes("All Payments")} value="All Payments" onChange={handleChange} id="sac26"  />
-                          <label htmlFor="sac26">All Payments</label>
+                          <input type="checkbox" name="admin_review_options" checked={formData.permissions.includes("New Product Request")} value="New Product Request" onChange={handleChange} id="9"  />
+                          <label htmlFor="9">Product Approval</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_notification_options" checked={formData.permissions.includes("All Coupons")} value="All Coupons" onChange={handleChange} id="sac8"  />
-                          <label htmlFor="sac8">All Coupons</label>
+                          <input type="checkbox" name="admin_feedback_options" checked={formData.permissions.includes("All Payments")} value="All Payments" onChange={handleChange} id="10"  />
+                          <label htmlFor="10">All Payments</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_ads_options" checked={formData.permissions.includes("Add New Coupon")} value="Add New Coupon" onChange={handleChange} id="sac9"  />
-                          <label htmlFor="sac9">Add New Coupon</label>
+                          <input type="checkbox" name="admin_notification_options" checked={formData.permissions.includes("All Coupons")} value="All Coupons" onChange={handleChange} id="11"  />
+                          <label htmlFor="11">All Coupons</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_home_options" checked={formData.permissions.includes("All Enquiry")} value="All Enquiry" onChange={handleChange} id="sac10"  />
-                          <label htmlFor="sac10">All Enquiry</label>
+                          <input type="checkbox" name="admin_ads_options" checked={formData.permissions.includes("Add New Coupon")} value="Add New Coupon" onChange={handleChange} id="12"  />
+                          <label htmlFor="12">Add New Coupon</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_country_options" checked={formData.permissions.includes("All Reviews")} value="All Reviews" onChange={handleChange} id="sac11"  />
-                          <label htmlFor="sac11">All Reviews</label>
+                          <input type="checkbox" name="admin_home_options" checked={formData.permissions.includes("All Enquiry")} value="All Enquiry" onChange={handleChange} id="13"  />
+                          <label htmlFor="13">All Enquiry</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_city_options" checked={formData.permissions.includes("All Feedbacks")} value="All Feedbacks" onChange={handleChange} id="sac12"  />
-                          <label htmlFor="sac12">All Feedbacks</label>
+                          <input type="checkbox" name="admin_country_options" checked={formData.permissions.includes("All Reviews")} value="All Reviews" onChange={handleChange} id="14"  />
+                          <label htmlFor="14">All Reviews</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_listing_filter_options" checked={formData.permissions.includes("All Notifications")} value="All Notifications" onChange={handleChange} id="sac22"  />
-                          <label htmlFor="sac22">All Notifications</label>
+                          <input type="checkbox" name="admin_city_options" checked={formData.permissions.includes("All Feedbacks")} value="All Feedbacks" onChange={handleChange} id="15"  />
+                          <label htmlFor="15">All Feedbacks</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_invoice_options" checked={formData.permissions.includes("Pricing Plans")} value="Pricing Plans" onChange={handleChange} id="sac13"  />
-                          <label htmlFor="sac13">Pricing Plans</label>
+                          <input type="checkbox" name="admin_listing_filter_options" checked={formData.permissions.includes("All Notifications")} value="All Notifications" onChange={handleChange} id="16"  />
+                          <label htmlFor="16">All Notifications</label>
                         </div>
                       </li>
                       <li>
                         <div className="chbox">
-                          <input type="checkbox" name="admin_import_options" checked={formData.permissions.includes("Setting")} value="Setting" onChange={handleChange} id="sac14"  />
-                          <label htmlFor="sac14">Setting</label>
+                          <input type="checkbox" name="admin_invoice_options" checked={formData.permissions.includes("Pricing Plans")} value="Pricing Plans" onChange={handleChange} id="17"  />
+                          <label htmlFor="17">Pricing Plans</label>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="chbox">
+                          <input type="checkbox" name="admin_import_options" checked={formData.permissions.includes("Setting")} value="Setting" onChange={handleChange} id="18"  />
+                          <label htmlFor="18">Setting</label>
                         </div>
                       </li>
                       
