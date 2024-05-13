@@ -96,7 +96,6 @@ const page = () => {
           <div className="ad-int-sear">
             <input type="text" id="pg-sear" placeholder="Search this page.." />
           </div>
-          <a href="admin-add-new-user.html" className="db-tit-btn">Add new user</a>
           {loading ? (
             <Skeleton count={5} />
           ):(

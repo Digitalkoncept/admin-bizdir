@@ -430,7 +430,7 @@ const TopNav = ({toggleCart,showadMenu}) => {
         <img src="/user/3.jpg" alt="" /> <b>Profile by</b>
         <br />
         <h4>{session?.user?.name}</h4>
-        <a href="" className="fclick" />
+        {/* <a href="" className="fclick" /> */}
       </div>
     </div>
   </div>
