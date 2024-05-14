@@ -96,7 +96,6 @@ const page = () => {
           <div className="ad-int-sear">
             <input type="text" id="pg-sear" placeholder="Search this page.." />
           </div>
-          
           {loading ? (
             <Skeleton count={5} />
           ):(
