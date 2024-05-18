@@ -13,6 +13,7 @@ const page = () => {
           <a href="admin-add-new-product.html" className="db-tit-btn">Add new product</a>
           <table className="responsive-table bordered">
             <thead>
+              <input type='da' />
               <tr>
                 <th>No</th>
                 <th>product Name</th>
