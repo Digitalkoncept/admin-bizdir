@@ -211,9 +211,8 @@ const Table = () => {
                   </td>
               <td>
                 <Link
-                   href={`${process.env.FRONTEND_URL}/all-listing/${listing._id}`}
+                   href={`/admin-all-listings/${listing._id}`}
                   className="db-list-edit"
-                  target="_blank"
                 >
                   Preview
                 </Link>
