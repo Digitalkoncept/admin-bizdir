@@ -139,7 +139,7 @@ const page = ({ params }) => {
                   </tr>
                   <tr>
                     <td>
-                      <Link href="/all-users" className="db-pro-bot-btn">
+                      <Link href="/admin-all-listings" className="db-pro-bot-btn">
                         close
                       </Link>
                     </td>
@@ -147,7 +147,7 @@ const page = ({ params }) => {
                   </tr>
                 </tbody>
               </table>
-              <div className="ud-notes">
+              {/* <div className="ud-notes">
                 <p>
                   <b>Notes about this listing:</b>
                   <span>
@@ -156,7 +156,7 @@ const page = ({ params }) => {
                     Plan on April 12th 2020.)
                   </span>
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

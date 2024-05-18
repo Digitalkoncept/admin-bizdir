@@ -35,7 +35,6 @@ const page = ({ params }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  // service provided
   return (
     <section>
       <div className="ad-com">
@@ -131,7 +130,7 @@ const page = ({ params }) => {
 
                   <tr>
                     <td>
-                      <Link href="/all-users" className="db-pro-bot-btn">
+                      <Link href="/new-listing-request" className="db-pro-bot-btn">
                         close
                       </Link>
                     </td>
@@ -139,7 +138,7 @@ const page = ({ params }) => {
                   </tr>
                 </tbody>
               </table>
-              <div className="ud-notes">
+              {/* <div className="ud-notes">
                 <p>
                   <b>Notes about this listing:</b>
                   <span>
@@ -148,7 +147,7 @@ const page = ({ params }) => {
                     Plan on April 12th 2020.)
                   </span>
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
