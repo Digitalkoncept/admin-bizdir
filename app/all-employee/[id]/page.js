@@ -84,8 +84,8 @@ const page = ({params}) => {
       const data = await res.json();
       if(res.status ===200){
         toast.success(data.message)
-      } else {
-        toast.error("something went wrong");
+      } else if(res.status === 400) {
+        toast.error(data.message);
       }
       console.log(res);
     } catch (error) {
@@ -102,9 +102,8 @@ const page = ({params}) => {
         <span className="udb-inst">Add new Employee</span>
 
         <div className="ud-cen-s2 ud-pro-edit">
-          <form name="admin_sub_admin_form" onSubmit={handleSubmit}   encType="multipart/form-data" >
+        <form name="admin_sub_admin_form" onSubmit={handleSubmit}   encType="multipart/form-data" >
           <h2>Employee Details</h2>
-          
           <table className="responsive-table bordered">
             <tbody>
               <tr>
@@ -321,7 +320,7 @@ const page = ({params}) => {
               </tr> */}
             </tbody>
           </table>
-                  <button type="submit" name="sub_admin_submit" className="db-pro-bot-btn">Update Employee</button>
+           <button type="submit" name="sub_admin_submit" className="db-pro-bot-btn">Update Employee</button>
         </form>
         </div>
       </div>

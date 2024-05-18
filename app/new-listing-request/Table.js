@@ -185,13 +185,12 @@ const Table = () => {
               </td>
               </td>
               <td>
-                <a
-                  href="http://localhost/directory/bizbook/listing/qwerqw"
+                <Link
+                  href={`/new-listing-request/${listing._id}`}
                   className="db-list-edit"
-                  target="_blank"
                 >
                   Preview
-                </a>
+                </Link>
               </td>
             </tr>
           );

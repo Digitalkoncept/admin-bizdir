@@ -18,6 +18,12 @@ const LeftSidebar = ({ showadMenu }) => {
                     Dashboard
                     </Link>
                     </li>
+                    <li className="ic-sub">
+                        <Link
+                        href={'/profile'} >
+                    Profile
+                    </Link>
+                    </li>
                         {SidebarData.map((item, index) => {
                             return <SubMenu item={item} key={index} permissions={permissions} />;
                         })}

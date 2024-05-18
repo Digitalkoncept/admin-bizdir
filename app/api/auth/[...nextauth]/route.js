@@ -68,6 +68,7 @@ const authOptions = {
             session.jwt = token.jwt;
             session.user = {
                 name: token.name,
+                id:token.id,
                 email: token.email,
                 image: token.image,
                 role: token.role

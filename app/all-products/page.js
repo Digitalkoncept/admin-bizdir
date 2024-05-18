@@ -10,7 +10,7 @@ const page = () => {
         <span className="udb-inst">products</span>
         <div className="ud-cen-s2">
           <h2>product details</h2>
-          <a href="admin-add-new-product.html" className="db-tit-btn">Add new product</a>
+          
           <table className="responsive-table bordered">
             <thead>
               <input type='da' />
