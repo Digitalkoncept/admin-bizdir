@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Table from "./Table";
-import { current } from "@reduxjs/toolkit";
 
 const page = () => {
   const [page, setPage] = useState({

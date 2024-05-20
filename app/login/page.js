@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import UnAuth from "@/components/UnAuth";
+import { toast } from "react-toastify";
+
+
 const page = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -20,7 +23,7 @@ const page = () => {
     });
 
     if (result.error) {
-      alert(result.error);
+      toast.error(result.error)
       console.log(result.error);
     } else {
       router.push("/");
@@ -42,7 +45,7 @@ const page = () => {
                   onSubmit={handleSubmit}
                 >
                   <div className="form-group">
-                    {/*                                  <input type="text" name="admin_email" id="admin_email"  class="form-control" placeholder="Enter email*" pattern="^[\w]{1,}[\w.+-]{0,}@[\w-]{2,}([.][a-zA-Z]{2,}|[.][\w-]{2,}[.][a-zA-Z]{2,})$" title="Invalid email address" required>*/}
+                    {/*<input type="text" name="admin_email" id="admin_email"  class="form-control" placeholder="Enter email*" pattern="^[\w]{1,}[\w.+-]{0,}@[\w-]{2,}([.][a-zA-Z]{2,}|[.][\w-]{2,}[.][a-zA-Z]{2,})$" title="Invalid email address" required>*/}
                     <input
                       type="text"
                       name="email"

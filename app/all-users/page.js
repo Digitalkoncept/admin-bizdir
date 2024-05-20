@@ -131,123 +131,127 @@ const page = () => {
               {loading ? (
                 <Skeleton count={5} />
               ) : (
-                <table className="responsive-table bordered" id="pg-resu">
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>User Name</th>
-                      <th>User Email</th>
-                      <th>Plan type</th>
-                      <th>Update Status</th>
-                      <th>Preview</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedUser?.map((item, index) => (
-                      <>
-                        <tr>
-                          <td>{index + 1}</td>
-                          <td>
-                            <img src={item?.profile_image} alt="" />
-                            {item.name}
-                            <DateFormatter dateString={item.createdAt} />
-                          </td>
-                          <td>{item.email}</td>
-                          <td>
-                            <span className="db-list-rat">
-                              {item?.subscription?.user_plan}
-                            </span>
-                          </td>
-                          <td
-                            className={`${
-                              item.user_status === "Active" ||
-                              item.user_status === "Inactive"
-                                ? "!text-green-600"
-                                : "!text-[#fd5b5b]"
-                            }`}
-                          >
-                            {item.user_status}{" "}
-                            {item.user_status === "Active" ||
-                            item.user_status === "Inactive" ? (
-                              <span
-                                className="db-list-edit"
-                                onClick={() => disableUser(item._id, item.name)}
-                              >
-                                Disable
+                <>
+                  <table className="responsive-table bordered" id="pg-resu">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>User Name</th>
+                        <th>User Email</th>
+                        <th>Plan type</th>
+                        <th>Update Status</th>
+                        <th>Preview</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedUser?.map((item, index) => (
+                        <>
+                          <tr>
+                            <td>{index + 1}</td>
+                            <td>
+                              <img src={item?.profile_image} alt="" />
+                              {item.name}
+                              <DateFormatter dateString={item.createdAt} />
+                            </td>
+                            <td>{item.email}</td>
+                            <td>
+                              <span className="db-list-rat">
+                                {item?.subscription?.user_plan}
                               </span>
-                            ) : (
-                              <>
+                            </td>
+                            <td
+                              className={`${
+                                item.user_status === "Active" ||
+                                item.user_status === "Inactive"
+                                  ? "!text-green-600"
+                                  : "!text-[#fd5b5b]"
+                              }`}
+                            >
+                              {item.user_status}{" "}
+                              {item.user_status === "Active" ||
+                              item.user_status === "Inactive" ? (
                                 <span
                                   className="db-list-edit"
                                   onClick={() =>
-                                    enableUser(item._id, item.name)
+                                    disableUser(item._id, item.name)
                                   }
                                 >
-                                  Enable
+                                  Disable
                                 </span>
-                                <span className="w-12 h-12 bg-red-400 rounded-full"></span>
-                              </>
-                            )}
-                          </td>
-                          <td>
-                            <Link
-                              href={`/all-users/${item._id}`}
-                              className="db-list-edit"
+                              ) : (
+                                <>
+                                  <span
+                                    className="db-list-edit"
+                                    onClick={() =>
+                                      enableUser(item._id, item.name)
+                                    }
+                                  >
+                                    Enable
+                                  </span>
+                                  <span className="w-12 h-12 bg-red-400 rounded-full"></span>
+                                </>
+                              )}
+                            </td>
+                            <td>
+                              <Link
+                                href={`/all-users/${item._id}`}
+                                className="db-list-edit"
+                              >
+                                Preview
+                              </Link>
+                            </td>
+                          </tr>
+                        </>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="ad-pgnat">
+                    <ul className="pagination">
+                      <li className="page-item">
+                        <a
+                          className="page-link"
+                          href="#"
+                          onClick={() => handlePageNumber(page.current - 1)}
+                        >
+                          Previous
+                        </a>
+                      </li>
+                      {Array(page.totalPages)
+                        .fill(0)
+                        .map((_, idx) => {
+                          const currentPage = idx + 1;
+
+                          return (
+                            <li
+                              className={`page-item ${
+                                page.current === currentPage ? "active" : ""
+                              }`}
+                              key={idx}
                             >
-                              Preview
-                            </Link>
-                          </td>
-                        </tr>
-                      </>
-                    ))}
-                  </tbody>
-                </table>
+                              <a
+                                className="page-link"
+                                href="#"
+                                onClick={() => handlePageNumber(currentPage)}
+                              >
+                                {currentPage}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      <li className="page-item">
+                        <a
+                          className="page-link"
+                          href="#"
+                          onClick={() => handlePageNumber(page.current + 1)}
+                        >
+                          Next
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </>
               )}
             </div>
-          </div>
-          <div className="ad-pgnat">
-            <ul className="pagination">
-              <li className="page-item">
-                <a
-                  className="page-link"
-                  href="#"
-                  onClick={() => handlePageNumber(page.current - 1)}
-                >
-                  Previous
-                </a>
-              </li>
-              {Array(page.totalPages)
-                .fill(0)
-                .map((_, idx) => {
-                  const currentPage = idx + 1;
-
-                  return (
-                    <li
-                      className={`page-item ${
-                        page.current === currentPage ? "active" : ""
-                      }`}
-                      key={idx}
-                    >
-                      <a
-                        className="page-link"
-                        href="#"
-                        onClick={() => handlePageNumber(currentPage)}
-                      >
-                        {currentPage}
-                      </a>
-                    </li>
-                  );
-                })}
-              <li className="page-item">
-                <a
-                  className="page-link"
-                  href="#"
-                  onClick={() => handlePageNumber(page.current + 1)}
-                >
-                  Next
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
       </div>

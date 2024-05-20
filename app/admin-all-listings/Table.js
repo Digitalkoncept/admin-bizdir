@@ -6,7 +6,9 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { toast } from "react-toastify";
 import Link from "next/link";
 
-const Table = () => {
+const Table = ({ page, handleTotalPages }) => {
+  const PAGE_COUNT = 5;
+
   const [listingData, setListingData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
@@ -36,6 +38,9 @@ const Table = () => {
 
       console.log(data);
       setListingData(data);
+
+      handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
+
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -117,11 +122,12 @@ const Table = () => {
     }
   };
 
- 
+  let end = page.current * PAGE_COUNT;
+  let start = end - PAGE_COUNT;
 
+  const paginatedListing = listingData.slice(start, end);
 
-  console.log(listingData);
-  return (
+   return (
     <>
     {loading ? (
       <Skeleton count={5} />
@@ -141,7 +147,7 @@ const Table = () => {
         </tr>
       </thead>
       <tbody>
-        {listingData.map((listing, idx) => {
+        {paginatedListing.map((listing, idx) => {
           const inputDate = new Date(listing.createdAt);
           return (
             <tr key={listing._id}>
