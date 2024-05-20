@@ -24,7 +24,7 @@ const Table = ({ page, handleTotalPages }) => {
     try {
       setLoading(true);
       const res = await fetch(
-        process.env.BACKEND_URL + "/api/listing/?pending_listing=true",
+        process.env.BACKEND_URL + "/api/listing/?type=pending",
         {
           headers: {
             authorization: "Bearer " + session.jwt,
