@@ -6,10 +6,33 @@ import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import DateFormatter from "@/components/DateFormatter";
+
+import { MutatingDots } from "react-loader-spinner";
 const page = () => {
-  const [users, setUsers] = useState();
-  const [loading, setLoading] = useState();
+  const PAGE_COUNT = 5;
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
+  const [page, setPage] = useState({
+    totalPages: 1,
+    current: 1,
+  });
+
+  const handlePageNumber = (number) => {
+    if (number >= 1 && number <= page.totalPages) {
+      setPage((prevState) => ({
+        ...prevState,
+        current: number,
+      }));
+    }
+  };
+
+  const handleTotalPages = (number) => {
+    setPage((prevState) => ({
+      ...prevState,
+      totalPages: number,
+    }));
+  };
 
   const getUsers = async () => {
     try {
@@ -23,6 +46,8 @@ const page = () => {
       const data = await res.json();
       console.log(data);
       setUsers(data);
+
+      handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -82,6 +107,11 @@ const page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
+  let end = page.current * PAGE_COUNT;
+  let start = end - PAGE_COUNT;
+
+  const paginatedUser = users.slice(start, end);
+
   return (
     <section>
       <div className="ad-com">
@@ -113,7 +143,7 @@ const page = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users?.map((item, index) => (
+                    {paginatedUser?.map((item, index) => (
                       <>
                         <tr>
                           <td>{index + 1}</td>
@@ -178,27 +208,42 @@ const page = () => {
           <div className="ad-pgnat">
             <ul className="pagination">
               <li className="page-item">
-                <a className="page-link" href="#">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current - 1)}
+                >
                   Previous
                 </a>
               </li>
-              <li className="page-item active">
-                <a className="page-link" href="#">
-                  1
-                </a>
-              </li>
+              {Array(page.totalPages)
+                .fill(0)
+                .map((_, idx) => {
+                  const currentPage = idx + 1;
+
+                  return (
+                    <li
+                      className={`page-item ${
+                        page.current === currentPage ? "active" : ""
+                      }`}
+                      key={idx}
+                    >
+                      <a
+                        className="page-link"
+                        href="#"
+                        onClick={() => handlePageNumber(currentPage)}
+                      >
+                        {currentPage}
+                      </a>
+                    </li>
+                  );
+                })}
               <li className="page-item">
-                <a className="page-link" href="#">
-                  2
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  3
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current + 1)}
+                >
                   Next
                 </a>
               </li>
