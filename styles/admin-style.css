@@ -2324,8 +2324,7 @@ html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:activ
     margin: 0 auto;
     /* background: #fff; */
     display: table;
-    box-shadow: 0px 2px 22px 3px rgba(157, 152, 152, 0.21);
-    margin-bottom: 50px;display:none;
+    margin-top: 50px;
 }
 .ad-pgnat ul{}
 .ad-pgnat ul li{}
