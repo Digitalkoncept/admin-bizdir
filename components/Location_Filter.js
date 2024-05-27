@@ -25,9 +25,27 @@ const Location_Filter = ({formData,InputChange,setFormData}) => {
     };
     
   }, []);
- 
+  const [city,setCity] = useState();
+
+  const fetchCity = async () => {
+    try {
+      const res = await fetch(`https://bizdir-backend.vercel.app/api/city/`);
+      if (!res.ok ) {
+        throw new Error('Failed to fetch city data');
+      }
+      const data = await res.json();
+      const mappedCities = data.map(city => (city.name));
+      setCity(mappedCities);
+
+    } catch (error) {
+      console.error('Error fetching pincode data:', error);
+    }
+  };
+  useEffect(() => {
+    fetchCity();
+  }, []);
+
   const country = ["India","Usa"]
-  const cities = ["Chennai", "Delhi", "Mumbai","Kolkata","Jaipur"];
   const category = [
     'Restaurants',
     'Wedding halls',
@@ -71,15 +89,15 @@ const Location_Filter = ({formData,InputChange,setFormData}) => {
         ...prevState,
         isVisible: true
       }));
-    console.log(select.num)
+   
   };
   const handleOptionClick = (option,number) => {
     if(number=== 1){
     setFormData((prevFormData) => ({
       ...prevFormData,
-      cities:[...prevFormData.cities,option],
+      cities:[...prevFormData?.cities,option],
     }));
-    console.log(searchCity)
+
     }else if(number === 2){
       setFormData(prevState =>({
         ...prevState,
@@ -100,9 +118,9 @@ const Location_Filter = ({formData,InputChange,setFormData}) => {
   const cityRef = useRef(null);
   const subcategoryRef = useRef(null);
   useEffect(() => {
-    if (formData.cities.length > 0) {
+    if (formData.cities?.length > 0) {
       cityRef.current.focus();
-    } else if (formData.sub_category.length > 0) {
+    } else if (formData.sub_category?.length > 0) {
       subcategoryRef.current.focus();
     }
   }, [formData.cities,formData.sub_category]);
@@ -143,10 +161,10 @@ const Location_Filter = ({formData,InputChange,setFormData}) => {
   };
   
   
-  const filteredcity = cities.filter(option =>
+  const filteredcity = city?.filter(option =>
     option.toLowerCase().includes(searchCity.toLowerCase())
   ).filter(option =>
-    !formData.cities.includes(option)
+    !formData.cities?.includes(option)
   );
   const filteredcat = category.filter(option =>
     option.toLowerCase().includes(searchCat.toLowerCase())
@@ -154,7 +172,7 @@ const Location_Filter = ({formData,InputChange,setFormData}) => {
 const filteredsubcat = subcategory.filter(option =>
   option.toLowerCase().includes(searchSubCat.toLowerCase())
 ).filter(option =>
-  !formData.sub_category.includes(option)
+  !formData.sub_category?.includes(option)
 );
 
   return (
@@ -186,7 +204,7 @@ const filteredsubcat = subcategory.filter(option =>
             >
               <ul className="chosen-choices">
 
-              {formData.cities.length > 0 &&
+              {formData.cities?.length > 0 &&
                 formData.cities.map((option, index) => {
                   return (
                     <li key={index} className="search-choice">
@@ -204,7 +222,7 @@ const filteredsubcat = subcategory.filter(option =>
                     className="chosen-search-input default"
                     onChange={(e)=>handleInputChange(e,1)}
                     style={{
-                      width: formData.cities.length > 0 ? "33px!important" : "137.062px"
+                      width: formData.cities?.length > 0 ? "33px!important" : "137.062px"
                     }}
                     value={searchCity}
                     type="text"
@@ -215,7 +233,7 @@ const filteredsubcat = subcategory.filter(option =>
               </ul>
               <div className="chosen-drop">
                 <ul className="chosen-results">
-                  {filteredcity.map((option,index)=>(
+                  {filteredcity?.map((option,index)=>(
                   <li  className="active-result" key={index}  onClick={() => handleOptionClick(option,1)} data-option-array-index={0}>
                     {option}
                   </li>
@@ -285,7 +303,7 @@ const filteredsubcat = subcategory.filter(option =>
               style={{ width: 640 }}
             >
               <ul className="chosen-choices">
-              {formData?.sub_category.length > 0 &&
+              {formData?.sub_category?.length > 0 &&
                 formData?.sub_category.map((option, index) => {
                   return (
                     <li key={index} className="search-choice">
@@ -303,7 +321,7 @@ const filteredsubcat = subcategory.filter(option =>
                     onClick={() => handleClick(3)}
                     onChange={(e)=>handleInputChange(e,3)}
                     style={{
-                      width: formData.sub_category.length > 0 ? "33px!important" : "137.062px"
+                      width: formData.sub_category?.length > 0 ? "33px!important" : "137.062px"
                     }}
                     value={searchSubCat}
                     autoComplete="off"

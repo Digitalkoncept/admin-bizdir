@@ -148,6 +148,18 @@ const page = ({params}) => {
                       </li>
                       <li>
                         <div className="chbox">
+                          <input type="checkbox" name="admin_blog_options" checked={formData.permissions.includes("Create Listing")} value="Create Listing" onChange={handleChange} id="create-list"  />
+                          <label htmlFor="create-list">Create Listing</label>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="chbox">
+                          <input type="checkbox" name="admin_blog_options" checked={formData.permissions.includes("Update Listing")} value="All Listings" onChange={handleChange} id="update-list"  />
+                          <label htmlFor="update-list">Update Listing</label>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="chbox">
                           <input type="checkbox" name="admin_product_options" checked={formData.permissions.includes("New Listing Request")} value="New Listing Request" onChange={handleChange} id="4"  />
                           <label htmlFor="4">Listing Approval</label>
                         </div>

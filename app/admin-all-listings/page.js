@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "./Table";
-
+import Link from "next/link";
 const page = () => {
 
   return (
@@ -12,6 +12,9 @@ const page = () => {
             <span className="udb-inst">All Listing Details</span>
             <div className="ud-cen-s2">
               <h2>Listing details</h2>
+              <Link  href="/add-new-listing" className="db-tit-btn">
+                        Add New Listing
+                        </Link>
               <div className="ad-int-sear">
                 <input
                   type="text"

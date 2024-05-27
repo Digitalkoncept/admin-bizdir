@@ -23,7 +23,7 @@ export default function RootLayout({ children, session }) {
   }
   return (
     <SessionProvider session={session}>
-      <Auth>
+     
         <html>
           <body>
             <div>
@@ -38,7 +38,7 @@ export default function RootLayout({ children, session }) {
             </div>
           </body>
         </html>
-      </Auth>
+      
     </SessionProvider>
   );
 }

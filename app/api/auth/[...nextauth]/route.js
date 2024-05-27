@@ -3,6 +3,9 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 const authOptions = {
+    pages: {
+        signIn: "/login",
+      },
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
         CredentialsProvider({
@@ -26,7 +29,6 @@ const authOptions = {
                     );
 
                     if (!response.ok) {
-                        console.log(response)
                         throw new Error("Invalid credentials");
                     }
 
@@ -52,7 +54,7 @@ const authOptions = {
         maxAge: 24 * 60 * 60, // 24 hours
     },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user,account }) {
             if (user) {
                 token.jwt = user.token; // Store the token in the JWT token
                 token.id = user.id; // Store the user ID in the JWT token
