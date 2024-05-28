@@ -1,5 +1,6 @@
 'use client'
 import React,{useEffect,useState} from 'react';
+import { CldImage } from 'next-cloudinary';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useSession } from 'next-auth/react';
@@ -93,7 +94,14 @@ const page = () => {
                 {employee?.map((item,index)=>(<>
                 <tr key={index}>
                 <td>{index + 1}</td>
-                <td><img src={item?.image} alt=""/>{item.name}<span>08, Jan 2020</span></td>
+                <td>
+                <CldImage
+                  width="36"
+                  height="36"
+                  src={item.image}
+                  alt="Description of my image"
+                />
+                  {item.name}<span>08, Jan 2020</span></td>
                 <td>{item?.role?.role_name}</td>
                 <td>**********</td>
                 <td><Link href={`/all-employee/${item._id}`} className="db-list-edit">Update</Link></td>

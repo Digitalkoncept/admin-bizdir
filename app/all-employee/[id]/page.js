@@ -1,6 +1,8 @@
 'use client'
 import React,{useState,useEffect} from 'react'
 import { useSession } from 'next-auth/react';
+import { CldUploadWidget } from 'next-cloudinary';
+
 import {toast } from 'react-toastify';
 const page = ({params}) => {
   const [roles,setRoles] = useState();
@@ -10,7 +12,8 @@ const page = ({params}) => {
     name: '',
     email: '',
     password: '',
-    role:''
+    role:'',
+    image:''
   });
 
   const getEmployee = async () => {
@@ -26,8 +29,8 @@ const page = ({params}) => {
       );
 
       const data = await res.json();
-      const {name,email,role} = await data;
-      setFormData({name,email,role})
+      const {name,email,role,image} = await data;
+      setFormData({name,email,role,image})
       console.log(data);
       setLoading(false);
     } catch (error) {
@@ -133,9 +136,34 @@ const page = ({params}) => {
               <tr>
                 <td>Profile picture</td>
                 <td>
-                  <div className="form-group">
-                    <input type="file" name="admin_photo" className="form-control" />
-                  </div>
+                <div className="form-group">
+                      <label>Choose profile image</label>
+                <div className="fil-img-uplo">
+                <span className="dumfil">Upload a file</span>
+                <CldUploadWidget
+                signatureEndpoint="/api/sign-cloudinary-params"
+                uploadPreset='profile_image'
+                onSuccess={(result, { widget }) => {
+                  setFormData(prevFormData => ({
+                    ...prevFormData,
+                    image: result?.info?.secure_url,
+                  }));
+                  widget.close();
+                }}
+              >
+                {({ open }) => {
+                  function handleOnClick() {
+                    open();
+                  }
+                  return (
+                    <button type="button" onClick={handleOnClick}>
+                      upload image
+                    </button>
+                  );
+                }}
+              </CldUploadWidget>
+                    </div>
+                    </div>
                 </td>
               </tr>
               <tr>

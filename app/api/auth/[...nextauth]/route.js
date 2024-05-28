@@ -54,7 +54,7 @@ const authOptions = {
         maxAge: 24 * 60 * 60, // 24 hours
     },
     callbacks: {
-        async jwt({ token, user,account }) {
+        async jwt({ token, user,session,trigger }) {
             if (user) {
                 token.jwt = user.token; // Store the token in the JWT token
                 token.id = user.id; // Store the user ID in the JWT token
@@ -63,7 +63,10 @@ const authOptions = {
                 token.image = user.image; // Store the user image in the JWT token // 
                 token.role = user.role
             }
-
+            if (trigger === "update" && session?.image) {
+                // Note, that `session` can be any arbitrary object, remember to validate it!
+                token.image = session.image
+              }
             return { ...token };
         },
         async session({ session, token }) {

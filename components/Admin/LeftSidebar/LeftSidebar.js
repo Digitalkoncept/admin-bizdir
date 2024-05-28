@@ -1,5 +1,4 @@
 import React from "react";
-import CategoryIcon from "@mui/icons-material/Category";
 import { signOut } from "next-auth/react";
 import SubMenu from "./SubMenu";
 import Link from "next/link";

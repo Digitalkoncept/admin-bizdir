@@ -25,7 +25,7 @@ const page = () => {
         <ul>
           <li>
             <div>
-              <img src="/icon/ic-1.png" alt="" />
+              <img src="/icon/ic-1.png" className='inline-block' alt="" />
               <h2>248</h2>
               <h4>All Users</h4>
               <a href="admin-all-users.html" className="fclick" />
@@ -33,7 +33,7 @@ const page = () => {
           </li>
           <li>
             <div>
-              <img src="/icon/shop.png" alt="" />
+              <img src="/icon/shop.png" className='inline-block' alt="" />
               <h2>132</h2>
               <h4>All Listing</h4>
               <a href="admin-all-listings.html" className="fclick" />
@@ -41,7 +41,7 @@ const page = () => {
           </li>
           <li>
             <div>
-              <img src="/icon/calendar.png" alt="" />
+              <img src="/icon/calendar.png" className='inline-block' alt="" />
               <h2>24</h2>
               <h4>All Events</h4>
               <a href="admin-event.html" className="fclick" />
@@ -49,7 +49,7 @@ const page = () => {
           </li>
           <li>
             <div>
-              <img src="/icon/cart.png" alt="" />
+              <img src="/icon/cart.png" className='inline-block' alt="" />
               <h2>24</h2>
               <h4>All Products</h4>
               <a href="admin-all-products.html" className="fclick" />
@@ -57,7 +57,7 @@ const page = () => {
           </li>
           <li>
             <div>
-              <img src="/icon/blog1.png" alt="" />
+              <img src="/icon/blog1.png" className='inline-block' alt="" />
               <h2>39</h2>
               <h4>All Blog Posts</h4>
               <a href="admin-all-blogs.html" className="fclick" />

@@ -4,7 +4,7 @@ import { CldUploadWidget } from 'next-cloudinary';
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
 const page = () => {
-  const {data:session,status} = useSession();
+  const {data:session,status,update} = useSession();
   const [formData,setFormData] = useState({
     name:'',
     email:'',
@@ -50,6 +50,7 @@ const page = () => {
       const data = await res.json();
       if(res.status ===200){
         toast.success(data.message)
+        update({image:formData.image});
       } else if(res.status === 400) {
         toast.error(data.message);
       }
@@ -116,12 +117,12 @@ const page = () => {
                 <span className="dumfil">Upload a file</span>
                 <CldUploadWidget
                 signatureEndpoint="/api/sign-cloudinary-params"
-                uploadPreset='listing_image'
+                uploadPreset='profile_image'
                 onSuccess={(result, { widget }) => {
-                  setFormData({
-                    ...formData,
-                    profile_image:result?.info?.secure_url,
-                  })
+                  setFormData(prevFormData => ({
+                    ...prevFormData,
+                    image: result?.info?.secure_url,
+                  }));
                   widget.close();
                 }}
               >

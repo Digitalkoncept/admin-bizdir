@@ -1,8 +1,9 @@
 "use client";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Table from "./Table";
 import Link from "next/link";
-const page = () => {
+
+const Page = () => {
   const [page, setPage] = useState({
     totalPages: 1,
     current: 1,
@@ -18,11 +19,16 @@ const page = () => {
   };
 
   const handleTotalPages = (number) => {
-    setPage((prevState) => ({
-      ...prevState,
-      totalPages: number,
-    }));
+    setPage((prevState) => {
+      const currentPage = Math.min(prevState.current, number);
+      return {
+        ...prevState,
+        totalPages: number,
+        current: currentPage,
+      };
+    });
   };
+
   return (
     <section>
       <div className="ad-com">
@@ -32,9 +38,9 @@ const page = () => {
             <span className="udb-inst">All Listing Details</span>
             <div className="ud-cen-s2">
               <h2>Listing details</h2>
-              <Link  href="/add-new-listing" className="db-tit-btn">
-                        Add New Listing
-                        </Link>
+              <Link href="/add-new-listing" className="db-tit-btn">
+                Add New Listing
+              </Link>
               <div className="ad-int-sear">
                 <input
                   type="text"
@@ -57,28 +63,25 @@ const page = () => {
                 </a>
               </li>
 
-              {Array(page.totalPages)
-                .fill(0)
-                .map((_, idx) => {
-                  const currentPage = idx + 1;
-
-                  return (
-                    <li
-                      className={`page-item ${
-                        page.current === currentPage ? "active" : ""
-                      }`}
-                      key={idx}
+              {Array.from({ length: page.totalPages }, (_, idx) => {
+                const currentPage = idx + 1;
+                return (
+                  <li
+                    className={`page-item ${
+                      page.current === currentPage ? "active" : ""
+                    }`}
+                    key={idx}
+                  >
+                    <a
+                      className="page-link"
+                      href="#"
+                      onClick={() => handlePageNumber(currentPage)}
                     >
-                      <a
-                        className="page-link"
-                        href="#"
-                        onClick={() => handlePageNumber(currentPage)}
-                      >
-                        {currentPage}
-                      </a>
-                    </li>
-                  );
-                })}
+                      {currentPage}
+                    </a>
+                  </li>
+                );
+              })}
               <li className="page-item">
                 <a
                   className="page-link"
@@ -96,4 +99,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
