@@ -91,7 +91,7 @@ const page = () => {
             </thead>
             <tbody>
                 {employee?.map((item,index)=>(<>
-                <tr>
+                <tr key={index}>
                 <td>{index + 1}</td>
                 <td><img src={item?.image} alt=""/>{item.name}<span>08, Jan 2020</span></td>
                 <td>{item?.role?.role_name}</td>

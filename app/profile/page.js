@@ -1,5 +1,6 @@
 'use client'
 import React,{useEffect,useState} from 'react'
+import { CldUploadWidget } from 'next-cloudinary';
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
 const page = () => {
@@ -8,7 +9,8 @@ const page = () => {
     name:'',
     email:'',
     password:'',
-    gender:''
+    gender:'',
+    image:''
   })
   const getProfile = async () => {
     try {
@@ -22,8 +24,8 @@ const page = () => {
       );
 
       const data = await res.json();
-      const {name,email,gender,_id} = await data;
-      setFormData({name,email,gender,_id})
+      const {name,email,gender,_id,image} = await data;
+      setFormData({name,email,gender,_id,image})
       console.log(data);
     } catch (error) {
       console.error(error);
@@ -109,7 +111,32 @@ const page = () => {
                   <td>Profile Picture</td>
                   <td>
                     <div className="form-group">
-                      <input type="file" name="profile_picture" className="form-control" />
+                      <label>Choose profile image</label>
+                <div className="fil-img-uplo">
+                <span className="dumfil">Upload a file</span>
+                <CldUploadWidget
+                signatureEndpoint="/api/sign-cloudinary-params"
+                uploadPreset='listing_image'
+                onSuccess={(result, { widget }) => {
+                  setFormData({
+                    ...formData,
+                    profile_image:result?.info?.secure_url,
+                  })
+                  widget.close();
+                }}
+              >
+                {({ open }) => {
+                  function handleOnClick() {
+                    open();
+                  }
+                  return (
+                    <button type="button" onClick={handleOnClick}>
+                      upload image
+                    </button>
+                  );
+                }}
+              </CldUploadWidget>
+                    </div>
                     </div>
                   </td>
                 </tr>

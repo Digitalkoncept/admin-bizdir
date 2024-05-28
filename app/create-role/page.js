@@ -104,8 +104,20 @@ const page = () => {
                       </li>
                       <li>
                         <div className="chbox">
+                          <input type="checkbox" name="admin_user_options" checked={formData.permissions.includes("Create Employee")} value="Create Employee" onChange={handleChange} id="create-employee"  />
+                          <label htmlFor="create-employee">Create Employee </label>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="chbox">
                           <input type="checkbox" name="admin_listing_options"  checked={formData.permissions.includes("Roles")} value="Roles" onChange={handleChange}  id="1"  />
                           <label htmlFor="1">Employee Roles</label>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="chbox">
+                          <input type="checkbox" name="admin_listing_options"  checked={formData.permissions.includes("Create Roles")} value="Roles" onChange={handleChange}  id="create-roles"  />
+                          <label htmlFor="create-roles">Create Roles</label>
                         </div>
                       </li>
                       <li>
@@ -118,6 +130,12 @@ const page = () => {
                         <div className="chbox">
                           <input type="checkbox" name="admin_blog_options" checked={formData.permissions.includes("All Listings")} value="All Listings" onChange={handleChange} id="3"  />
                           <label htmlFor="3">All Listings</label>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="chbox">
+                          <input type="checkbox" name="admin_blog_options" checked={formData.permissions.includes("Create Listing")} value="Create Listing" onChange={handleChange} id="Create Listing"  />
+                          <label htmlFor="Create Listing">Create Listing</label>
                         </div>
                       </li>
                       <li>

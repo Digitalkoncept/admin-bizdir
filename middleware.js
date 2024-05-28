@@ -19,10 +19,13 @@ export default withAuth(
         const verifiedToken =  await verifyAuth(Token);// Replace "your-secret-key" with your actual secret key
         console.log("token verification ",verifiedToken)
         const routePermission = {
-         
+          '/all-employee':'All Employee',
+          '/create-employee':'Create Employee',
           '/all-roles':'Roles',
+          '/create-roles':'Create Roles',
           '/all-users':'Users',
           '/admin-all-listings':'All Listings',
+          '/add-new-listing':'Create Listing',
           '/new-listing-request':'New Listing Request',
           '/admin-all-category':'Listing Category',
           '/admin-add-new-category':'Add Listing Category',
@@ -36,15 +39,6 @@ export default withAuth(
         if(requiredPermission && !hasPermission){
            return NextResponse.redirect(new URL('/',req.url));
         }
-        // const allowedRoles = ['admin','product-manager'];
-        // const userRole = req.nextauth.token?.role?.name;
-        
-        // if (
-        //   req.nextUrl.pathname === "/admin" && !verifiedToken.payload &&
-        //    !allowedRoles.includes(userRole) 
-        // ) {
-        //   return NextResponse.redirect(new URL('/',req.url));
-        // }
       } catch (error) {
         console.error("An error occurred:", error);
         console.log(error)
