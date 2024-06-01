@@ -2,23 +2,29 @@
 import React from "react";
 import Link from "next/link";
 import Location_Filter from "@/components/Location_Filter";
+import { toast } from "react-toastify";
 import { CldUploadWidget } from "next-cloudinary";
 import axios from "axios";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const page = () => {
   const { data: session } = useSession();
+ const router = useRouter();
   const [inputCount, setInputCount] = useState(1);
+  const [users,setUsers] = useState([]);
   const [formData, setFormData] = useState({
-    user_name: session?.user?.name,
+    user_name: "",
+    user:"",
     listing_name: "",
     phone_number: "",
     email: "",
     whatsapp_number: "",
     website: "",
     shop_address: "",
+    listing_image:"",
+    cover_image:"",
     country: "",
     cities: [],
     category: "",
@@ -31,6 +37,34 @@ const page = () => {
     youtube_link: "",
     map_url: "",
   });
+ 
+  const getUsers = async () => {
+    try {
+      const res = await fetch(
+        process.env.BACKEND_URL + "/api/user/all",
+        {
+          headers: {
+            authorization: "Bearer " + session.jwt,
+          },
+        }
+      );
+      if(res.status !== 200){
+        throw new Error("something went wrong");
+      }
+      const data = await res.json();
+      const mappeduser =await data.map(user => ({_id:user._id,name:user.name}));
+      setUsers(mappeduser);
+      console.log("all users fetched",data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+  console.log("mapped user",users)
   const handleAddInput = () => {
     setInputCount(inputCount + 1);
   };
@@ -49,7 +83,15 @@ const page = () => {
   };
   const handleInputChange = (event, index) => {
     const { name, value } = event.target;
-    if (name === "service_location") {
+    if (name === "user_name") {
+      const selectedUser = users.find(user => user._id === value);
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        user: value,
+        user_name: selectedUser?.name || "", // Set user_name to the selected user's name or an empty string if not found
+      }));
+    }
+    else if (name === "service_location") {
       // Update service_location with the array of locations
       const locationsArray = value.split(",");
       setFormData((prevFormData) => ({
@@ -91,7 +133,7 @@ const page = () => {
     try {
       // Send POST request to /api/listing endpoint with formData
       const response = await axios.post(
-        `${process.env.BACKEND_URL}/api/listing `,
+        `${process.env.BACKEND_URL}/api/listing`,
         formData,
         {
           headers: {
@@ -99,6 +141,11 @@ const page = () => {
           },
         }
       );
+      if(response.status !== 201){
+        throw new Error("something went wrong")
+      }
+      toast.success("listing created successfully");
+      router.push('/admin-all-listings')
       console.log(response.data); // Handle response from server
       // Optionally, you can reset the form data after successful submission
     } catch (error) {
@@ -127,6 +174,19 @@ const page = () => {
                       <div className="login">
                         <h4>Listing Details</h4>
                         {/*FILED START*/}
+                        <div className="row">
+                          <div className="col-md-12">
+                          <div className="form-group">
+                          <select name="user_name" required="required" onChange={handleInputChange} value={formData.user}  className="form-control">
+                            <option value>Select User</option>
+                            {users?.map((option,index)=>(
+                              <option key={index}  value={option?._id}>{option?.name}</option>
+                            ))}
+                            
+                          </select>
+                        </div>
+                          </div>
+                        </div>
                         <div className="row">
                           <div className="col-md-12">
                             <div className="form-group">
@@ -276,7 +336,7 @@ const page = () => {
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
                                   onSuccess={(result, { widget }) => {
-                                    setFormData((prevFormData) => ({
+                                    setFormData(prevFormData => ({
                                       ...prevFormData,
                                       listing_image: result?.info?.secure_url,
                                     }));
@@ -309,20 +369,19 @@ const page = () => {
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
                                   onSuccess={(result, { widget }) => {
-                                    setFormData({
-                                      ...formData,
-                                      listing_image: result?.info?.secure_url,
-                                    });
+                                    setFormData(prevFormData => ({
+                                      ...prevFormData,
+                                      cover_image: result?.info?.secure_url,
+                                    }));
                                     widget.close();
                                   }}
                                 >
                                   {({ open }) => {
                                     function handleOnClick() {
-                                      setResource(undefined);
                                       open();
                                     }
                                     return (
-                                      <button onClick={handleOnClick}>
+                                      <button type="button" onClick={handleOnClick}>
                                         upload image
                                       </button>
                                     );
