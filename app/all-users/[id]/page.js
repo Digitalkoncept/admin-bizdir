@@ -4,31 +4,56 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import DateFormatter from "@/components/DateFormatter";
+import { client } from "@/lib/apollo";
+import { GET_USER_DETAILS } from "@/lib/query";
 const page = ({ params }) => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState();
   const { data: session } = useSession();
 
   const getUser = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        process.env.BACKEND_URL + `/api/user/${params.id}`,
-        {
-          headers: {
-            authorization: "Bearer " + session.jwt,
-          },
-        }
-      );
+    // try {
+    //   setLoading(true);
+    //   const res = await fetch(
+    //     process.env.BACKEND_URL + `/api/user/${params.id}`,
+    //     {
+    //       headers: {
+    //         authorization: "Bearer " + session.jwt,
+    //       },
+    //     }
+    //   );
 
-      const data = await res.json();
-      setUser(data);
+    //   const data = await res.json();
+    //   setUser(data);
+    //   console.log(data);
+    //   setLoading(false);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
+    try {
+      const { data, errors } = await client.query({
+        query: GET_USER_DETAILS,
+        variables: { id: params.id },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
+
+      if (errors || data.createRole.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      setUser(data.getUser.user);
       console.log(data);
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
     }
   };
+
   useEffect(() => {
     getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps

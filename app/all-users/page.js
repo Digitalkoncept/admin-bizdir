@@ -8,6 +8,10 @@ import "react-loading-skeleton/dist/skeleton.css";
 import DateFormatter from "@/components/DateFormatter";
 
 import { MutatingDots } from "react-loader-spinner";
+import { client } from "@/lib/apollo";
+import { GET_ALL_USERS } from "@/lib/query";
+import { CHANGE_USER_STATUS } from "@/lib/mutation";
+
 const page = () => {
   const PAGE_COUNT = 5;
   const [users, setUsers] = useState([]);
@@ -35,70 +39,136 @@ const page = () => {
   };
 
   const getUsers = async () => {
+    // try {
+    //   setLoading(true);
+    //   const res = await fetch(process.env.BACKEND_URL + "/api/user/all", {
+    //     headers: {
+    //       authorization: "Bearer " + session.jwt,
+    //     },
+    //   });
+
+    //   const data = await res.json();
+    //   console.log(data);
+    //   setUsers(data);
+
+    //   handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
+    //   setLoading(false);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
     try {
-      setLoading(true);
-      const res = await fetch(process.env.BACKEND_URL + "/api/user/all", {
-        headers: {
-          authorization: "Bearer " + session.jwt,
+      const { data, errors } = await client.query({
+        query: GET_ALL_USERS,
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
         },
       });
 
-      const data = await res.json();
-      console.log(data);
-      setUsers(data);
+      if (errors || data.getAllUsers.code !== 20) {
+        throw new Error("Something went wrong");
+      }
 
-      handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
+      const usersList = data.getAllUsers.users;
+      setUsers(usersList);
+
+      handleTotalPages(Math.ceil(usersList.length / PAGE_COUNT));
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
     }
   };
 
   const disableUser = async (id, name) => {
+    // try {
+    //   const res = await fetch(process.env.BACKEND_URL + `/api/user/${id}`, {
+    //     method: "PATCH",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       authorization: "Bearer " + session.jwt,
+    //     },
+    //     body: JSON.stringify({ user_status: "Disabled" }),
+    //   });
+
+    //   if (res.status === 200) {
+    //     const data = await res.json();
+    //     getUsers();
+    //     toast.success(name + ": Disabled Successfully!");
+    //   } else {
+    //     console.error("Failed to disable user");
+    //     // Handle error
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
     try {
-      const res = await fetch(process.env.BACKEND_URL + `/api/user/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + session.jwt,
+      const { data, errors } = await client.mutate({
+        mutation: CHANGE_USER_STATUS,
+        variables: { user_status: "Disabled" },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
         },
-        body: JSON.stringify({ user_status: "Disabled" }),
       });
 
-      if (res.status === 200) {
-        const data = await res.json();
-        getUsers();
-        toast.success(name + ": Disabled Successfully!");
-      } else {
-        console.error("Failed to disable user");
-        // Handle error
+      if (errors || data.updateUser.code !== 200) {
+        throw new Error("Something went wrong");
       }
+
+      toast.success("User Disabled successfully");
+      getUsers();
+      console.log(data);
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
     }
   };
 
   const enableUser = async (id, name) => {
+    // try {
+    //   const res = await fetch(process.env.BACKEND_URL + `/api/user/${id}`, {
+    //     method: "PATCH",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       authorization: "Bearer " + session.jwt,
+    //     },
+    //     body: JSON.stringify({ user_status: "Active" }),
+    //   });
+
+    //   if (res.status === 200) {
+    //     const data = await res.json();
+    //     getUsers();
+    //     toast.success(name + ": Enabled Successfully");
+    //   } else {
+    //     console.error("Failed to enable user");
+    //     // Handle error
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
     try {
-      const res = await fetch(process.env.BACKEND_URL + `/api/user/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + session.jwt,
+      const { data, errors } = await client.mutate({
+        mutation: CHANGE_USER_STATUS,
+        variables: { user_status: "Active" },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
         },
-        body: JSON.stringify({ user_status: "Active" }),
       });
 
-      if (res.status === 200) {
-        const data = await res.json();
-        getUsers();
-        toast.success(name + ": Enabled Successfully");
-      } else {
-        console.error("Failed to enable user");
-        // Handle error
+      if (errors || data.updateUser.code !== 201) {
+        throw new Error("Something went wrong");
       }
+
+      getUsers();
+      toast.success("User Enabled successfully");
+      console.log(data);
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
     }
   };
 

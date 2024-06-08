@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Approve_Modal from "@/components/Admin/Approve_Modal";
+import { client } from "@/lib/apollo";
 
 const Table = ({ page, handleTotalPages }) => {
   const PAGE_COUNT = 2;
@@ -21,25 +22,44 @@ const Table = ({ page, handleTotalPages }) => {
     setShowModal(null);
   };
   const getListingData = async () => {
+    // try {
+    //   setLoading(true);
+    //   const res = await fetch(
+    //     process.env.BACKEND_URL + "/api/listing/?type=pending",
+    //     {
+    //       headers: {
+    //         authorization: "Bearer " + session.jwt,
+    //       },
+    //     }
+    //   );
+
+    //   const data = await res.json();
+
+    //   setListingData(data);
+    //   handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
+
+    //   setLoading(false);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
     try {
-      setLoading(true);
-      const res = await fetch(
-        process.env.BACKEND_URL + "/api/listing/?type=pending",
-        {
+      const { data, errors } = await client.query({
+        query: GET_ALL_LISTING,
+        variables: { type: "pending" },
+        context: {
           headers: {
-            authorization: "Bearer " + session.jwt,
+            Authorization: `Bearer ${jwt}`,
           },
-        }
-      );
+        },
+      });
 
-      const data = await res.json();
-
-      setListingData(data);
-      handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
-
-      setLoading(false);
+      if (errors || data.getAllListings.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+      console.log(data);
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
     }
   };
 
@@ -52,23 +72,44 @@ const Table = ({ page, handleTotalPages }) => {
     e.preventDefault();
     setApprovalStatus("approved");
     setShowModal(false);
+    // try {
+    //   const res = await fetch(
+    //     process.env.BACKEND_URL + "/api/listing/approve_status/" + id,
+    //     {
+    //       method: "PATCH",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: "Bearer " + session.jwt,
+    //       },
+    //       body: JSON.stringify({ message, approvalStatus: "approved" }),
+    //     }
+    //   );
+    //   getListingData();
+    //   setMessage("");
+    //   setApprovalStatus("pending");
+    // } catch (error) {
+    //   console.error(error);
+    // }
     try {
-      const res = await fetch(
-        process.env.BACKEND_URL + "/api/listing/approve_status/" + id,
-        {
-          method: "PATCH",
+      const { data, errors } = await client.mutate({
+        mutation: APPROVE_LISTING_STATUS,
+        // need to do
+        variables: { data: formData },
+        context: {
           headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + session.jwt,
+            Authorization: `Bearer ${jwt}`,
           },
-          body: JSON.stringify({ message, approvalStatus: "approved" }),
-        }
-      );
-      getListingData();
-      setMessage("");
-      setApprovalStatus("pending");
+        },
+      });
+  
+      if (errors || data.createClaimableListing.code !== 201) {
+        throw new Error('Something went wrong');
+      }
+  
+      toast.success('Listing created successfully');
+      console.log(data);
     } catch (error) {
-      console.error(error);
+      console.error('Error submitting form:', error);
     }
   };
 
