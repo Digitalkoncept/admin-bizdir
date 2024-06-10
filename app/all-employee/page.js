@@ -141,7 +141,7 @@ const page = () => {
                   <tbody>
                     {employee?.map((item, index) => (
                       <>
-                        <tr key={index}>
+                        <tr key={item._id}>
                           <td>{index + 1}</td>
                           <td>
                             <CldImage

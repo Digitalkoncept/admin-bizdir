@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Approve_Modal from "@/components/Admin/Approve_Modal";
 import { client } from "@/lib/apollo";
+import { GET_ALL_LISTING } from "@/lib/query";
+import { APPROVE_LISTING_STATUS } from "@/lib/mutation";
 
 const Table = ({ page, handleTotalPages }) => {
   const PAGE_COUNT = 2;
@@ -49,7 +51,7 @@ const Table = ({ page, handleTotalPages }) => {
         variables: { type: "pending" },
         context: {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${session.jwt}`,
           },
         },
       });
@@ -57,6 +59,10 @@ const Table = ({ page, handleTotalPages }) => {
       if (errors || data.getAllListings.code !== 200) {
         throw new Error("Something went wrong");
       }
+
+      setListingData(data);
+      handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
+      setLoading(false);
       console.log(data);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -94,22 +100,22 @@ const Table = ({ page, handleTotalPages }) => {
       const { data, errors } = await client.mutate({
         mutation: APPROVE_LISTING_STATUS,
         // need to do
-        variables: { data: formData },
+        variables: { id, data: formData },
         context: {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${session.jwt}`,
           },
         },
       });
-  
+
       if (errors || data.createClaimableListing.code !== 201) {
-        throw new Error('Something went wrong');
+        throw new Error("Something went wrong");
       }
-  
-      toast.success('Listing created successfully');
+
+      toast.success("Listing created successfully");
       console.log(data);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     }
   };
 

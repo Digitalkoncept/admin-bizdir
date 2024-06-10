@@ -130,31 +130,29 @@ const page = () => {
                   </thead>
                   <tbody>
                     {roles?.map((item, index) => (
-                      <>
-                        <tr>
-                          <td>{index + 1}</td>
-                          <td>{item?.role_name}</td>
-                          <td>{item?.description}</td>
-                          <td>{item?.permissions.join(", ")}</td>
-                          <td>
-                            <Link
-                              href={`/all-roles/${item._id}`}
-                              className="db-list-edit"
-                            >
-                              Update
-                            </Link>
-                          </td>
-                          <td>
-                            <Link
-                              href="#!"
-                              className="db-list-edit"
-                              onClick={() => deleteRole(item._id)}
-                            >
-                              Delete
-                            </Link>
-                          </td>
-                        </tr>
-                      </>
+                      <tr key={item._id}>
+                        <td>{index + 1}</td>
+                        <td>{item?.role_name}</td>
+                        <td>{item?.description}</td>
+                        <td>{item?.permissions.join(", ")}</td>
+                        <td>
+                          <Link
+                            href={`/all-roles/${item._id}`}
+                            className="db-list-edit"
+                          >
+                            Update
+                          </Link>
+                        </td>
+                        <td>
+                          <Link
+                            href="#!"
+                            className="db-list-edit"
+                            onClick={() => deleteRole(item._id)}
+                          >
+                            Delete
+                          </Link>
+                        </td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>

@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import DateFormatter from "@/components/DateFormatter";
+import { client } from "@/lib/apollo";
+import { GET_LISTING_BY_ID } from "@/lib/query";
 
 const page = ({ params }) => {
   const [listing, setListing] = useState();
@@ -11,23 +13,45 @@ const page = ({ params }) => {
   const { data: session } = useSession();
 
   const getListing = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        process.env.BACKEND_URL + `/api/listing/${params.id}`,
-        {
-          headers: {
-            authorization: "Bearer " + session.jwt,
-          },
-        }
-      );
+    // try {
+    //   setLoading(true);
+    //   const res = await fetch(
+    //     process.env.BACKEND_URL + `/api/listing/${params.id}`,
+    //     {
+    //       headers: {
+    //         authorization: "Bearer " + session.jwt,
+    //       },
+    //     }
+    //   );
 
-      const data = await res.json();
-      setListing(data);
+    //   const data = await res.json();
+    //   setListing(data);
+    //   console.log(data);
+    //   setLoading(false);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
+    try {
+      const { data, errors } = await client.query({
+        query: GET_LISTING_BY_ID,
+        variables: { id: params.id },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
+
+      if (errors || data.getListing.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      setListing(data.getListing.listing);
       console.log(data);
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
     }
   };
   useEffect(() => {

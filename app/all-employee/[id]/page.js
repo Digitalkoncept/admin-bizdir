@@ -1,187 +1,300 @@
-'use client'
-import React,{useState,useEffect} from 'react'
-import { useSession } from 'next-auth/react';
-import { CldUploadWidget } from 'next-cloudinary';
+"use client";
+import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { CldUploadWidget } from "next-cloudinary";
 
-import {toast } from 'react-toastify';
-const page = ({params}) => {
-  const [roles,setRoles] = useState();
-  const [loading,setLoading] = useState();
-  const {data:session} = useSession();
+import { toast } from "react-toastify";
+import { UPDATE_EMPLOYEE } from "@/lib/mutation";
+import { client } from "@/lib/apollo";
+import { GET_ALL_ROLES, GET_EMPLOYEE_BY_ID, GET_ROLE } from "@/lib/query";
+
+const page = ({ params }) => {
+  const [roles, setRoles] = useState();
+  const [loading, setLoading] = useState();
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role:'',
-    image:''
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+    image: "",
   });
 
   const getEmployee = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        process.env.BACKEND_URL + `/api/employee/${params.id}`,
-        {
-          headers: {
-            authorization: "Bearer " + session.jwt,
-          },
-        }
-      );
+    // try {
+    //   setLoading(true);
+    //   const res = await fetch(
+    //     process.env.BACKEND_URL + `/api/employee/${params.id}`,
+    //     {
+    //       headers: {
+    //         authorization: "Bearer " + session.jwt,
+    //       },
+    //     }
+    //   );
+    //   const data = await res.json();
+    //   const {name,email,role,image} = await data;
+    //   setFormData({name,email,role,image})
+    //   console.log(data);
+    //   setLoading(false);
+    // } catch (error) {
+    //   console.error(error);
+    // }
 
-      const data = await res.json();
-      const {name,email,role,image} = await data;
-      setFormData({name,email,role,image})
+    console.log("params id", params.id);
+    try {
+      console.log("session", session.jwt);
+      const { data, errors } = await client.query({
+        query: GET_EMPLOYEE_BY_ID,
+        variables: { id: params.id },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session?.jwt}`,
+          },
+        },
+      });
+
+      console.log(data);
+
+      if (errors || data.getEmployeeById.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      const { name, email, role, image } = await data.getEmployeeById.employee;
+      setFormData({ name, email, role, image });
       console.log(data);
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error("Unable to fetch employee:", error);
     }
   };
-  const getRoles = async () => {
-    try {
-      const res = await fetch(
-        process.env.BACKEND_URL + "/api/role",
-        {
-          headers: {
-            authorization: "Bearer " + session?.jwt,
-          },
-        }
-      );
 
-      const data = await res.json();
+  const getRoles = async () => {
+    // try {
+    //   const res = await fetch(process.env.BACKEND_URL + "/api/role", {
+    //     headers: {
+    //       authorization: "Bearer " + session?.jwt,
+    //     },
+    //   });
+
+    //   const data = await res.json();
+    //   console.log(data);
+    //   setRoles(data);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
+    try {
+      const { data, errors } = await client.query({
+        query: GET_ALL_ROLES,
+        context: {
+          headers: {
+            Authorization: `Bearer ${session?.jwt}`,
+          },
+        },
+      });
+
+      if (errors || data.getAllRoles.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
       console.log(data);
-      setRoles(data);
+      setRoles(data.getAllRoles.roles);
     } catch (error) {
-      console.error(error);
+      console.error("Unable to fetch role:", error);
     }
   };
+
   useEffect(() => {
-    getEmployee(); 
+    getEmployee();
     getRoles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
   const handleChange = (event) => {
-      setFormData({
-        ...formData,
-        [event.target.name]: event.target.value,
-        
-      });
-      console.log(formData);
-    
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+    console.log(formData);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // try {
+    //   const res = await fetch(
+    //     process.env.BACKEND_URL + `/api/employee/${params.id}`,
+    //     {
+    //       method:'PATCH',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         authorization: "Bearer " + session?.jwt,
+    //       },
+    //       body: JSON.stringify(formData)
+    //     }
+    //   );
+    //   const data = await res.json();
+    //   if(res.status ===200){
+    //     toast.success(data.message)
+    //   } else if(res.status === 400) {
+    //     toast.error(data.message);
+    //   }
+    //   console.log(res);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
     try {
-      const res = await fetch(
-        process.env.BACKEND_URL + `/api/employee/${params.id}`,
-        {
-          method:'PATCH',
+      const { password, ...withoutPassword } = formData;
+      console.log(params);
+      const { data, errors } = await client.mutate({
+        mutation: UPDATE_EMPLOYEE,
+        variables: {
+          id: params.id,
+          data: { ...withoutPassword, role: formData.role?.id },
+        },
+        context: {
           headers: {
-            'Content-Type': 'application/json',
-            authorization: "Bearer " + session?.jwt,
+            Authorization: `Bearer ${session?.jwt}`,
           },
-          body: JSON.stringify(formData)
-        }
-      );
-      const data = await res.json();
-      if(res.status ===200){
-        toast.success(data.message)
-      } else if(res.status === 400) {
-        toast.error(data.message);
+        },
+      });
+
+      if (errors || data.updateEmployee.code !== 200) {
+        throw new Error("Something went wrong");
       }
-      console.log(res);
+
+      const { name, email, role, image } = await data.updateEmployee.employee;
+      setFormData({ name, email, role, image });
+      console.log(data);
+      setLoading(false);
+      toast.success("Employee Updated Successfully!");
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
     }
   };
-  
+
   return (
-  <section>
-  <div className="ad-com">
-    <div className="ad-dash leftpadd">
-      <div className="ud-cen">
-        <div className="log-bor">&nbsp;</div>
-        <span className="udb-inst">Add new Employee</span>
+    <section>
+      <div className="ad-com">
+        <div className="ad-dash leftpadd">
+          <div className="ud-cen">
+            <div className="log-bor">&nbsp;</div>
+            <span className="udb-inst">Add new Employee</span>
 
-        <div className="ud-cen-s2 ud-pro-edit">
-        <form name="admin_sub_admin_form" onSubmit={handleSubmit}   encType="multipart/form-data" >
-          <h2>Employee Details</h2>
-          <table className="responsive-table bordered">
-            <tbody>
-              <tr>
-                <td>Employee Name</td>
-                <td>
-                  <div className="form-group">
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} required="required" className="form-control" placeholder="Name" />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Employee Email</td>
-                <td>
-                  <div className="form-group">
-                    <input type="text" name="email" value={formData.email} onChange={handleChange} required="required" className="form-control" placeholder="Email" />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Password</td>
-                <td>
-                  <div className="form-group">
-                    <input type="password" name="password" value={formData.password} onChange={handleChange} required="required" className="form-control" placeholder="Enter password" />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Profile picture</td>
-                <td>
-                <div className="form-group">
-                      <label>Choose profile image</label>
-                <div className="fil-img-uplo">
-                <span className="dumfil">Upload a file</span>
-                <CldUploadWidget
-                signatureEndpoint="/api/sign-cloudinary-params"
-                uploadPreset='profile_image'
-                onSuccess={(result, { widget }) => {
-                  setFormData(prevFormData => ({
-                    ...prevFormData,
-                    image: result?.info?.secure_url,
-                  }));
-                  widget.close();
-                }}
+            <div className="ud-cen-s2 ud-pro-edit">
+              <form
+                name="admin_sub_admin_form"
+                onSubmit={handleSubmit}
+                encType="multipart/form-data"
               >
-                {({ open }) => {
-                  function handleOnClick() {
-                    open();
-                  }
-                  return (
-                    <button type="button" onClick={handleOnClick}>
-                      upload image
-                    </button>
-                  );
-                }}
-              </CldUploadWidget>
-                    </div>
-                    </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Role</td>
-                <td>
-                <div className="form-group">
-                  <div className='col-md-6 pl-0'>
-                <select onChange={handleChange} value={formData.role} name="role" id="category_id" className="form-control">
-                  <option value>Select Role</option>
-                  {roles?.map(role =>(<option key={role._id} value={role._id}>{role.role_name}</option>))}
-                  
-                </select>
-                </div>
-                </div>
-
-                </td>
-              </tr>
-              {/* <tr>
+                <h2>Employee Details</h2>
+                <table className="responsive-table bordered">
+                  <tbody>
+                    <tr>
+                      <td>Employee Name</td>
+                      <td>
+                        <div className="form-group">
+                          <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required="required"
+                            className="form-control"
+                            placeholder="Name"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Employee Email</td>
+                      <td>
+                        <div className="form-group">
+                          <input
+                            type="text"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required="required"
+                            className="form-control"
+                            placeholder="Email"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Password</td>
+                      <td>
+                        <div className="form-group">
+                          <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required="required"
+                            className="form-control"
+                            placeholder="Enter password"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Profile picture</td>
+                      <td>
+                        <div className="form-group">
+                          <label>Choose profile image</label>
+                          <div className="fil-img-uplo">
+                            <span className="dumfil">Upload a file</span>
+                            <CldUploadWidget
+                              signatureEndpoint="/api/sign-cloudinary-params"
+                              uploadPreset="profile_image"
+                              onSuccess={(result, { widget }) => {
+                                setFormData((prevFormData) => ({
+                                  ...prevFormData,
+                                  image: result?.info?.secure_url,
+                                }));
+                                widget.close();
+                              }}
+                            >
+                              {({ open }) => {
+                                function handleOnClick() {
+                                  open();
+                                }
+                                return (
+                                  <button type="button" onClick={handleOnClick}>
+                                    upload image
+                                  </button>
+                                );
+                              }}
+                            </CldUploadWidget>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Role</td>
+                      <td>
+                        <div className="form-group">
+                          <div className="col-md-6 pl-0">
+                            <select
+                              onChange={handleChange}
+                              value={formData.role}
+                              name="role"
+                              id="category_id"
+                              className="form-control"
+                            >
+                              <option value>Select Role</option>
+                              {roles?.map((role) => (
+                                <option key={role._id} value={role._id}>
+                                  {role.role_name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    {/* <tr>
                 <td>Credentials</td>
                 <td>
                   <div className="ad-sub-cre">
@@ -346,17 +459,22 @@ const page = ({params}) => {
                   </div>
                 </td>
               </tr> */}
-            </tbody>
-          </table>
-           <button type="submit" name="sub_admin_submit" className="db-pro-bot-btn">Update Employee</button>
-        </form>
+                  </tbody>
+                </table>
+                <button
+                  type="submit"
+                  name="sub_admin_submit"
+                  className="db-pro-bot-btn"
+                >
+                  Update Employee
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
+  );
+};
 
-  )
-}
-
-export default page
+export default page;

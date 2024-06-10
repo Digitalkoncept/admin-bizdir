@@ -47,7 +47,7 @@ const page = ({ params }) => {
         },
       });
 
-      if (errors || data.getRole.code !== 201) {
+      if (errors || data.getRole.code !== 200) {
         throw new Error("Something went wrong");
       }
 
@@ -115,9 +115,10 @@ const page = ({ params }) => {
     // }
 
     try {
+      console.log(formData);
       const { data, errors } = await client.mutate({
         mutation: UPDATE_ROLE,
-        variables: { data: formData },
+        variables: { id: params.id, data: formData },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,

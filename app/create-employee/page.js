@@ -50,6 +50,7 @@ const page = () => {
       }
 
       console.log(data);
+      setRoles(data.getAllRoles.roles);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
