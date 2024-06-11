@@ -33,6 +33,10 @@ export const SidebarData = [
         path: "/new-listing-request",
       },
       {
+        name:"All Claim Request",
+        path:"/new-claim-request"
+      },
+      {
         name: "Listing Category",
         path: "/admin-all-category",
       },

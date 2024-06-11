@@ -17,23 +17,7 @@ const page = () => {
     image: "",
   });
   const getProfile = async () => {
-    // try {
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + `/api/employee/${session.user.id}`,
-    //     {
-    //       headers: {
-    //         authorization: "Bearer " + session.jwt,
-    //       },
-    //     }
-    //   );
-
-    //   const data = await res.json();
-    //   const {name,email,gender,_id,image} = await data;
-    //   setFormData({name,email,gender,_id,image})
-    //   console.log(data);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+  
 
     try {
       const { data, errors } = await client.query({
@@ -60,30 +44,7 @@ const page = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // try {
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + `/api/employee/${session.user.id}`,
-    //     {
-    //       method: "PATCH",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         authorization: "Bearer " + session?.jwt,
-    //       },
-    //       body: JSON.stringify(formData),
-    //     }
-    //   );
-    //   const data = await res.json();
-    //   if (res.status === 200) {
-    //     toast.success(data.message);
-    //     update({ image: formData.image });
-    //   } else if (res.status === 400) {
-    //     toast.error(data.message);
-    //   }
-    //   console.log(res);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
+   
     try {
       console.log("session id ==>", session);
       console.log("formdata ==>", formData);

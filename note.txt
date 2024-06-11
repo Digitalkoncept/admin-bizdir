@@ -1,0 +1,2 @@
+1. list all claim request in admin side
+2. make a logic to claim a listing to a user.
