@@ -146,7 +146,7 @@ const Table = ({ page, handleTotalPages }) => {
     try {
       const { data, errors } = await client.mutate({
         mutation: UPDATE_LISTING,
-        variables: { id, listing_status: "Disabled" },
+        variables: { id, data: { listing_status: "Disabled" } },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -192,7 +192,7 @@ const Table = ({ page, handleTotalPages }) => {
     try {
       const { data, errors } = await client.mutate({
         mutation: UPDATE_LISTING,
-        variables: { id, listing_status: "Enabled" },
+        variables: { id, data: { listing_status: "Enabled" } },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
