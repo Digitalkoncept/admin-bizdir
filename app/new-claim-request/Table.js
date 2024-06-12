@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Approve_Modal from "@/components/Admin/Approve_Modal";
 import { client } from "@/lib/apollo";
-import { GET_ALL_CLAIMS, GET_ALL_LISTING } from "@/lib/query";
-import { APPROVE_LISTING_STATUS } from "@/lib/mutation";
+import { GET_ALL_CLAIMS } from "@/lib/query";
+import { APPROVE_CLAIM_STATUS, DELETE_CLAIM } from "@/lib/mutation";
+import { CldImage } from "next-cloudinary";
+import { toast } from "react-toastify";
 
 const Table = ({ page, handleTotalPages }) => {
   const PAGE_COUNT = 5;
@@ -98,9 +100,12 @@ const Table = ({ page, handleTotalPages }) => {
     // }
     try {
       const { data, errors } = await client.mutate({
-        mutation: APPROVE_LISTING_STATUS,
-        // need to do
-        variables: { id, data: formData },
+        mutation: APPROVE_CLAIM_STATUS,
+        variables: {
+          claimId: id,
+          claimMessage: message,
+          claimStatus: "approved",
+        },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -108,11 +113,13 @@ const Table = ({ page, handleTotalPages }) => {
         },
       });
 
-      if (errors || data.createClaimableListing.code !== 201) {
+      if (errors || data.claimListing.code !== 200) {
         throw new Error("Something went wrong");
       }
 
-      toast.success("Listing created successfully");
+      toast.success("Listing got approved!!");
+      await getClaimRequests();
+      setMessage("");
       console.log(data);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -123,23 +130,74 @@ const Table = ({ page, handleTotalPages }) => {
     e.preventDefault();
     setShowModal(false);
     setApprovalStatus("rejected");
+    // try {
+    //   const res = await fetch(
+    //     process.env.BACKEND_URL + "/api/listing/approve_status/" + id,
+    //     {
+    //       method: "PATCH",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: "Bearer " + session.jwt,
+    //       },
+    //       body: JSON.stringify({ message, approvalStatus: "rejected" }),
+    //     }
+    //   );
+    //   getClaimRequests();
+    //   setMessage("");
+    //   setApprovalStatus("pending");
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
     try {
-      const res = await fetch(
-        process.env.BACKEND_URL + "/api/listing/approve_status/" + id,
-        {
-          method: "PATCH",
+      const { data, errors } = await client.mutate({
+        mutation: APPROVE_CLAIM_STATUS,
+        variables: {
+          claimId: id,
+          claimMessage: message,
+          claimStatus: "rejected",
+        },
+        context: {
           headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + session.jwt,
+            Authorization: `Bearer ${session.jwt}`,
           },
-          body: JSON.stringify({ message, approvalStatus: "rejected" }),
-        }
-      );
-      getClaimRequests();
+        },
+      });
+
+      if (errors || data.claimListing.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      toast.success("Listing got rejected!!");
+      await getClaimRequests();
       setMessage("");
-      setApprovalStatus("pending");
+      console.log(data);
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const handleClaimDelete = async (id) => {
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: DELETE_CLAIM,
+        variables: { id },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
+
+      if (errors || data.deleteClaim.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      getClaimRequests()
+      toast.success("Claim deleted successfully");
+      console.log(data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
   if (loading) return <>Loading</>;
@@ -169,16 +227,17 @@ const Table = ({ page, handleTotalPages }) => {
       </thead>
       <tbody>
         {paginatedClaims.map((claim, idx) => {
-          const inputDate = new Date(claim.createdAt);
+          const claimDate = new Date(parseInt(claim.createdAt));
+          const listingDate = new Date(parseInt(claim.listing_date));
           return (
             <tr key={claim._id}>
               <td>{idx + 1}</td>
               <td>
                 {/* add the listing image and the listing creation date here */}
-                <img src={claim?.claim_image} alt="default image" />
+                <img src={claim?.listing_image} alt="default image" />
                 {claim.listing_name}
                 <span>
-                  {inputDate.toLocaleDateString("en-US", {
+                  {listingDate.toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "short",
                     day: "2-digit",
@@ -196,14 +255,24 @@ const Table = ({ page, handleTotalPages }) => {
               </td>
 
               <td>
-                <span>{claim.verification_image}</span>
+                <span>
+                  {claim?.verification_image && (
+                    <CldImage
+                      width="36"
+                      height="36"
+                      src={claim?.verification_image}
+                      alt="Description of my image"
+                      className="rounded-[50%] w-[36px] h-[36px]"
+                    />
+                  )}
+                </span>
               </td>
               <td>
                 <span>{claim.description}</span>
               </td>
               <td>
                 <span>
-                  {inputDate.toLocaleDateString("en-US", {
+                  {claimDate.toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "short",
                     day: "2-digit",
@@ -211,63 +280,63 @@ const Table = ({ page, handleTotalPages }) => {
                 </span>
               </td>
               <td>
-                <span className="db-list-rat">
-                  {claim.claim_status}
-                </span>
+                <span className="db-list-rat">{claim.claim_status}</span>
               </td>
-              <td>
-                <td className="relative">
-                  {claim.approval}
-                  <button
-                    onClick={() => openModal(claim)}
-                    className="db-list-edit ml-2"
-                    disabled={claim.status === "approved" ? "true" : false}
-                  >
-                    update{" "}
-                  </button>
-                  {showModal && showModal._id === claim._id && (
-                    <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
-                      <div className="mx-auto box-border w-[250px] border bg-white p-2">
-                        <div className="flex items-center justify-between relative">
-                          <button
-                            onClick={closeModal}
-                            className="cursor-pointer border rounded-[4px] absolute right-0"
+
+              <td className="relative">
+                {claim.approval}
+                <button
+                  onClick={() => openModal(claim)}
+                  className="db-list-edit ml-2"
+                  disabled={claim.status === "approved" ? "true" : false}
+                >
+                  Update
+                </button>
+                {showModal && showModal._id === claim._id && (
+                  <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
+                    <div className="mx-auto box-border w-[250px] border bg-white p-2">
+                      <div className="flex items-center justify-between relative">
+                        <button
+                          onClick={closeModal}
+                          className="cursor-pointer border rounded-[4px] absolute right-0"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-[15px] w-[15px] text-[#64748B]"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-[15px] w-[15px] text-[#64748B]"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <form id="approvalForm">
+                        <div className="my-2 flex flex-col justify-between space-y-2">
+                          <div className="col-span-2">
+                            <label
+                              htmlFor="description"
+                              className="block mb-2 text-sm font-medium text-gray-900 "
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                        <form id="approvalForm">
-                          <div className="my-2 flex flex-col justify-between space-y-2">
-                            <div className="col-span-2">
-                              <label
-                                htmlFor="description"
-                                className="block mb-2 text-sm font-medium text-gray-900 "
-                              >
-                                Message
-                              </label>
-                              <textarea
-                                id="description"
-                                rows={4}
-                                name="message"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500   "
-                                placeholder="write a description here"
-                              />
-                            </div>
+                              Message
+                            </label>
+                            <textarea
+                              id="description"
+                              rows={4}
+                              name="message"
+                              value={message}
+                              onChange={(e) => setMessage(e.target.value)}
+                              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500   "
+                              placeholder="write a description here"
+                            />
+                          </div>
+                          <div className="flex">
+                            {" "}
                             <button
                               onClick={(e) => handleApprove(e, claim._id)}
                               className="w-4/2 cursor-pointer rounded-[4px] bg-green-700 px-3 py-[6px] text-center font-base text-xs text-white"
@@ -281,21 +350,30 @@ const Table = ({ page, handleTotalPages }) => {
                               Reject
                             </button>
                           </div>
-                        </form>
-                      </div>
+                        </div>
+                      </form>
                     </div>
-                  )}
-                  {/* <button onClick={() =>openModal(claim)} className="db-list-edit" disabled={claim.status === 'approved'?'true':false}>update</button> */}
-                </td>
+                  </div>
+                )}
+                {/* <button onClick={() =>openModal(claim)} className="db-list-edit" disabled={claim.status === 'approved'?'true':false}>update</button> */}
               </td>
+
               <td>
-                <Link href={`#!`} className="db-list-edit">
+                <span
+                  // href={`#!`}
+                  onClick={() => handleClaimDelete(claim._id)}
+                  className="db-list-edit"
+                >
                   Delete
-                </Link>
+                </span>
               </td>
               <td>
                 <Link
-                  href={`/new-claim-request/${claim._id}`}
+                  href={
+                    process.env.NEXT_PUBLIC_FRONTEND_URL +
+                    `all-listing/${claim._id}`
+                  }
+                  target="_blank"
                   className="db-list-edit"
                 >
                   Preview
