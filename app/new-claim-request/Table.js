@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Approve_Modal from "@/components/Admin/Approve_Modal";
 import { client } from "@/lib/apollo";
-import { GET_ALL_LISTING } from "@/lib/query";
+import { GET_ALL_CLAIMS, GET_ALL_LISTING } from "@/lib/query";
 import { APPROVE_LISTING_STATUS } from "@/lib/mutation";
 
 const Table = ({ page, handleTotalPages }) => {
-  const PAGE_COUNT = 2;
+  const PAGE_COUNT = 5;
 
-  const [listingData, setListingData] = useState([]);
+  const [claimData, setClaimData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
   const [showModal, setShowModal] = useState(null);
@@ -23,7 +23,7 @@ const Table = ({ page, handleTotalPages }) => {
   const closeModal = () => {
     setShowModal(null);
   };
-  const getListingData = async () => {
+  const getClaimRequests = async () => {
     // try {
     //   setLoading(true);
     //   const res = await fetch(
@@ -47,8 +47,7 @@ const Table = ({ page, handleTotalPages }) => {
 
     try {
       const { data, errors } = await client.query({
-        query: GET_ALL_LISTING,
-        variables: { type: "pending" },
+        query: GET_ALL_CLAIMS,
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -56,21 +55,22 @@ const Table = ({ page, handleTotalPages }) => {
         },
       });
 
-      if (errors || data.getAllListings.code !== 200) {
+      if (errors || data.getAllClaims.code !== 200) {
         throw new Error("Something went wrong");
       }
-      const listingData = data.getAllListings.listings;
-      setListingData(listingData);
-      handleTotalPages(Math.ceil(listingData.length / PAGE_COUNT));
+
+      const claimsList = data.getAllClaims.claims;
+      setClaimData(claimsList);
+      handleTotalPages(Math.ceil(claimsList.length / PAGE_COUNT));
       setLoading(false);
-      console.log(listingData);
+      console.log(claimsList);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
   useEffect(() => {
-    if (status === "authenticated") getListingData();
+    if (status === "authenticated") getClaimRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -90,7 +90,7 @@ const Table = ({ page, handleTotalPages }) => {
     //       body: JSON.stringify({ message, approvalStatus: "approved" }),
     //     }
     //   );
-    //   getListingData();
+    //   getClaimRequests();
     //   setMessage("");
     //   setApprovalStatus("pending");
     // } catch (error) {
@@ -135,7 +135,7 @@ const Table = ({ page, handleTotalPages }) => {
           body: JSON.stringify({ message, approvalStatus: "rejected" }),
         }
       );
-      getListingData();
+      getClaimRequests();
       setMessage("");
       setApprovalStatus("pending");
     } catch (error) {
@@ -147,7 +147,7 @@ const Table = ({ page, handleTotalPages }) => {
   let end = page.current * PAGE_COUNT;
   let start = end - PAGE_COUNT;
 
-  const paginatedListing = listingData.slice(start, end);
+  const paginatedClaims = claimData.slice(start, end);
 
   return (
     <table className="responsive-table bordered" id="pg-resu">
@@ -155,22 +155,53 @@ const Table = ({ page, handleTotalPages }) => {
         <tr>
           <th>No</th>
           <th>Listing Name</th>
-          <th>Rating</th>
-          <th>Views</th>
-          <th>Created by</th>
+          <th>Enquirer Name</th>
+          <th>Enquirer Mobile</th>
+          <th>Enquirer Email Id</th>
+          <th>Verification Image</th>
+          <th>Enquirer Message</th>
+          <th>Enquiry Date</th>
           <th>Status</th>
+          <th>Approve</th>
+          <th>Delete</th>
           <th>Preview</th>
         </tr>
       </thead>
       <tbody>
-        {paginatedListing.map((listing, idx) => {
-          const inputDate = new Date(listing.createdAt);
+        {paginatedClaims.map((claim, idx) => {
+          const inputDate = new Date(claim.createdAt);
           return (
-            <tr key={listing._id}>
+            <tr key={claim._id}>
               <td>{idx + 1}</td>
               <td>
-                <img src={listing.listing_image} alt="default image" />
-                {listing.listing_name}{" "}
+                {/* add the listing image and the listing creation date here */}
+                <img src={claim?.claim_image} alt="default image" />
+                {claim.listing_name}
+                <span>
+                  {inputDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                  })}
+                </span>
+              </td>
+              <td>
+                <span>{claim.name}</span>
+              </td>
+              <td>
+                <span>{claim.phone_number}</span>
+              </td>
+              <td>
+                <span>{claim.email}</span>
+              </td>
+
+              <td>
+                <span>{claim.verification_image}</span>
+              </td>
+              <td>
+                <span>{claim.description}</span>
+              </td>
+              <td>
                 <span>
                   {inputDate.toLocaleDateString("en-US", {
                     year: "numeric",
@@ -181,32 +212,20 @@ const Table = ({ page, handleTotalPages }) => {
               </td>
               <td>
                 <span className="db-list-rat">
-                  {listing.ratings.$numberDecimal}
+                  {claim.claim_status}
                 </span>
               </td>
               <td>
-                <span className="db-list-rat">{listing.views}</span>
-              </td>
-              <td>
-                <a
-                  href="http://localhost/directory/bizbook/profile/rn53-themes"
-                  className="db-list-ststus"
-                  target="_blank"
-                >
-                  {listing.user_name}
-                </a>
-              </td>
-              <td>
                 <td className="relative">
-                  {listing.approval}
+                  {claim.approval}
                   <button
-                    onClick={() => openModal(listing)}
+                    onClick={() => openModal(claim)}
                     className="db-list-edit ml-2"
-                    disabled={listing.status === "approved" ? "true" : false}
+                    disabled={claim.status === "approved" ? "true" : false}
                   >
                     update{" "}
                   </button>
-                  {showModal && showModal._id === listing._id && (
+                  {showModal && showModal._id === claim._id && (
                     <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
                       <div className="mx-auto box-border w-[250px] border bg-white p-2">
                         <div className="flex items-center justify-between relative">
@@ -250,13 +269,13 @@ const Table = ({ page, handleTotalPages }) => {
                               />
                             </div>
                             <button
-                              onClick={(e) => handleApprove(e, listing._id)}
+                              onClick={(e) => handleApprove(e, claim._id)}
                               className="w-4/2 cursor-pointer rounded-[4px] bg-green-700 px-3 py-[6px] text-center font-base text-xs text-white"
                             >
                               Approve
                             </button>
                             <button
-                              onClick={(e) => handleReject(e, listing._id)}
+                              onClick={(e) => handleReject(e, claim._id)}
                               className="w-4/2 cursor-pointer rounded-[4px] bg-red-700 px-3 py-[6px] text-center font-base text-xs text-white"
                             >
                               Reject
@@ -266,12 +285,17 @@ const Table = ({ page, handleTotalPages }) => {
                       </div>
                     </div>
                   )}
-                  {/* <button onClick={() =>openModal(listing)} className="db-list-edit" disabled={listing.status === 'approved'?'true':false}>update</button> */}
+                  {/* <button onClick={() =>openModal(claim)} className="db-list-edit" disabled={claim.status === 'approved'?'true':false}>update</button> */}
                 </td>
               </td>
               <td>
+                <Link href={`#!`} className="db-list-edit">
+                  Delete
+                </Link>
+              </td>
+              <td>
                 <Link
-                  href={`/new-listing-request/${listing._id}`}
+                  href={`/new-claim-request/${claim._id}`}
                   className="db-list-edit"
                 >
                   Preview
