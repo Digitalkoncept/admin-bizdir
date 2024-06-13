@@ -40,9 +40,7 @@ const page = ({ params }) => {
     //   console.error(error);
     // }
 
-    console.log("params id", params.id);
     try {
-      console.log("session", session.jwt);
       const { data, errors } = await client.query({
         query: GET_EMPLOYEE_BY_ID,
         variables: { id: params.id },
@@ -145,7 +143,6 @@ const page = ({ params }) => {
 
     try {
       const { password, ...withoutPassword } = formData;
-      console.log(params);
       const { data, errors } = await client.mutate({
         mutation: UPDATE_EMPLOYEE,
         variables: {

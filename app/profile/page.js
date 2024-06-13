@@ -46,9 +46,6 @@ const page = () => {
     event.preventDefault();
    
     try {
-      console.log("session id ==>", session);
-      console.log("formdata ==>", formData);
-
       const { password, _id,  ...withoutPasswordData } = formData;
       const { data, errors } = await client.mutate({
         mutation: UPDATE_EMPLOYEE,

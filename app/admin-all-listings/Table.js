@@ -23,7 +23,6 @@ const Table = ({ page, handleTotalPages }) => {
     setShowModal(null);
   };
 
-  console.log(session);
   const getListingData = async () => {
     // try {
     //   setLoading(true);
@@ -39,7 +38,6 @@ const Table = ({ page, handleTotalPages }) => {
 
     //   const data = await res.json();
 
-    //   console.log(data);
     //   setListingData(data);
 
     //   handleTotalPages(Math.ceil(data.length / PAGE_COUNT));

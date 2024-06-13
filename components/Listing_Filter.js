@@ -109,7 +109,6 @@ const Listing_Filter = () => {
             ...prevState,
             isVisible: true,
         }));
-        console.log(select.num);
     };
 
     const handleOptionClick = (option, number) => {

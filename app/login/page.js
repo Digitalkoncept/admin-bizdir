@@ -24,7 +24,7 @@ const page = () => {
 
     if (result.error) {
       toast.error(result.error)
-      console.log(result.error);
+      console.error(result.error);
     } else {
       router.push("/");
     }

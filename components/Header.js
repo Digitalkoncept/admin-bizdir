@@ -15,7 +15,7 @@ const Header = ({transparent}) => {
   const [ isMobMenuVisible, setMobMenuVisibility ] = useState(false);
   const [dashboardvisiblity, setDashboardVisiblity] = useState(false);
   const scrollPosition = useScrollPosition();
- console.log("header is ",transparent)
+
   return (
     <>
     
