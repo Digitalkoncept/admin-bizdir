@@ -115,6 +115,8 @@ const Table = ({ page, handleTotalPages }) => {
       });
 
       if (errors || data.claimListing.code !== 200) {
+        console.log(data)
+        console.error(errors);
         throw new Error("Something went wrong");
       }
 
@@ -254,7 +256,6 @@ const Table = ({ page, handleTotalPages }) => {
               <td>
                 <span>{claim.email}</span>
               </td>
-
               <td>
                 <span>
                   {claim?.verification_image && (
@@ -361,8 +362,7 @@ const Table = ({ page, handleTotalPages }) => {
 
               <td>
                 <span
-                  // href={`#!`}
-                  onClick={() => handleClaimDelete(claim._id)}
+                   onClick={() => handleClaimDelete(claim._id)}
                   className="db-list-edit"
                 >
                   Delete
@@ -372,7 +372,7 @@ const Table = ({ page, handleTotalPages }) => {
                 <Link
                   href={
                     process.env.NEXT_PUBLIC_FRONTEND_URL +
-                    `all-listing/${claim._id}`
+                    `all-listing/${claim.listing_id}`
                   }
                   target="_blank"
                   className="db-list-edit"

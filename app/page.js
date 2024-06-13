@@ -8,7 +8,7 @@ const page = () => {
     <section>
   <div className="ad-com">
     <div className="ad-dash adda-oly leftpadd">
-      {/*            User Welcome Div starts */}
+      {/* User Welcome Div starts */}
       <div className="ad-dash-s1">
         <div className="cd-cen-intr-inn">
           <h2>
