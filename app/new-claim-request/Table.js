@@ -50,6 +50,7 @@ const Table = ({ page, handleTotalPages }) => {
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_CLAIMS,
+        fetchPolicy: "no-cache",
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -61,11 +62,11 @@ const Table = ({ page, handleTotalPages }) => {
         throw new Error("Something went wrong");
       }
 
-      const claimsList = data.getAllClaims.claims;
+      const claimsList = await data.getAllClaims.claims;
+      console.log(claimsList);
       setClaimData(claimsList);
       handleTotalPages(Math.ceil(claimsList.length / PAGE_COUNT));
       setLoading(false);
-      console.log(claimsList);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -193,7 +194,7 @@ const Table = ({ page, handleTotalPages }) => {
         throw new Error("Something went wrong");
       }
 
-      getClaimRequests()
+      getClaimRequests();
       toast.success("Claim deleted successfully");
       console.log(data);
     } catch (error) {

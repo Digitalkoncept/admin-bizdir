@@ -455,12 +455,14 @@ const TopNav = ({ toggleCart, showadMenu }) => {
         </div>
         <div className="head-s3">
           <div className="head-pro">
-            <CldImage
-              width="36"
-              height="36"
-              src={session?.user?.image || ""}
-              alt="Description of my image"
-            />
+            {session?.user?.image && (
+              <CldImage
+                width="36"
+                height="36"
+                src={session?.user?.image || ""}
+                alt="Description of my image"
+              />
+            )}
             <br />
             <h4>{session?.user?.name}</h4>
             <Link href="/profile" className="fclick" />

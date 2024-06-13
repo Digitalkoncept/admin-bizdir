@@ -112,8 +112,8 @@ const page = () => {
   
       toast.success('Listing created successfully');
       router.push('/admin-all-listings');
-      console.log(data); // Handle response from server
-      // Optionally, you can reset the form data after successful submission
+      console.log(data);
+
     } catch (error) {
       console.error('Error submitting form:', error);
       // Handle error

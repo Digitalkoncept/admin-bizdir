@@ -16,7 +16,7 @@ export default function RootLayout({ children, session }) {
   const pathname = usePathname();
   const path = ["/login"];
   const hideSidebar = path.some((path) => pathname.startsWith(path));
-  console.log(hideSidebar);
+
   const [showadMenu, setShowAdMenu] = useState(true);
   function toggleCart() {
     setShowAdMenu(!showadMenu);
