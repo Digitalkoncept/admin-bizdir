@@ -8,7 +8,7 @@ import { GET_ALL_LISTING } from "@/lib/query";
 import { APPROVE_LISTING_STATUS } from "@/lib/mutation";
 
 const Table = ({ page, handleTotalPages }) => {
-  const PAGE_COUNT = 2;
+  const PAGE_COUNT = 5;
 
   const [listingData, setListingData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -181,7 +181,7 @@ const Table = ({ page, handleTotalPages }) => {
               </td>
               <td>
                 <span className="db-list-rat">
-                  {listing.ratings.$numberDecimal}
+                  {listing.ratings?.$numberDecimal}
                 </span>
               </td>
               <td>
@@ -196,78 +196,76 @@ const Table = ({ page, handleTotalPages }) => {
                   {listing.user_name}
                 </a>
               </td>
-              <td>
-                <td className="relative">
-                  {listing.approval}
-                  <button
-                    onClick={() => openModal(listing)}
-                    className="db-list-edit ml-2"
-                    disabled={listing.status === "approved" ? "true" : false}
-                  >
-                    update{" "}
-                  </button>
-                  {showModal && showModal._id === listing._id && (
-                    <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
-                      <div className="mx-auto box-border w-[250px] border bg-white p-2">
-                        <div className="flex items-center justify-between relative">
-                          <button
-                            onClick={closeModal}
-                            className="cursor-pointer border rounded-[4px] absolute right-0"
+              <td className="relative">
+                {listing.approval}
+                <button
+                  onClick={() => openModal(listing)}
+                  className="db-list-edit ml-2"
+                  disabled={listing.status === "approved" ? "true" : false}
+                >
+                  update{" "}
+                </button>
+                {showModal && showModal._id === listing._id && (
+                  <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
+                    <div className="mx-auto box-border w-[250px] border bg-white p-2">
+                      <div className="flex items-center justify-between relative">
+                        <button
+                          onClick={closeModal}
+                          className="cursor-pointer border rounded-[4px] absolute right-0"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-[15px] w-[15px] text-[#64748B]"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-[15px] w-[15px] text-[#64748B]"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <form id="approvalForm">
+                        <div className="my-2 flex flex-col justify-between space-y-2">
+                          <div className="col-span-2">
+                            <label
+                              htmlFor="description"
+                              className="block mb-2 text-sm font-medium text-gray-900 "
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
+                              Message
+                            </label>
+                            <textarea
+                              id="description"
+                              rows={4}
+                              name="message"
+                              value={message}
+                              onChange={(e) => setMessage(e.target.value)}
+                              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500   "
+                              placeholder="write a description here"
+                            />
+                          </div>
+                          <button
+                            onClick={(e) => handleApprove(e, listing._id)}
+                            className="w-4/2 cursor-pointer rounded-[4px] bg-green-700 px-3 py-[6px] text-center font-base text-xs text-white"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={(e) => handleReject(e, listing._id)}
+                            className="w-4/2 cursor-pointer rounded-[4px] bg-red-700 px-3 py-[6px] text-center font-base text-xs text-white"
+                          >
+                            Reject
                           </button>
                         </div>
-                        <form id="approvalForm">
-                          <div className="my-2 flex flex-col justify-between space-y-2">
-                            <div className="col-span-2">
-                              <label
-                                htmlFor="description"
-                                className="block mb-2 text-sm font-medium text-gray-900 "
-                              >
-                                Message
-                              </label>
-                              <textarea
-                                id="description"
-                                rows={4}
-                                name="message"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500   "
-                                placeholder="write a description here"
-                              />
-                            </div>
-                            <button
-                              onClick={(e) => handleApprove(e, listing._id)}
-                              className="w-4/2 cursor-pointer rounded-[4px] bg-green-700 px-3 py-[6px] text-center font-base text-xs text-white"
-                            >
-                              Approve
-                            </button>
-                            <button
-                              onClick={(e) => handleReject(e, listing._id)}
-                              className="w-4/2 cursor-pointer rounded-[4px] bg-red-700 px-3 py-[6px] text-center font-base text-xs text-white"
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        </form>
-                      </div>
+                      </form>
                     </div>
-                  )}
-                  {/* <button onClick={() =>openModal(listing)} className="db-list-edit" disabled={listing.status === 'approved'?'true':false}>update</button> */}
-                </td>
+                  </div>
+                )}
+                {/* <button onClick={() =>openModal(listing)} className="db-list-edit" disabled={listing.status === 'approved'?'true':false}>update</button> */}
               </td>
               <td>
                 <Link
