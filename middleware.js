@@ -49,4 +49,4 @@ export default withAuth(
 );
 
 
-export const config = { matcher: [ '/((?!login).*)'] }
+export const config = { matcher: [ '/((?!login).*)|/((?!_next/static|_next/image|public/|favicon.ico|robots.txt|sitemap.xml|manifest.json).*)'] }
