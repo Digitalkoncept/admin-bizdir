@@ -63,6 +63,8 @@ const Table = ({ page, handleTotalPages }) => {
       }
 
       setListingData(data.getAllListings.listings);
+      handleTotalPages(Math.ceil(data.getAllListings.listings.length / PAGE_COUNT));
+
       console.log(data);
       setLoading(false);
     } catch (error) {
@@ -165,27 +167,7 @@ const Table = ({ page, handleTotalPages }) => {
   };
 
   const enableListing = async (id) => {
-    // try {
-    //   const res = await fetch(process.env.BACKEND_URL + `/api/listing/${id}`, {
-    //     method: "PATCH",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       authorization: "Bearer " + session.jwt,
-    //     },
-    //     body: JSON.stringify({ listing_status: "Enabled" }),
-    //   });
-
-    //   if (res.status === 200) {
-    //     const data = await res.json();
-    //     getListingData();
-    //     toast.success("listing enabled successfully");
-    //   } else {
-    //     console.error("Failed to enable listing");
-    //     // Handle error
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    
 
     try {
       const { data, errors } = await client.mutate({

@@ -25,8 +25,8 @@ const page = () => {
     country: "",
     state:"",
     subcategory:[],
-    areas:"",
-    cities: [],
+    area:"",
+    city:"",
     category: "",
     subcategory: [],
     listing_detail: "",
@@ -37,7 +37,42 @@ const page = () => {
   });
  
 
-
+  const [errors, setErrors] = useState({});
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.listing_name) {
+      newErrors.listing_name = 'Listing Name is Required';
+    }
+    if (!formData.phone_number) {
+      newErrors.phone_number = 'Phone Number is Required';
+    }
+    if (!formData.listing_address) {
+      newErrors.listing_address = 'shop address is Required';
+    }
+    if (!formData.country) {
+      newErrors.country = 'country is Required';
+    }
+    if (!formData.state) {
+      newErrors.state = 'State is Required';
+    }
+    if (!formData.city) {
+      newErrors.city = 'city is Required';
+    }
+    if (!formData.area) {
+      newErrors.area = 'area is Required';
+    }
+    if (!formData.category) {
+      newErrors.category = 'Category is Required';
+    }
+  
+    if (!formData.listing_detail) {
+      newErrors.listing_detail = 'listing detail is Required';
+    }
+    // Add other validation as needed
+  
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
  
   
   const handleAddInput = () => {
@@ -91,6 +126,12 @@ const page = () => {
         [name]: value,
       }));
     }
+    if (value) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    }
     console.log(formData);
   };
   const handleSubmit = async (event) => {
@@ -99,24 +140,27 @@ const page = () => {
   
     try {
       // Send GraphQL mutation request to create a listing
-      const { data, errors } = await client.mutate({
-        mutation: CREATE_CLAIMABLE_LISTING,
-        variables: { data: formData },
-        context: {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
+      if(validate()){
+        const { data, errors } = await client.mutate({
+          mutation: CREATE_CLAIMABLE_LISTING,
+          variables: { data: formData },
+          context: {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
           },
-        },
-      });
-  
-      if (errors || data.createClaimableListing.code !== 201) {
-        throw new Error('Something went wrong');
+        });
+    
+        if (errors || data.createClaimableListing.code !== 201) {
+          throw new Error('Something went wrong');
+        }
+    
+        toast.success('Listing created successfully');
+        router.push('/admin-all-listings');
+        console.log(data);
+      } else{
+        toast.error("Please fill all required fields");
       }
-  
-      toast.success('Listing created successfully');
-      router.push('/admin-all-listings');
-      console.log(data);
-
     } catch (error) {
       console.error('Error submitting form:', error);
       // Handle error
@@ -154,10 +198,14 @@ const page = () => {
                                 onChange={handleInputChange}
                                 name="listing_name"
                                 type="text"
-                                required="required"
                                 className="form-control"
                                 placeholder="Listing name *"
                               />
+                                 {errors.listing_name && (
+                                <label htmlFor="listing_name" className="error">
+                                  {errors.listing_name}
+                                </label>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -172,8 +220,13 @@ const page = () => {
                                 onChange={handleInputChange}
                                 name="phone_number"
                                 className="form-control"
-                                placeholder="Phone number"
+                                placeholder="Phone number *"
                               />
+                                 {errors.phone_number && (
+                                <label htmlFor="phone_number" className="error">
+                                  {errors.phone_number}
+                                </label>
+                              )}
                             </div>
                           </div>
                           <div className="col-md-6">
@@ -231,10 +284,14 @@ const page = () => {
                                 value={formData.listing_address}
                                 onChange={handleInputChange}
                                 name="listing_address"
-                                required="required"
                                 className="form-control"
-                                placeholder="Shop address"
+                                placeholder="Shop address *"
                               />
+                              {errors.listing_address && (
+                                <label htmlFor="listing_address" className="error">
+                                  {errors.listing_address}
+                                </label>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -267,6 +324,8 @@ const page = () => {
                           formData={formData}
                           InputChange={handleInputChange}
                           setFormData={setFormData}
+                          errors={errors}
+                          setErrors={setErrors}
                         />
                         <div className="row">
                           <div className="col-md-12">
@@ -279,6 +338,11 @@ const page = () => {
                                 name="listing_detail"
                                 placeholder="Details about your listing"
                               />
+                              {errors.listing_detail && (
+                                <label htmlFor="listing_detail" className="error">
+                                  {errors.listing_detail}
+                                </label>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -649,167 +713,6 @@ const page = () => {
                             </div>
                           </div>
                         </div>
-                        {/*FILED END*/}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="login-main add-list">
-                    <div className="log-bor">&nbsp;</div>
-                    <span className="steps">Step 5</span>
-                    <div className="log">
-                      <div className="login add-lis-oth">
-                        <h4>Other informations</h4>
-                        <span
-                          className="add-list-add-btn lis-add-oad"
-                          title="add new offer"
-                          onClick={handleAddInput}
-                        >
-                          +
-                        </span>
-                        <span
-                          className="add-list-rem-btn lis-add-ore"
-                          title="remove offer"
-                          onClick={handleRemoveInput}
-                        >
-                          -
-                        </span>
-                        <ul>
-                          <li>
-                            {/*FILED START*/}
-                            <div className="row">
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_question[]"
-                                    className="form-control"
-                                    placeholder="Experience"
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-2">
-                                <div className="form-group">
-                                  <i className="material-icons">
-                                    arrow_forward
-                                  </i>
-                                </div>
-                              </div>
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_answer[]"
-                                    className="form-control"
-                                    placeholder="20 years"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            {/*FILED END*/}
-                          </li>
-                          {/*FILED START*/}
-                          <li>
-                            <div className="row">
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_question[]"
-                                    className="form-control"
-                                    placeholder="Parking"
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-2">
-                                <div className="form-group">
-                                  <i className="material-icons">
-                                    arrow_forward
-                                  </i>
-                                </div>
-                              </div>
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_answer[]"
-                                    className="form-control"
-                                    placeholder="yes"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-                          {/*FILED END*/}
-                          {/*FILED START*/}
-                          <li>
-                            <div className="row">
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_question[]"
-                                    className="form-control"
-                                    placeholder="Smoking"
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-2">
-                                <div className="form-group">
-                                  <i className="material-icons">
-                                    arrow_forward
-                                  </i>
-                                </div>
-                              </div>
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_answer[]"
-                                    className="form-control"
-                                    placeholder="yes"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-                          {/*FILED END*/}
-                          {/*FILED START*/}
-                          <li>
-                            <div className="row">
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_question[]"
-                                    className="form-control"
-                                    placeholder="Take Out"
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-2">
-                                <div className="form-group">
-                                  <i className="material-icons">
-                                    arrow_forward
-                                  </i>
-                                </div>
-                              </div>
-                              <div className="col-md-5">
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="listing_info_answer[]"
-                                    className="form-control"
-                                    placeholder="yes"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-                          {/*FILED END*/}
-                        </ul>
-                        {/*FILED START*/}
                         <div class="row">
                           <div className="col-md-6">
                             <button
@@ -831,6 +734,7 @@ const page = () => {
                     </div>
                   </div>
                 </div>
+                
               </form>
             </div>
           </div>

@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { GetAllstates,GetCityByState,GetAreaByCity,GET_ALL_CATEGORY } from "@/lib/query";
 import { client } from "@/lib/apollo";
-const Location_Filter = ({formData,InputChange,setFormData}) => {
+const Location_Filter = ({formData,InputChange,setFormData,errors,setErrors}) => {
   const divRef1 = useRef(null);
   const divRef2 = useRef(null);
   const divRef3 = useRef(null);
   const divRef4 = useRef(null);
   const divRef5 = useRef(null);
-  const cityRef = useRef(null);
-  const areaRef = useRef(null);
+  
   const subcategoryRef = useRef(null);
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -109,7 +108,7 @@ const [searchArea, setSearchArea] = useState({
     };
     fetchData();
   }, [searchState,searchCity]);
-  console.log("all fetched category =>",category)
+  
   const country = ["India","Usa"]
 
   const [select, setSelect] = useState({
@@ -126,34 +125,41 @@ const [searchArea, setSearchArea] = useState({
     
   };
   const handleInputChange = (e,number) => {
+    const { name, value } = e.target;
     if (number === 1) {
       setSearchState((prevState) => ({
           ...prevState,
-          keyword: e.target.value,
+          keyword: value,
       }));
   }
    else if (number === 2) {
       setSearchCity((prevState) => ({
         ...prevState,
-        keyword: e.target.value,
+        keyword: value,
     }));
     }
     else if (number === 3) {
       setSearchArea((prevState) => ({
         ...prevState,
-        keyword: e.target.value,
+        keyword: value,
     }));
     }
     else if(number === 4){
-      setSearchCat(e.target.value);
+      setSearchCat(value);
     } else if (number === 4){
-      setSearchSubCat(e.target.value); 
+      setSearchSubCat(value); 
     }
     setSelect((prevState) => ({
         ...prevState,
         isVisible: true
       }));
-    console.log(select.num)
+      if (value) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: '',
+        }));
+      }
+    console.log(formData)
   };
   const handleOptionClick = (option,number) => {
     if(number === 1){
@@ -161,6 +167,11 @@ const [searchArea, setSearchArea] = useState({
         ...prevState,
         state:option.name
     }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        state: '',
+      }));
+   
     setSearchState((prevState) => ({
       ...prevState,
       _id:option._id,
@@ -168,33 +179,39 @@ const [searchArea, setSearchArea] = useState({
   }));
     }
     else if(number=== 2){
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      cities:[...prevFormData?.cities,option.name],
+    setFormData((prevState) => ({
+      ...prevState,
+      city:option.name,
     }));
     setSearchCity((prevState) => ({
       ...prevState,
       _id:option._id,
       value: option.name,
   }));
-  if(option.name){
-    cityRef.current.focus();
-  }
+  
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      city: '',
+    }));
+
   console.log(formData)
     }
    else if(number=== 3){
       setFormData((prevState) => ({
         ...prevState,
-        areas:[...prevState?.areas,option.name],
+        area:option.name
       }));
       setSearchArea((prevState) => ({
         ...prevState,
         _id:option._id,
         value: option.name,
     }));
-    if(option.name){
-      areaRef.current.focus();
-    }
+    
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        area: '',
+      }));
+    
       }
     else if(number === 4){
       setFormData(prevState =>({
@@ -202,6 +219,12 @@ const [searchArea, setSearchArea] = useState({
         category:option.name
     }));
     setSubCategory(option.subcategory)
+    
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        category: '',
+      }));
+    
     } else if (number === 5){
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -218,30 +241,10 @@ const [searchArea, setSearchArea] = useState({
       }));
   };
  
-  // useEffect(() => {
-  //   if (formData.cities?.length > 0 ) {
-  //     cityRef.current.focus();
-  //   }else if (formData.areas?.length > 0) {
-  //     areaRef.current.focus();
-  //   }
-  //    else if (formData.subcategory?.length > 0) {
-  //     subcategoryRef.current.focus();
-  //   }
-  // }, [formData.cities,formData.areas,formData.subcategory]);
+  
   const handleKeyPress = (e,number) => {
-    if (number === 2 && e.key === "Backspace" && searchCity.keyword === "") {
-      setFormData(prevState => ({
-        ...prevState,
-        cities: prevState.cities.slice(0, -1) // Remove the last index value
-      }));
-    }else if (number === 3 && e.key === "Backspace" && searchArea.keyword === "") {
-      setFormData(prevState => ({
-        ...prevState,
-        areas: prevState.areas.slice(0, -1) // Remove the last index value
-      }));
-      console.log("backspace working")
-    }
-     else if (number === 5 && e.key === "Backspace" && searchSubCat === "") {
+   
+     if (number === 5 && e.key === "Backspace" && searchSubCat === "") {
       setFormData(prevState => ({
         ...prevState,
         subcategory: prevState.subcategory.slice(0, -1) // Remove the last index value
@@ -250,32 +253,8 @@ const [searchArea, setSearchArea] = useState({
   };
 
   const handleRemove = (index, number) => {
-    if (number === 2) {
-      setFormData((prevState) => {
-        const updatedValue = [...prevState.cities]; // Create a copy of the current array
-        updatedValue.splice(index, 1); // Remove the item at the specified index
-        return {
-          ...prevState,
-          cities: updatedValue, // Update the state with the modified array
-        };
-      });
-      if(formData.cities.length > 0 ){
-        cityRef.current.focus();
-      }
-    }if (number === 3) {
-      setFormData((prevState) => {
-        const updatedValue = [...prevState.areas]; // Create a copy of the current array
-        updatedValue.splice(index, 1); // Remove the item at the specified index
-        return {
-          ...prevState,
-          areas: updatedValue, // Update the state with the modified array
-        };
-      });
-      if(formData.areas.length > 0 ){
-        areaRef.current.focus();
-      }
-    }
-     else if (number === 5) {
+    
+      if (number === 5) {
       setFormData((prevState) => {
         const updatedValue = [...prevState.subcategory]; // Create a copy of the current array
         updatedValue.splice(index, 1); // Remove the item at the specified index
@@ -312,6 +291,7 @@ const filteredsubcat = subcategory?.filter(option =>
   !formData.subcategory?.includes(option)
 );
 
+
   return (
     <>
       <div className="row">
@@ -322,8 +302,12 @@ const filteredsubcat = subcategory?.filter(option =>
               {country.map((option,index)=>(
                 <option key={index}  value={option}>{option}</option>
               ))}
-              
             </select>
+            {errors.country && (
+          <label htmlFor="country" className="error">
+            {errors.country}
+          </label>
+        )}
           </div>
         </div>
         <div className="col-md-6">
@@ -350,6 +334,7 @@ const filteredsubcat = subcategory?.filter(option =>
                   <input
                     className="chosen-search-input valid"
                     type="text"
+                    name="state"
                     autoComplete="off"
                     value={searchState.keyword}
                     onChange={(e)=>handleInputChange(e,1)}
@@ -357,7 +342,7 @@ const filteredsubcat = subcategory?.filter(option =>
                 </div>
                 <ul className="chosen-results">
                   <li className="active-result" data-option-array-index={0}>
-                    Select Category
+                    Select State
                   </li>
                   {filteredstate?.map(option =>(
                   <li key={option._id} onClick={() => handleOptionClick(option,1)}  className="active-result" data-option-array-index={1}>
@@ -368,128 +353,121 @@ const filteredsubcat = subcategory?.filter(option =>
                 </ul>
               </div>
             </div>
+            {errors.state && (
+          <label htmlFor="state" className="error">
+            {errors.state}
+          </label>
+        )}
           </div>
         </div>
         <div className="col-md-6">
           <div className="form-group">
             <div
-              className={`chosen-container chosen-container-multi ${
+              className={`chosen-container chosen-container-single ${
                 select.num === 2 && select.isVisible
                   ? "chosen-with-drop"
                   : ""
               } chosen-container-active`}
-              ref={divRef2}
               alt=""
+              ref={divRef2}
               id="city_id_chosen"
-              style={{ width: 640 }}
+              style={{ width: 305 }}
             >
-              <ul className="chosen-choices">
-
-              {formData.cities?.length > 0 &&
-                formData.cities.map((option, index) => {
-                  return (
-                    <li key={index} className="search-choice">
-                      <span>{option}</span>
-                      <a onClick={() => handleRemove(index,2)} className="search-choice-close" data-option-array-index={0} />
-                    </li>
-                  );
-                })}
-
-                <li className="search-field">
-                  <input
-                    ref={cityRef}
-                    onKeyUp={(e)=>handleKeyPress(e,2)}
-                    onClick={() => handleClick(2)}
-                    className="chosen-search-input default"
-                    onChange={(e)=>handleInputChange(e,2)}
-                    style={{
-                      width: formData.cities?.length > 0 ? "33px!important" : "137.062px"
-                    }}
-                    value={searchCity.keyword}
-                    type="text"
-                    autoComplete="off"
-                    placeholder="Select your Cities"
-                  />
-                </li>
-              </ul>
+              <a className="chosen-single" onClick={() => handleClick(2)}>
+              <span>{formData?.city?.length > 0 ? formData.city:'Select City' }</span>
+                <div>
+                  <b />
+                </div>
+              </a>
               <div className="chosen-drop">
+                <div className="chosen-search">
+                  <input
+                    className="chosen-search-input valid"
+                    type="text"
+                    name="city"
+                    autoComplete="off"
+                    value={searchCity.keyword}
+                    onChange={(e)=>handleInputChange(e,2)}
+                  />
+                </div>
                 <ul className="chosen-results">
-                  {searchState.value.length > 0 ? (<>
-                    {filteredcity?.map((option,index)=>(
-                  <li  className="active-result" key={index}  onClick={() => handleOptionClick(option,2)} data-option-array-index={0}>
+                  {searchState.value.length > 0 ? (
+                    <>
+                    {filteredcity?.map(option =>(
+                  <li key={option._id} onClick={() => handleOptionClick(option,2)}  className="active-result" data-option-array-index={1}>
                     {option.name}
                   </li>
                   ))}
-                  </>
+                    </>
                   ):(
                     <li className="no-results">
-                    please select any state 
+                    please select any state first 
                     </li>
                   )}
+                  
+                 
                 </ul>
               </div>
             </div>
+            {errors.city && (
+          <label htmlFor="city" className="error">
+            {errors.city}
+          </label>
+        )}
           </div>
         </div>
         <div className="col-md-6">
           <div className="form-group">
             <div
-              className={`chosen-container chosen-container-multi ${
+              className={`chosen-container chosen-container-single ${
                 select.num === 3 && select.isVisible
                   ? "chosen-with-drop"
                   : ""
               } chosen-container-active`}
-              ref={divRef3}
               alt=""
+              ref={divRef3}
               id="area_id_chosen"
-              style={{ width: 640 }}
+              style={{ width: 305 }}
             >
-              <ul className="chosen-choices">
-
-              {formData.areas?.length > 0 &&
-                formData.areas.map((option, index) => {
-                  return (
-                    <li key={index} className="search-choice">
-                      <span>{option}</span>
-                      <a onClick={() => handleRemove(index,3)} className="search-choice-close" data-option-array-index={0} />
-                    </li>
-                  );
-                })}
-
-                <li className="search-field">
+              <a className="chosen-single" onClick={() => handleClick(3)}>
+              <span>{formData?.area?.length > 0 ? formData.area:'Select Area' }</span>
+                <div>
+                  <b />
+                </div>
+              </a>
+              <div className="chosen-drop">
+                <div className="chosen-search">
                   <input
-                    ref={areaRef}
-                    onKeyUp={(e)=>handleKeyPress(e,3)}
-                    onClick={() => handleClick(3)}
-                    className="chosen-search-input default"
-                    onChange={(e)=>handleInputChange(e,3)}
-                    style={{
-                      width: formData.areas?.length > 0 ? "33px!important" : "137.062px"
-                    }}
-                    value={searchArea.keyword}
+                    className="chosen-search-input valid"
                     type="text"
                     autoComplete="off"
-                    placeholder="Select your area"
+                    name="area"
+                    value={searchArea.keyword}
+                    onChange={(e)=>handleInputChange(e,3)}
                   />
-                </li>
-              </ul>
-              <div className="chosen-drop">
+                </div>
                 <ul className="chosen-results">
                   {searchCity.value.length > 0 ? (<>
-                    {filteredarea?.map((option,index)=>(
-                  <li  className="active-result" key={index}  onClick={() => handleOptionClick(option,3)} data-option-array-index={0}>
+                    {filteredarea?.map(option =>(
+                  <li key={option._id} onClick={() => handleOptionClick(option,3)}  className="active-result" data-option-array-index={1}>
                     {option.name}
                   </li>
                   ))}
-                  </>
-                  ):(
-                    <li className="no-results">
-                    please select any city 
-                    </li>
+                  </>):(
+                     <li className="no-results">
+                     please select any city first 
+                     </li>
                   )}
+                 
+                 
                 </ul>
               </div>
             </div>
+            {errors.area && (
+          <label htmlFor="area" className="error">
+            {errors.area}
+          </label>
+        )}
           </div>
         </div>
       </div>
@@ -519,6 +497,7 @@ const filteredsubcat = subcategory?.filter(option =>
                     className="chosen-search-input valid"
                     type="text"
                     autoComplete="off"
+                    name="category"
                     value={searchCat}
                     onChange={(e)=>handleInputChange(e,4)}
                   />
@@ -536,6 +515,11 @@ const filteredsubcat = subcategory?.filter(option =>
                 </ul>
               </div>
             </div>
+            {errors.category && (
+          <label htmlFor="category" className="error">
+            {errors.category}
+          </label>
+        )}
           </div>
         </div>
         <div className="col-md-6">

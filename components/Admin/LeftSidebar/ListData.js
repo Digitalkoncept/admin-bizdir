@@ -29,6 +29,10 @@ export const SidebarData = [
         path: "/admin-all-listings",
       },
       {
+        name:"Create Listing",
+        path:"/add-new-listing"
+      },
+      {
         name: "New Listing Request",
         path: "/new-listing-request",
       },

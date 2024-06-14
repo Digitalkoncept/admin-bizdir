@@ -755,6 +755,12 @@ a:hover {
 .fil-img-uplo input[type="file"]{z-index:7;position:absolute;top:0;left:0;right:0;opacity:0;cursor:pointer}
 .fil-img-uplo button{z-index:7;position:absolute;top:0;left:0;right:0;opacity:0;cursor:pointer;height: 42px;}
 .add-list label{font-size:13.5px;font-weight:600;color:#454858;text-transform:uppercase}
+label.error {
+    color: #ff1d1d !important;
+    font-size: 11px !important;
+    margin-bottom: 0;
+    text-transform: capitalize !important;
+}
 .add-list .chbox input[type="checkbox"]{height:auto;}
 .add-list .steps, .udb-inst{
     position: relative;
