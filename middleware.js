@@ -11,7 +11,7 @@ export default withAuth(
     console.log("middlware running",Token)
       if (Token === undefined) {
         console.log("token undefined")
-        return NextResponse.redirect(new URL('/login'));
+        return NextResponse.redirect(new URL('/login',req.url));
       }
       try {
         // Verify the token using jwt.verify method
@@ -49,4 +49,4 @@ export default withAuth(
 );
 
 
-export const config = { matcher: [ '/((?!login).*)','/'] }
+export const config = { matcher: [ '/((?!login).*)'] }
