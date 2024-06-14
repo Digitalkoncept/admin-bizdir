@@ -13,11 +13,10 @@ export default withAuth(
         console.log("token undefined")
         return NextResponse.redirect(new URL('/login',req.url));
       }
-      console.log("token is",Token)
       try {
         // Verify the token using jwt.verify method
         const verifiedToken =  await verifyAuth(Token);// Replace "your-secret-key" with your actual secret key
-        console.log("token verification ",verifiedToken)
+        // console.log("token verification ",verifiedToken)
         const routePermission = {
           '/all-employee':'All Employee',
           '/create-employee':'Create Employee',

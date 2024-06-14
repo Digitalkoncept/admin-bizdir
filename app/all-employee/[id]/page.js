@@ -11,7 +11,7 @@ import { GET_ALL_ROLES, GET_EMPLOYEE_BY_ID, GET_ROLE } from "@/lib/query";
 const page = ({ params }) => {
   const [roles, setRoles] = useState();
   const [loading, setLoading] = useState();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -103,8 +103,10 @@ const page = ({ params }) => {
   };
 
   useEffect(() => {
-    getEmployee();
-    getRoles();
+    if (status === "authenticated") {
+      getEmployee();
+      getRoles();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -194,11 +196,12 @@ const page = ({ params }) => {
                           <input
                             type="text"
                             name="name"
-                            value={formData.name}
+                            value={formData.name || ""}
                             onChange={handleChange}
                             required="required"
                             className="form-control"
                             placeholder="Name"
+                            autoComplete="username"
                           />
                         </div>
                       </td>
@@ -210,7 +213,7 @@ const page = ({ params }) => {
                           <input
                             type="text"
                             name="email"
-                            value={formData.email}
+                            value={formData.email || ""}
                             onChange={handleChange}
                             required="required"
                             className="form-control"
@@ -226,11 +229,12 @@ const page = ({ params }) => {
                           <input
                             type="password"
                             name="password"
-                            value={formData.password}
+                            value={formData.password || ""}
                             onChange={handleChange}
                             required="required"
                             className="form-control"
                             placeholder="Enter password"
+                            autoComplete="current-password"
                           />
                         </div>
                       </td>
@@ -275,7 +279,7 @@ const page = ({ params }) => {
                           <div className="col-md-6 pl-0">
                             <select
                               onChange={handleChange}
-                              value={formData.role}
+                              value={formData.role || ""}
                               name="role"
                               id="category_id"
                               className="form-control"

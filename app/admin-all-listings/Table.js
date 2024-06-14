@@ -63,8 +63,9 @@ const Table = ({ page, handleTotalPages }) => {
       }
 
       setListingData(data.getAllListings.listings);
-      handleTotalPages(Math.ceil(data.getAllListings.listings.length / PAGE_COUNT));
-
+      handleTotalPages(
+        Math.ceil(data.getAllListings.listings.length / PAGE_COUNT)
+      );
       console.log(data);
       setLoading(false);
     } catch (error) {

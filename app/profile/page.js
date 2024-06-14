@@ -16,9 +16,8 @@ const page = () => {
     gender: "",
     image: "",
   });
-  const getProfile = async () => {
-  
 
+  const getProfile = async () => {
     try {
       const { data, errors } = await client.query({
         query: GET_EMPLOYEE_BY_ID,
@@ -44,9 +43,9 @@ const page = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-   
+
     try {
-      const { password, _id,  ...withoutPasswordData } = formData;
+      const { password, _id, ...withoutPasswordData } = formData;
       const { data, errors } = await client.mutate({
         mutation: UPDATE_EMPLOYEE,
         variables: {
@@ -72,8 +71,9 @@ const page = () => {
       console.error("Error submitting form:", error);
     }
   };
+
   useEffect(() => {
-    getProfile();
+    if (status === "authenticated") getProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -108,12 +108,13 @@ const page = () => {
                         <div className="form-group">
                           <input
                             type="text"
-                            value={formData.name}
+                            value={formData.name || ""}
                             onChange={handleChange}
                             className="form-control"
                             required="required"
                             name="name"
                             placeholder="Name"
+                            autoComplete="username"
                           />
                         </div>
                       </td>
@@ -125,7 +126,7 @@ const page = () => {
                           <input
                             type="email"
                             name="email"
-                            value={formData.email}
+                            value={formData.email || ""}
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Email"
@@ -140,10 +141,11 @@ const page = () => {
                           <input
                             type="password"
                             className="form-control"
-                            value={formData.password}
+                            value={formData.password || ""}
                             onChange={handleChange}
                             name="password"
                             placeholder="Enter new password if you like to change"
+                            autoComplete="current-password"
                           />
                         </div>
                       </td>
@@ -187,7 +189,7 @@ const page = () => {
                         <div className="form-group">
                           <select
                             name="gender"
-                            value={formData.gender}
+                            value={formData.gender || ""}
                             onChange={handleChange}
                             className="form-control"
                           >

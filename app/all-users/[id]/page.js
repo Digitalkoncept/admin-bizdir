@@ -9,7 +9,7 @@ import { GET_USER_DETAILS } from "@/lib/query";
 const page = ({ params }) => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const getUser = async () => {
     // try {
@@ -42,12 +42,13 @@ const page = ({ params }) => {
         },
       });
 
-      if (errors || data.createRole.code !== 200) {
+      console.log(data);
+
+      if (errors || data.getUser.code !== 200) {
         throw new Error("Something went wrong");
       }
 
       setUser(data.getUser.user);
-      console.log(data);
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -55,7 +56,7 @@ const page = ({ params }) => {
   };
 
   useEffect(() => {
-    getUser();
+    if (status === "authenticated") getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
   return (
@@ -67,9 +68,8 @@ const page = ({ params }) => {
             <span className="udb-inst">User Full Details</span>
             <div className="ud-cen-s2 ud-sp">
               <h2>Profile details</h2>{" "}
-              {/*                    <a href="admin-user-plan-change.html?row=*/}
-              {/*"*/}
-              {/*                       class="db-tit-btn db-tit-btn-1">Change plan</a>*/}
+              {/*<a href="admin-user-plan-change.html?row=*/}
+              {/*   class="db-tit-btn db-tit-btn-1">Change plan</a>*/}
               <table className="responsive-table bordered">
                 <tbody>
                   <tr>
@@ -196,10 +196,7 @@ const page = ({ params }) => {
                   </tr>
                   <tr>
                     <td>
-                      <Link
-                        href="/all-users"
-                        className="db-pro-bot-btn"
-                      >
+                      <Link href="/all-users" className="db-pro-bot-btn">
                         close
                       </Link>
                       {/*                                <a href="admin-user-plan-change.html?row=*/}
@@ -210,7 +207,7 @@ const page = ({ params }) => {
                   </tr>
                 </tbody>
               </table>
-              <div className="ud-notes">
+              {/* <div className="ud-notes">
                 <p>
                   <b>Notes about this user:</b>{" "}
                   <span contentEditable="true">
@@ -219,7 +216,7 @@ const page = ({ params }) => {
                     Plan on April 12th 2020.)
                   </span>
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
