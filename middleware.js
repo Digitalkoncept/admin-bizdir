@@ -8,15 +8,15 @@ export default withAuth(
   async function middleware(req,res) {
     
     const Token = req.nextauth?.token.jwt;
-    
+    console.log("middlware running",Token)
       if (Token === undefined) {
         console.log("token undefined")
-        return NextResponse.redirect(new URL('/login',req.url));
+        return NextResponse.redirect(new URL('/login'));
       }
       try {
         // Verify the token using jwt.verify method
         const verifiedToken =  await verifyAuth(Token);// Replace "your-secret-key" with your actual secret key
-        // console.log("token verification ",verifiedToken)
+        console.log("token verification ",verifiedToken)
         const routePermission = {
           '/all-employee':'All Employee',
           '/create-employee':'Create Employee',
@@ -49,4 +49,4 @@ export default withAuth(
 );
 
 
-export const config = { matcher: [ '/((?!login).*)|/((?!_next/static|_next/image|public/|favicon.ico|robots.txt|sitemap.xml|manifest.json).*)'] }
+export const config = { matcher: [ '/((?!login).*)','/'] }
