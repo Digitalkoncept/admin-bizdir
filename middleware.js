@@ -11,7 +11,7 @@ export default withAuth(
     console.log("middlware running",Token)
       if (Token === undefined) {
         console.log("token undefined")
-        return NextResponse.redirect(new URL('/login',req.url));
+        return NextResponse.redirect(new URL('/login'));
       }
       try {
         // Verify the token using jwt.verify method
@@ -42,11 +42,11 @@ export default withAuth(
         console.error("An error occurred:", error);
         console.log(error)
         // Redirect the user to a specific page when the token is not verified
-        return NextResponse.redirect(new URL('/login',req.url) );
+        return NextResponse.redirect(new URL('/login') );
       }
     },
   
 );
 
 
-export const config = { matcher: [ '/((?!login).*)'] }
+export const config = { matcher: [ '/dashboard/:path*'] }
