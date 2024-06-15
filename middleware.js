@@ -9,6 +9,15 @@ export default withAuth(
     
     const Token = req.nextauth?.token.jwt;
     console.log("middlware running",Token)
+    const publicFile = /\.(.*)$/.test(req.nextUrl.pathname);
+    if (req.nextUrl.pathname.startsWith("/login") || publicFile) {
+      return NextResponse.next();
+    }
+
+    // Exclude static files from being intercepted by middleware
+    if (req.nextUrl.pathname.startsWith("/_next") || req.nextUrl.pathname.startsWith("/api")) {
+      return NextResponse.next();
+    }
       if (Token === undefined) {
         console.log("token undefined")
         return NextResponse.redirect(new URL('/login'));
@@ -49,4 +58,4 @@ export default withAuth(
 );
 
 
-export const config = { matcher: [ '/dashboard/:path*'] }
+export const config = { matcher: [ '/((?!login|api|_next/static|_next/image|favicon.ico|/public/:path))'] }
