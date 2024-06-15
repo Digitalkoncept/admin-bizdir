@@ -42,3 +42,6 @@ export default function RootLayout({ children, session }) {
     </SessionProvider>
   );
 }
+
+export const runtime = "nodejs";
+export const dynamic = "force-static";
