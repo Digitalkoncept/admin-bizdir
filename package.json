@@ -1,6 +1,6 @@
 {
   "name": "bizbook-next-13",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,13 +10,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.10.4",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.14.6",
-    "@mui/material": "^5.14.6",
     "@next/font": "13.1.1",
     "@react-google-maps/api": "^2.19.3",
-    "@reduxjs/toolkit": "^2.2.3",
     "apollo-link-http": "^1.5.17",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.1",
@@ -25,25 +20,17 @@
     "eslint-config-next": "^13.4.19",
     "fs": "^0.0.1-security",
     "graphql": "^15.8.0",
-    "i": "^0.3.7",
     "jose": "^5.3.0",
     "jquery": "^3.6.3",
-    "jsonwebtoken": "^9.0.2",
     "next": "^14.2.2",
     "next-auth": "^4.24.7",
     "next-cloudinary": "^6.6.2",
-    "npm": "^10.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.7.1",
     "react-loader-spinner": "^6.1.6",
     "react-loading-skeleton": "^3.4.0",
-    "react-redux": "^9.1.1",
-    "react-select": "^5.8.0",
     "react-slick": "^0.29.0",
-    "react-toastify": "^10.0.5",
-    "redux-persist": "^6.0.0",
-    "slick-carousel": "^1.8.1"
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
