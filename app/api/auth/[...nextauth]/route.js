@@ -17,6 +17,8 @@ const authOptions = {
             async authorize(credentials) {
                 try {
                     const { email, password } = credentials;
+                    console.log("nextauth url from bk", process.env.NEXTAUTH_URL)
+                    
                     const response = await fetch(
                         `${process.env.BACKEND_URL}/api/auth/admin/login`,
                         {
