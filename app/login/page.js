@@ -29,6 +29,8 @@ const page = () => {
       router.push("/");
     }
   }
+
+  console.log("nextauth url", process.env.NEXTAUTH_URL)
   return (
     <UnAuth>
     <section className="login-reg ad-login-reg">
