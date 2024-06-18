@@ -9,10 +9,14 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { client } from "@/lib/apollo";
 import { CREATE_CLAIMABLE_LISTING } from "@/lib/mutation";
+import UploadGallery from "@/components/Layout/UploadGallery";
 const page = () => {
   const { data: session } = useSession();
  const router = useRouter();
+ 
   const [inputCount, setInputCount] = useState(1);
+  const [selectprofile,setSelectProfile] =  useState();
+ const [selectcover,setSelectCover] = useState();
   const [formData, setFormData] = useState({
     listing_name: "",
     phone_number: "",
@@ -28,6 +32,7 @@ const page = () => {
     area:"",
     city:"",
     category: "",
+    gallery_images:[],
     subcategory: [],
     listing_detail: "",
     service_location: [],
@@ -125,13 +130,14 @@ const page = () => {
         ...prevFormData,
         [name]: value,
       }));
+      if (value) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: '',
+        }));
+      }
     }
-    if (value) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: '',
-      }));
-    }
+    
     console.log(formData);
   };
   const handleSubmit = async (event) => {
@@ -353,7 +359,7 @@ const page = () => {
                             <div className="form-group">
                               <label>Choose profile image</label>
                               <div className="fil-img-uplo">
-                                <span className="dumfil">Upload a file</span>
+                                <span className="dumfil">{selectprofile ? selectprofile: 'Upload a file'}</span>
                                 <CldUploadWidget
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
@@ -362,6 +368,7 @@ const page = () => {
                                       ...prevFormData,
                                       listing_image: result?.info?.secure_url,
                                     }));
+                                    setSelectProfile(result?.info?.original_filename)
                                     widget.close();
                                   }}
                                 >
@@ -386,7 +393,7 @@ const page = () => {
                             <div className="form-group">
                               <label>Choose cover image</label>
                               <div className="fil-img-uplo">
-                                <span className="dumfil">Upload a file</span>
+                                <span className="dumfil">{selectcover ? selectcover:' Upload a file'}</span>
                                 <CldUploadWidget
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
@@ -395,6 +402,7 @@ const page = () => {
                                       ...prevFormData,
                                       cover_image: result?.info?.secure_url,
                                     }));
+                                    setSelectCover(result?.info?.original_filename)
                                     widget.close();
                                   }}
                                 >
@@ -647,72 +655,7 @@ const page = () => {
                         {/*FILED START*/}
 
                         {/*FILED END*/}
-                        <h4 className="pt30">Photo gallery</h4>
-                        {/*FILED START*/}
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="file"
-                                name="gallery_image[]"
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="file"
-                                name="gallery_image[]"
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        {/*FILED END*/}
-                        {/*FILED START*/}
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="file"
-                                name="gallery_image[]"
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="file"
-                                name="gallery_image[]"
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        {/*FILED END*/}
-                        {/*FILED START*/}
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="file"
-                                name="gallery_image[]"
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="file"
-                                name="gallery_image[]"
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
-                        </div>
+                          <UploadGallery formData={formData} setFormData={setFormData} />
                         <div class="row">
                           <div className="col-md-6">
                             <button
