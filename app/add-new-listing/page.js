@@ -304,7 +304,7 @@ const page = () => {
                         </div>
                         {/*FILED END*/}
                         {/*FILED START*/}
-                        <div className="row">
+                        {/* <div className="row">
                           <div className="col-md-6">
                             <div className="form-group">
                               <input
@@ -325,7 +325,7 @@ const page = () => {
                               />
                             </div>
                           </div>
-                        </div>
+                        </div> */}
 
                         <Location_Filter
                           formData={formData}
