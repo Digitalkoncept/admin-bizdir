@@ -31,6 +31,7 @@ const page = () => {
     subcategory:[],
     area:"",
     city:"",
+    service_type:"",
     category: "",
     gallery_images:[],
     subcategory: [],
