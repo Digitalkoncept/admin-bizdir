@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { GetAllstates,GetCityByState,GetAreaByCity,GET_ALL_CATEGORY } from "@/lib/query";
+import { GetAllstates,GetCityByState,GetAreaByCity,GET_ALL_SERVICES } from "@/lib/query";
 import { client } from "@/lib/apollo";
 const Location_Filter = ({formData,InputChange,setFormData,errors,setErrors}) => {
   const divRef1 = useRef(null);
@@ -7,6 +7,7 @@ const Location_Filter = ({formData,InputChange,setFormData,errors,setErrors}) =>
   const divRef3 = useRef(null);
   const divRef4 = useRef(null);
   const divRef5 = useRef(null);
+  const divRef6 = useRef(null);
   
   const subcategoryRef = useRef(null);
   useEffect(() => {
@@ -16,7 +17,8 @@ const Location_Filter = ({formData,InputChange,setFormData,errors,setErrors}) =>
         !divRef2.current.contains(event.target) &&
         !divRef3.current.contains(event.target) && 
         !divRef4.current.contains(event.target) &&
-        !divRef5.current.contains(event.target) 
+        !divRef5.current.contains(event.target) &&
+        !divRef6.current.contains(event.target)  
       ) {
         setSelect((prevState) => ({
           ...prevState,
@@ -35,6 +37,7 @@ const Location_Filter = ({formData,InputChange,setFormData,errors,setErrors}) =>
   const [state,setState] = useState();
   const [city,setCity] = useState();
   const [area,setArea] = useState();
+  const [service,setService] = useState();
   const [category,setCategory] = useState();
   const [subcategory,setSubCategory] = useState();
 
@@ -54,6 +57,7 @@ const [searchArea, setSearchArea] = useState({
   keyword: "",
   value: '',
 });
+const [searchservice, setSearchService] = useState('');
   const [searchCat, setSearchCat] = useState('');
   const [searchSubCat, setSearchSubCat] = useState('');
 
@@ -92,14 +96,13 @@ const [searchArea, setSearchArea] = useState({
             const mappedarea = await getAreasByCity?.areas?.map(area =>({_id:area._id,name:area.name}))
             setArea(mappedarea);
             }
-            
-            const res3 = await client.query({query:GET_ALL_CATEGORY})
-            const {getAllCategories} = await res3.data;
-            if(getAllCategories.code !== 200){
-              throw new Error('Failed to fetch category.')
+            const res3 = await client.query({query:GET_ALL_SERVICES})
+            const {getAllServices} = await res3.data;
+            if(getAllServices.code !== 200){
+              throw new Error('Failed to fetch services.')
             }
-            const mappedcategory = await getAllCategories?.categories?.map(cat =>({_id:cat._id,name:cat.category_name,subcategory:cat.subcategory}))
-            setCategory(mappedcategory);
+            const mappedService = await getAllServices?.services?.map(item =>({_id:item._id,name:item.service_name,category:item.categories}))
+            setService(mappedService);
         } catch (error) {
             console.error('something went wrong:', error);
         }
@@ -145,9 +148,9 @@ const [searchArea, setSearchArea] = useState({
     }));
     }
     else if(number === 4){
-      setSearchCat(value);
-    } else if (number === 4){
-      setSearchSubCat(value); 
+      setSearchService(value); 
+    } else if (number === 5){
+      setSearchCat(value)
     }
     setSelect((prevState) => ({
         ...prevState,
@@ -212,20 +215,26 @@ const [searchArea, setSearchArea] = useState({
         area: '',
       }));
     
-      }
-    else if(number === 4){
+      }else if(number === 4){
+        setFormData(prevState =>({
+          ...prevState,
+          service_type:option.name
+      }));
+      setCategory(option.category)
+        
+      } 
+    else if(number === 5){
       setFormData(prevState =>({
         ...prevState,
-        category:option.name
+        category:option.category_name
     }));
     setSubCategory(option.subcategory)
-    
       setErrors((prevErrors) => ({
         ...prevErrors,
         category: '',
       }));
     
-    } else if (number === 5){
+    } else if (number === 6){
       setFormData((prevFormData) => ({
         ...prevFormData,
         subcategory:[...prevFormData.subcategory,option],
@@ -244,7 +253,7 @@ const [searchArea, setSearchArea] = useState({
   
   const handleKeyPress = (e,number) => {
    
-     if (number === 5 && e.key === "Backspace" && searchSubCat === "") {
+     if (number === 6 && e.key === "Backspace" && searchSubCat === "") {
       setFormData(prevState => ({
         ...prevState,
         subcategory: prevState.subcategory.slice(0, -1) // Remove the last index value
@@ -254,7 +263,7 @@ const [searchArea, setSearchArea] = useState({
 
   const handleRemove = (index, number) => {
     
-      if (number === 5) {
+      if (number === 6) {
       setFormData((prevState) => {
         const updatedValue = [...prevState.subcategory]; // Create a copy of the current array
         updatedValue.splice(index, 1); // Remove the item at the specified index
@@ -282,8 +291,11 @@ const [searchArea, setSearchArea] = useState({
   ).filter(option =>
     !formData.areas?.includes(option.name)
   );
+  const filteredservice = service?.filter(option =>
+    option.name.toLowerCase().includes(searchservice.toLowerCase())
+);
   const filteredcat = category?.filter(option =>
-    option.name.toLowerCase().includes(searchCat.toLowerCase())
+    option.category_name.toLowerCase().includes(searchCat.toLowerCase())
 );
 const filteredsubcat = subcategory?.filter(option =>
   option.toLowerCase().includes(searchSubCat.toLowerCase())
@@ -482,11 +494,11 @@ const filteredsubcat = subcategory?.filter(option =>
               } chosen-container-active`}
               alt=""
               ref={divRef4}
-              id="category_id_chosen"
+              id="service_id_chosen"
               style={{ width: 305 }}
             >
               <a className="chosen-single" onClick={() => handleClick(4)}>
-              <span>{formData?.category?.length > 0 ? formData.category:'Select Category' }</span>
+              <span>{formData?.service_type?.length > 0 ? formData.service_type:'Select Service' }</span>
                 <div>
                   <b />
                 </div>
@@ -497,16 +509,13 @@ const filteredsubcat = subcategory?.filter(option =>
                     className="chosen-search-input valid"
                     type="text"
                     autoComplete="off"
-                    name="category"
-                    value={searchCat}
+                    name="service_type"
+                    value={searchservice}
                     onChange={(e)=>handleInputChange(e,4)}
                   />
                 </div>
                 <ul className="chosen-results">
-                  <li className="active-result" data-option-array-index={0}>
-                    Select Category
-                  </li>
-                  {filteredcat?.map(option =>(
+                  {filteredservice?.map(option =>(
                   <li key={option._id} onClick={() => handleOptionClick(option,4)}  className="active-result" data-option-array-index={1}>
                     {option.name}
                   </li>
@@ -525,13 +534,60 @@ const filteredsubcat = subcategory?.filter(option =>
         <div className="col-md-6">
           <div className="form-group">
             <div
-              className={`chosen-container chosen-container-multi ${
+              className={`chosen-container chosen-container-single ${
                 select.num === 5 && select.isVisible
                   ? "chosen-with-drop"
                   : ""
               } chosen-container-active`}
               alt=""
               ref={divRef5}
+              id="category_id_chosen"
+              style={{ width: 305 }}
+            >
+              <a className="chosen-single" onClick={() => handleClick(5)}>
+              <span>{formData?.category?.length > 0 ? formData.category:'Select Category' }</span>
+                <div>
+                  <b />
+                </div>
+              </a>
+              <div className="chosen-drop">
+                <div className="chosen-search">
+                  <input
+                    className="chosen-search-input valid"
+                    type="text"
+                    autoComplete="off"
+                    name="category"
+                    value={searchCat}
+                    onChange={(e)=>handleInputChange(e,5)}
+                  />
+                </div>
+                <ul className="chosen-results">
+                  {filteredcat?.map(option =>(
+                  <li key={option._id} onClick={() => handleOptionClick(option,5)}  className="active-result" data-option-array-index={1}>
+                    {option.category_name}
+                  </li>
+                  ))}
+                 
+                </ul>
+              </div>
+            </div>
+            {errors.category && (
+          <label htmlFor="category" className="error">
+            {errors.category}
+          </label>
+        )}
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="form-group">
+            <div
+              className={`chosen-container chosen-container-multi ${
+                select.num === 6 && select.isVisible
+                  ? "chosen-with-drop"
+                  : ""
+              } chosen-container-active`}
+              alt=""
+              ref={divRef6}
               id="city_id_chosen"
               style={{ width: 640 }}
             >
@@ -541,7 +597,7 @@ const filteredsubcat = subcategory?.filter(option =>
                   return (
                     <li key={index} className="search-choice">
                       <span>{option}</span>
-                      <a onClick={() => handleRemove(index,5)} className="search-choice-close" data-option-array-index={0} />
+                      <a onClick={() => handleRemove(index,6)} className="search-choice-close" data-option-array-index={0} />
                     </li>
                   );
                 })}
@@ -550,9 +606,9 @@ const filteredsubcat = subcategory?.filter(option =>
                     className="chosen-search-input default"
                     type="text"
                     ref={subcategoryRef}
-                    onKeyUp={(e)=>handleKeyPress(e,5)}
-                    onClick={() => handleClick(5)}
-                    onChange={(e)=>handleInputChange(e,5)}
+                    onKeyUp={(e)=>handleKeyPress(e,6)}
+                    onClick={() => handleClick(6)}
+                    onChange={(e)=>handleInputChange(e,6)}
                     style={{
                       width: formData.subcategory?.length > 0 ? "33px!important" : "137.062px"
                     }}
@@ -565,7 +621,7 @@ const filteredsubcat = subcategory?.filter(option =>
               <div className="chosen-drop">
                 <ul className="chosen-results">
                   {filteredsubcat?.map(option =>(
-                  <li key={option} onClick={() => handleOptionClick(option,5)}  className="active-result" data-option-array-index={0}>
+                  <li key={option} onClick={() => handleOptionClick(option,6)}  className="active-result" data-option-array-index={0}>
                     {option}
                   </li>
                   ))}

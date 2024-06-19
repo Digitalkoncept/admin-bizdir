@@ -8,15 +8,24 @@ export default withAuth(
   async function middleware(req,res) {
     
     const Token = req.nextauth?.token.jwt;
-    
+    console.log("middlware running",Token)
+    const publicFile = /\.(.*)$/.test(req.nextUrl.pathname);
+    if (req.nextUrl.pathname.startsWith("/login") || publicFile) {
+      return NextResponse.next();
+    }
+
+    // Exclude static files from being intercepted by middleware
+    if (req.nextUrl.pathname.startsWith("/_next") || req.nextUrl.pathname.startsWith("/api")) {
+      return NextResponse.next();
+    }
       if (Token === undefined) {
         console.log("token undefined")
-        return NextResponse.redirect(new URL('/login',req.url));
+        return NextResponse.redirect(new URL('/login'));
       }
       try {
         // Verify the token using jwt.verify method
         const verifiedToken =  await verifyAuth(Token);// Replace "your-secret-key" with your actual secret key
-        // console.log("token verification ",verifiedToken)
+        console.log("token verification ",verifiedToken)
         const routePermission = {
           '/all-employee':'All Employee',
           '/create-employee':'Create Employee',
@@ -42,11 +51,11 @@ export default withAuth(
         console.error("An error occurred:", error);
         console.log(error)
         // Redirect the user to a specific page when the token is not verified
-        return NextResponse.redirect(new URL('/login',req.url) );
+        return NextResponse.redirect(new URL('/login') );
       }
     },
   
 );
 
 
-export const config = { matcher: [ '/((?!login).*)'] }
+export const config = { matcher: [ '/((?!login|api|_next/static|_next/image|favicon.ico|/public/:path))'] }

@@ -656,8 +656,6 @@ a:hover {
 }
 .login-reg{
     padding: 90px 0 100px 0;
-    background: #ffeee5;
-    background: linear-gradient(to bottom,#fff,#ffeee5 70%);
 }
 .login-main{-webkit-box-shadow: 0 5px 5px 0 rgba(154,160,185,.05), 0 5px 30px 0 rgba(166,173,201,.22);
     box-shadow: 0 5px 5px 0 rgba(154,160,185,.05), 0 5px 30px 0 rgba(166,173,201,.22);
@@ -690,12 +688,14 @@ a:hover {
 .login-reg .tit p{}
 .log div button.btn{
     width: 100%;
-    background: #ffa778;
-    border: 0px;
+    background: #12b347;
+    background: #4c7af1;
+    background-image: linear-gradient(300deg, #4c21f8, #cb20e0 95%);
+    border: 0;
     font-weight: 600;
     font-size: 17px;
-    padding: 10px 0px;
-    border-radius: 50px;
+    padding: 10px 0;
+    border-radius: 5px;
 }
 .log div a.btn{
     width: 100%;
@@ -754,7 +754,7 @@ a:hover {
 .fil-img-uplo .dumfil:before{content:'file_upload';left:20px;top:6px;letter-spacing:0;color:#567492;transition:all .4s ease}
 .fil-img-uplo input[type="file"]{z-index:7;position:absolute;top:0;left:0;right:0;opacity:0;cursor:pointer}
 .fil-img-uplo button{z-index:7;position:absolute;top:0;left:0;right:0;opacity:0;cursor:pointer;height: 42px;}
-.add-list label{font-size:13.5px;font-weight:600;color:#454858;text-transform:uppercase}
+.add-list label{font-size:13.5px;font-weight:600;color:#454858;}
 label.error {
     color: #ff1d1d !important;
     font-size: 11px !important;
@@ -2483,14 +2483,14 @@ html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:activ
 }
 .hcat-cho{}
 .hcat-cho img{width: 75px;height: 75px;object-fit: cover;border-radius: 10px;transition: all 0.5s ease;}
-.hcat-cho img:hover{transform: scale(2);
+.hcat-cho img:hover{transform: scale(1.2);
     box-shadow: 0px 1px 12px 0px rgba(150,150,150,0.8);}
 .add-list.add-ncate ul li{
     border: 1px solid #f7eae3;
     margin-bottom: 40px;
     padding: 30px 30px 15px 30px;
     border-radius: 2px;
-    background: #fff8f5;
+    background: #f8f9fb;
 }
 .add-list.add-ncate ul li .row{padding-bottom: 15px;}
 .add-list.add-ncate .log div button.btn{margin-top:0px;}
