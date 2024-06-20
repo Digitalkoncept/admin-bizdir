@@ -13,7 +13,6 @@ const SubcategoryForm = ({ data, handleInputChange,handleTagKeyPress,tagInput,ta
                 name="subcategory_name"
                 className="form-control"
                 placeholder="Category name *"
-                // required
                 
                 value={data.subcategory_name}
                 onChange={(e) => handleInputChange(data.id, e)}
@@ -24,7 +23,7 @@ const SubcategoryForm = ({ data, handleInputChange,handleTagKeyPress,tagInput,ta
             <div className="form-group">
               <div
                 className="chosen-container chosen-container-multi"
-                // title
+                title
                 id="city_id_chosen"
                 style={{ width: 640 }}
               >
