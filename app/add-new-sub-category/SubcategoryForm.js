@@ -1,6 +1,6 @@
 import React from "react";
 
-const SubcategoryForm = ({ data, handleDataChange }) => {
+const SubcategoryForm = ({ data, handleInputChange,handleTagKeyPress,tagInput,tagInputRef,handleRemove }) => {
   return (
     <ul>
       <li>
@@ -13,27 +13,50 @@ const SubcategoryForm = ({ data, handleDataChange }) => {
                 name="subcategory_name"
                 className="form-control"
                 placeholder="Category name *"
-                required
+                
                 value={data.subcategory_name}
-                onChange={(e) =>
-                  handleDataChange(data.id, e.target.name, e.target.value)
-                }
+                onChange={(e) => handleInputChange(data.id, e)}
               />
             </div>
           </div>
           <div className="col-md-12">
             <div className="form-group">
-              <label>Create tags</label>
-              <input
-                type="input"
-                name="image"
-                id="category_image"
-                className="form-control"
-                value={data.image}
-                onChange={(e) =>
-                  handleDataChange(data.id, e.target.name, e.target.value)
-                }
-              />
+              <div
+                className="chosen-container chosen-container-multi"
+                title
+                id="city_id_chosen"
+                style={{ width: 640 }}
+              >
+                <ul className="chosen-choices">
+                  {data?.tags?.length > 0 &&
+                    data?.tags.map((option, index) => {
+                      return (
+                        <li key={index} className="search-choice">
+                          <span>{option}</span>
+                          <a
+                            onClick={() => handleRemove(data.id,index)}
+                            onKeyUp={(e) => handleTagKeyPress(data.id, e)}
+                            className="search-choice-close"
+                            data-option-array-index={0}
+                          />
+                        </li>
+                      );
+                    })}
+                  <li className="search-field">
+                    <input
+                      className="chosen-search-input default"
+                      type="text"
+                      placeholder="enter tags"
+                      autoComplete="off"
+                      value={tagInput}
+                      ref={tagInputRef}
+                      name="tag"
+                      onChange={(e) => handleInputChange(data.id,e)}
+                      onKeyUp={(e) => handleTagKeyPress(data.id, e)}
+                    />
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
