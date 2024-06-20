@@ -5,6 +5,8 @@ import React, { useEffect, useState,useRef } from "react";
 import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import SubcategoryForm from "./SubcategoryForm";
+import { toast } from "react-toastify";
+import SubcategoryForm from "./SubcategoryForm";
 
 const page = () => {
   const [loading, setLoading] = useState(false);
@@ -172,6 +174,7 @@ const page = () => {
                         data-toggle="tooltip"
                         title="Click to make additional category"
                         onClick={handleAddSubcategory}
+                        onClick={handleAddSubcategory}
                       >
                         +
                       </span>
@@ -179,6 +182,7 @@ const page = () => {
                         className="add-list-rem-btn cate-rem-btn"
                         data-toggle="tooltip"
                         title="Click to remove last category"
+                        onClick={handleRemoveSubcategory}
                         onClick={handleRemoveSubcategory}
                       >
                         -
@@ -216,6 +220,8 @@ const page = () => {
                         >
                           {subcategory.map((cat) => (
                             <SubcategoryForm
+                          {subcategory.map((cat) => (
+                            <SubcategoryForm
                               key={cat.id}
                               data={cat}
                               tagInput={tagInput}
@@ -225,6 +231,7 @@ const page = () => {
                               handleTagKeyPress={handleTagKeyPress}
                               handleInputChange={handleInputChange}
                             />
+                          ))}
                           ))}
                           <button
                             type="button"
