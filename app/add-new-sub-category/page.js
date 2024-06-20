@@ -3,10 +3,19 @@ import { client } from "@/lib/apollo";
 import { GET_CATEGORIES_NAME } from "@/lib/query";
 import React, { useEffect, useState } from "react";
 import { MutatingDots } from "react-loader-spinner";
+import { toast } from "react-toastify";
+import SubcategoryForm from "./SubcategoryForm";
 
 const page = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [subcategory, setSubcategory] = useState([
+    {
+      id: 0,
+      subcategory_name: "",
+      tags: [],
+    },
+  ]);
 
   const getCategories = async () => {
     try {
@@ -28,6 +37,80 @@ const page = () => {
   useEffect(() => {
     getCategories();
   }, [])
+
+  const handleRemoveSubcategory = () => {
+    if (subcategory.length <= 1) {
+      toast.warn("You cannot remove the last one!");
+      return;
+    }
+
+    const newSubcategories = [...subcategory];
+    newSubcategories.pop();
+
+    setSubcategory(newSubcategories);
+  };
+
+  const handleAddSubcategory = () => {
+    if (subcategory.length > 10) {
+      toast.warn("Max Limit reached");
+      return;
+    }
+
+    const newSubcategory = {
+      id: (subcategory[subcategory.length - 1].id || 0) + 1,
+      subcategory_name: "",
+      image: "",
+    };
+
+    setSubcategory([...subcategory, newSubcategory]);
+  };
+
+  const handleDataChange = (id, target, value) => {
+    const newSubcategories = setCategories.map((cat) => {
+      if (cat.id === id) cat[target] = value;
+      return cat;
+    });
+
+    setSubcategory(newSubcategories);
+  };
+
+  const addCategory = async (formData) => {
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: CREATE_CATEGORY,
+        variables: { data: formData },
+        // context: {
+        //   headers: {
+        //     Authorization: `Bearer ${session.jwt}`,
+        //   },
+        // },
+      });
+
+      if (errors || data.createCategory.code !== 201) {
+        throw new Error("Something went wrong");
+      }
+
+      console.log(data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    for (let cat of category) {
+      const { id, ...data } = cat;
+
+      console.log(data);
+      addCategory(data);
+    }
+
+    setTimeout(() => {
+      setLoading(false)
+    }, 2000)
+  };
+
   return (
     <section>
       <div className="ad-com">
@@ -45,7 +128,7 @@ const page = () => {
                         className="add-list-add-btn cate-add-btn"
                         data-toggle="tooltip"
                         title="Click to make additional category"
-                        // onClick={handleAddSubcategory}
+                        onClick={handleAddSubcategory}
                       >
                         +
                       </span>
@@ -53,7 +136,7 @@ const page = () => {
                         className="add-list-rem-btn cate-rem-btn"
                         data-toggle="tooltip"
                         title="Click to remove last category"
-                        // onClick={handleRemoveCategory}
+                        onClick={handleRemoveSubcategory}
                       >
                         -
                       </span>
@@ -91,13 +174,13 @@ const page = () => {
                           encType="multipart/form-data"
                           //   onSubmit={handleSubmit}
                         >
-                          {/* {category.map((cat) => (
-                            <CategoryForm
+                          {subcategory.map((cat) => (
+                            <SubcategoryForm
                               key={cat.id}
                               data={cat}
                               handleDataChange={handleDataChange}
                             />
-                          ))} */}
+                          ))}
                           <button
                             type="submit"
                             name="category_submit"
