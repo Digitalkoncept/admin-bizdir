@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import SubcategoryForm from "./SubcategoryForm";
+import { CREATE_SUB_CATEGORY, UPDATE_CATEGORY } from "@/lib/mutation";
 
 const page = () => {
   const [loading, setLoading] = useState(false);
@@ -16,6 +17,7 @@ const page = () => {
       tags: [],
     },
   ]);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const getCategories = async () => {
     try {
@@ -28,7 +30,6 @@ const page = () => {
       }
 
       setCategories(data.getAllCategories.categories);
-      console.log(data);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -36,7 +37,7 @@ const page = () => {
 
   useEffect(() => {
     getCategories();
-  }, [])
+  }, []);
 
   const handleRemoveSubcategory = () => {
     if (subcategory.length <= 1) {
@@ -66,7 +67,7 @@ const page = () => {
   };
 
   const handleDataChange = (id, target, value) => {
-    const newSubcategories = setCategories.map((cat) => {
+    const newSubcategories = subcategory.map((cat) => {
       if (cat.id === id) cat[target] = value;
       return cat;
     });
@@ -74,10 +75,33 @@ const page = () => {
     setSubcategory(newSubcategories);
   };
 
-  const addCategory = async (formData) => {
+  const addSubToCategory = async (subcategoryIdArray) => {
     try {
       const { data, errors } = await client.mutate({
-        mutation: CREATE_CATEGORY,
+        mutation: UPDATE_CATEGORY,
+        variables: { id: selectedCategory, subcategories: subcategoryIdArray },
+        // context: {
+        //   headers: {
+        //     Authorization: `Bearer ${session.jwt}`,
+        //   },
+        // },
+      });
+
+      if (errors || data.updateCategory.code !== 200) {
+        throw new Error(errors);
+      }
+
+      return data.updateCategory.success;
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      return false;
+    }
+  };
+
+  const createSubcategory = async (formData) => {
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: CREATE_SUB_CATEGORY,
         variables: { data: formData },
         // context: {
         //   headers: {
@@ -86,29 +110,42 @@ const page = () => {
         // },
       });
 
-      if (errors || data.createCategory.code !== 201) {
-        throw new Error("Something went wrong");
+      if (errors || data.createSubcategory.code !== 201) {
+        throw new Error(errors);
       }
 
-      console.log(data);
+      return data.createSubcategory.subcategory._id;
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error: ", error);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    for (let cat of category) {
-      const { id, ...data } = cat;
 
-      console.log(data);
-      addCategory(data);
+    if (!"") console.log(true)
+    if (!selectedCategory && subcategory[0].subcategory_name){
+      toast.warn("Please fill the boxes before submitting!")
+      return;
     }
 
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000)
+    setLoading(true);
+
+    let arr = [];
+    for (let cat of subcategory) {
+      const { id, ...data } = cat;
+
+      const subcategoryId = await createSubcategory(data);
+      arr.push(subcategoryId);
+    }
+
+    const res = await addSubToCategory(arr);
+
+    if (res) {
+      toast.success("Created Successfully!");
+      setLoading(false);
+      return arr;
+    } else toast.error("Some went wrong!");
   };
 
   return (
@@ -144,11 +181,14 @@ const page = () => {
                       <div className="form-group">
                         <div className="pl-0 mb-3">
                           <select
-                            // onChange={handleChange}
-                            // value={formData.role || ""}
+                            onChange={(e) =>
+                              setSelectedCategory(e.target.value)
+                            }
+                            value={selectedCategory}
                             name="category"
                             id="category_id"
                             className="form-control"
+                            // required
                           >
                             <option value>Select Category</option>
                             {categories?.map((cat) => (
@@ -172,7 +212,7 @@ const page = () => {
                           action="insert_category.html"
                           className="cre-dup-form cre-dup-form-show"
                           encType="multipart/form-data"
-                          //   onSubmit={handleSubmit}
+                          onSubmit={handleSubmit}
                         >
                           {subcategory.map((cat) => (
                             <SubcategoryForm

@@ -13,7 +13,7 @@ const SubcategoryForm = ({ data, handleDataChange }) => {
                 name="subcategory_name"
                 className="form-control"
                 placeholder="Category name *"
-                required
+                // required
                 value={data.subcategory_name}
                 onChange={(e) =>
                   handleDataChange(data.id, e.target.name, e.target.value)
