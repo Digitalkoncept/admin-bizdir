@@ -31,10 +31,10 @@ const page = () => {
     subcategory:[],
     area:"",
     city:"",
-    service_type:"",
     category: "",
     gallery_images:[],
-    subcategory: [],
+    subcategory: "",
+    tags:[],
     listing_detail: "",
     service_location: [],
     service_provided: [],
@@ -69,7 +69,9 @@ const page = () => {
     if (!formData.category) {
       newErrors.category = "Category is Required";
     }
-
+    if(!formData.subcategory){
+      newErrors.subcategory = "Subcategory is Required"
+    }
     if (!formData.listing_detail) {
       newErrors.listing_detail = "listing detail is Required";
     }
