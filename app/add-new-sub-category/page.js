@@ -1,96 +1,33 @@
 "use client";
-import React, { useState } from "react";
-import { toast } from "react-toastify";
-import CategoryForm from "./CategoryForm";
 import { client } from "@/lib/apollo";
-import { CREATE_CATEGORY } from "@/lib/mutation";
+import { GET_CATEGORIES_NAME } from "@/lib/query";
+import React, { useEffect, useState } from "react";
 import { MutatingDots } from "react-loader-spinner";
 
 const page = () => {
-  const [category, setCategory] = useState([
-    {
-      id: 0,
-      category_name: "",
-      image: "",
-    },
-  ]);
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
 
-  const handleRemoveCategory = () => {
-    if (category.length <= 1) {
-      toast.warn("You cannot remove the last one!");
-      return;
-    }
-
-    const newCategories = [...category];
-    newCategories.pop();
-
-    setCategory(newCategories);
-  };
-
-  const handleAddCategory = () => {
-    if (category.length > 10) {
-      toast.warn("Max Limit reached");
-      return;
-    }
-
-    const newCategory = {
-      id: (category[category.length - 1].id || 0) + 1,
-      category_name: "",
-      image: "",
-    };
-
-    setCategory([...category, newCategory]);
-  };
-
-  const handleDataChange = (id, target, value) => {
-    const newCategories = category.map((cat) => {
-      if (cat.id === id) cat[target] = value;
-      return cat;
-    });
-
-    setCategory(newCategories);
-  };
-
-  const addCategory = async (formData) => {
+  const getCategories = async () => {
     try {
-      const { data, errors } = await client.mutate({
-        mutation: CREATE_CATEGORY,
-        variables: { data: formData },
-        // context: {
-        //   headers: {
-        //     Authorization: `Bearer ${session.jwt}`,
-        //   },
-        // },
+      const { data, errors } = await client.query({
+        query: GET_CATEGORIES_NAME,
       });
 
-      if (errors || data.createCategory.code !== 201) {
+      if (errors || data.getAllCategories.code !== 200) {
         throw new Error("Something went wrong");
       }
+
+      setCategories(data.getAllCategories.categories);
       console.log(data);
-      return true;
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    let res;
-    for (let cat of category) {
-      const { id, ...data } = cat;
-
-      console.log(data);
-     res =  await  addCategory(data);
-  }
-  if(res){
-    toast.success("category created successfully!")
-  }
-
-    setLoading(false);
-  };
-
+  useEffect(() => {
+    getCategories();
+  }, [])
   return (
     <section>
       <div className="ad-com">
@@ -100,15 +37,15 @@ const page = () => {
               <div className="row">
                 <div className="login-main add-list add-ncate">
                   <div className="log-bor">&nbsp;</div>
-                  <span className="udb-inst">New Listing Category</span>
+                  <span className="udb-inst">New Listing Subcategory</span>
                   <div className="log log-1">
                     <div className="login">
-                      <h4>Add New Category</h4>
+                      <h4>Add New Subcategory</h4>
                       <span
                         className="add-list-add-btn cate-add-btn"
                         data-toggle="tooltip"
                         title="Click to make additional category"
-                        onClick={handleAddCategory}
+                        // onClick={handleAddSubcategory}
                       >
                         +
                       </span>
@@ -116,11 +53,29 @@ const page = () => {
                         className="add-list-rem-btn cate-rem-btn"
                         data-toggle="tooltip"
                         title="Click to remove last category"
-                        onClick={handleRemoveCategory}
+                        // onClick={handleRemoveCategory}
                       >
                         -
                       </span>
 
+                      <div className="form-group">
+                        <div className="pl-0 mb-3">
+                          <select
+                            // onChange={handleChange}
+                            // value={formData.role || ""}
+                            name="category"
+                            id="category_id"
+                            className="form-control"
+                          >
+                            <option value>Select Category</option>
+                            {categories?.map((cat) => (
+                              <option key={cat._id} value={cat._id}>
+                                {cat.category_name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
                       {loading ? (
                         <div>
                           <MutatingDots />
@@ -134,15 +89,15 @@ const page = () => {
                           action="insert_category.html"
                           className="cre-dup-form cre-dup-form-show"
                           encType="multipart/form-data"
-                          onSubmit={handleSubmit}
+                          //   onSubmit={handleSubmit}
                         >
-                          {category.map((cat) => (
+                          {/* {category.map((cat) => (
                             <CategoryForm
                               key={cat.id}
                               data={cat}
                               handleDataChange={handleDataChange}
                             />
-                          ))}
+                          ))} */}
                           <button
                             type="submit"
                             name="category_submit"

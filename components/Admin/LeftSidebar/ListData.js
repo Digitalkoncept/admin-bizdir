@@ -59,6 +59,29 @@ export const SidebarData = [
     ],
   },
   {
+    title: "Category",
+    path: "#",
+    class: "ic-li",
+    subNav: [
+      {
+        name: "Listing Category",
+        path: "/all-category",
+      },
+      {
+        name: "Add Listing Category",
+        path: "/add-new-category",
+      },
+      {
+        name: "Listing Sub Category",
+        path: "/all-sub-category",
+      },
+      {
+        name: "Add Listing Sub Category",
+        path: "/add-new-sub-category",
+      },
+    ],
+  },
+  {
     title: "Events",
     path: "#",
     class: "ic-eve",
