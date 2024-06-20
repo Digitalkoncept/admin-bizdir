@@ -192,6 +192,7 @@ const page = () => {
           tags: [],
         },
       ]);
+      setSelectedCategory("");
       setLoading(false);
     } else toast.error("Some went wrong!");
   };
@@ -277,10 +278,6 @@ const page = () => {
                             name="category_submit"
                             className="btn btn-primary"
                             onClick={handleSubmit}
-                            disabled={
-                              selectedCategory &&
-                              subcategory[0].subcategory_name
-                            }
                           >
                             Submit
                           </button>
