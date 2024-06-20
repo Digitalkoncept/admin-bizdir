@@ -4,7 +4,7 @@ import Link from "next/link";
 import Location_Filter from "@/components/Location_Filter";
 import { toast } from "react-toastify";
 import { CldUploadWidget } from "next-cloudinary";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { client } from "@/lib/apollo";
@@ -24,8 +24,8 @@ const page = () => {
     whatsapp_number: "",
     website: "",
     listing_address: "",
-    listing_image:"",
-    cover_image:"",
+    listing_image: "",
+    cover_image: "",
     country: "",
     state:"",
     subcategory:[],
@@ -41,46 +41,44 @@ const page = () => {
     youtube_link: "",
     map_url: "",
   });
- 
 
   const [errors, setErrors] = useState({});
   const validate = () => {
     const newErrors = {};
     if (!formData.listing_name) {
-      newErrors.listing_name = 'Listing Name is Required';
+      newErrors.listing_name = "Listing Name is Required";
     }
     if (!formData.phone_number) {
-      newErrors.phone_number = 'Phone Number is Required';
+      newErrors.phone_number = "Phone Number is Required";
     }
     if (!formData.listing_address) {
-      newErrors.listing_address = 'shop address is Required';
+      newErrors.listing_address = "shop address is Required";
     }
     if (!formData.country) {
-      newErrors.country = 'country is Required';
+      newErrors.country = "country is Required";
     }
     if (!formData.state) {
-      newErrors.state = 'State is Required';
+      newErrors.state = "State is Required";
     }
     if (!formData.city) {
-      newErrors.city = 'city is Required';
+      newErrors.city = "city is Required";
     }
     if (!formData.area) {
-      newErrors.area = 'area is Required';
+      newErrors.area = "area is Required";
     }
     if (!formData.category) {
-      newErrors.category = 'Category is Required';
+      newErrors.category = "Category is Required";
     }
-  
+
     if (!formData.listing_detail) {
-      newErrors.listing_detail = 'listing detail is Required';
+      newErrors.listing_detail = "listing detail is Required";
     }
     // Add other validation as needed
-  
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
- 
-  
+
   const handleAddInput = () => {
     setInputCount(inputCount + 1);
   };
@@ -99,7 +97,7 @@ const page = () => {
   };
   const handleInputChange = (event, index) => {
     const { name, value } = event.target;
-     if (name === "service_location") {
+    if (name === "service_location") {
       // Update service_location with the array of locations
       const locationsArray = value.split(",");
       setFormData((prevFormData) => ({
@@ -144,10 +142,10 @@ const page = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const jwt = session.jwt;
-  
+
     try {
       // Send GraphQL mutation request to create a listing
-      if(validate()){
+      if (validate()) {
         const { data, errors } = await client.mutate({
           mutation: CREATE_CLAIMABLE_LISTING,
           variables: { data: formData },
@@ -157,23 +155,22 @@ const page = () => {
             },
           },
         });
-    
+
         if (errors || data.createClaimableListing.code !== 201) {
-          throw new Error('Something went wrong');
+          throw new Error("Something went wrong");
         }
-    
-        toast.success('Listing created successfully');
-        router.push('/admin-all-listings');
+
+        toast.success("Listing created successfully");
+        router.push("/admin-all-listings");
         console.log(data);
-      } else{
+      } else {
         toast.error("Please fill all required fields");
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
       // Handle error
     }
   };
-
 
   return (
     <section>
@@ -195,7 +192,7 @@ const page = () => {
                       <div className="login">
                         <h4>Listing Details</h4>
                         {/*FILED START*/}
-                        
+
                         <div className="row">
                           <div className="col-md-12">
                             <div className="form-group">
@@ -208,7 +205,7 @@ const page = () => {
                                 className="form-control"
                                 placeholder="Listing name *"
                               />
-                                 {errors.listing_name && (
+                              {errors.listing_name && (
                                 <label htmlFor="listing_name" className="error">
                                   {errors.listing_name}
                                 </label>
@@ -229,7 +226,7 @@ const page = () => {
                                 className="form-control"
                                 placeholder="Phone number *"
                               />
-                                 {errors.phone_number && (
+                              {errors.phone_number && (
                                 <label htmlFor="phone_number" className="error">
                                   {errors.phone_number}
                                 </label>
@@ -295,7 +292,10 @@ const page = () => {
                                 placeholder="Shop address *"
                               />
                               {errors.listing_address && (
-                                <label htmlFor="listing_address" className="error">
+                                <label
+                                  htmlFor="listing_address"
+                                  className="error"
+                                >
                                   {errors.listing_address}
                                 </label>
                               )}
@@ -346,7 +346,10 @@ const page = () => {
                                 placeholder="Details about your listing"
                               />
                               {errors.listing_detail && (
-                                <label htmlFor="listing_detail" className="error">
+                                <label
+                                  htmlFor="listing_detail"
+                                  className="error"
+                                >
                                   {errors.listing_detail}
                                 </label>
                               )}
@@ -365,7 +368,7 @@ const page = () => {
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
                                   onSuccess={(result, { widget }) => {
-                                    setFormData(prevFormData => ({
+                                    setFormData((prevFormData) => ({
                                       ...prevFormData,
                                       listing_image: result?.info?.secure_url,
                                     }));
@@ -399,7 +402,7 @@ const page = () => {
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
                                   onSuccess={(result, { widget }) => {
-                                    setFormData(prevFormData => ({
+                                    setFormData((prevFormData) => ({
                                       ...prevFormData,
                                       cover_image: result?.info?.secure_url,
                                     }));
@@ -412,7 +415,10 @@ const page = () => {
                                       open();
                                     }
                                     return (
-                                      <button type="button" onClick={handleOnClick}>
+                                      <button
+                                        type="button"
+                                        onClick={handleOnClick}
+                                      >
                                         upload image
                                       </button>
                                     );
@@ -595,7 +601,6 @@ const page = () => {
                             {/*FILED END*/}
                           </li>
                         </ul>
-                    
                       </div>
                     </div>
                   </div>
@@ -678,7 +683,6 @@ const page = () => {
                     </div>
                   </div>
                 </div>
-                
               </form>
             </div>
           </div>
