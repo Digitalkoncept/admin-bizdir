@@ -1,7 +1,7 @@
 "use client";
 import { client } from "@/lib/apollo";
 import { GET_CATEGORIES_NAME } from "@/lib/query";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import SubcategoryForm from "./SubcategoryForm";
@@ -18,6 +18,8 @@ const page = () => {
     },
   ]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [tagInput, setTagInput] = useState("");
+  const tagInputRef = useRef(null);
 
   const getCategories = async () => {
     try {
@@ -66,12 +68,53 @@ const page = () => {
     setSubcategory([...subcategory, newSubcategory]);
   };
 
-  const handleDataChange = (id, target, value) => {
+  const handleInputChange = (id, e) => {
+    const { name, value } = e.target;
     const newSubcategories = subcategory.map((cat) => {
-      if (cat.id === id) cat[target] = value;
+      if (name === "tag") {
+        setTagInput(value);
+        console.log(tagInput);
+      } else if (cat.id === id) {
+        cat[name] = value;
+      }
+      console.log(subcategory);
       return cat;
     });
 
+    setSubcategory(newSubcategories);
+  };
+
+  const handleTagKeyPress = (id, e) => {
+    if (e.key === "Enter" && tagInput.trim()) {
+      console.log("function is running");
+      e.preventDefault();
+      const newSubcategories = subcategory.map((cat) => {
+        if (cat.id === id) {
+          cat.tags.push(tagInput.trim());
+        }
+        return cat;
+      });
+      setSubcategory(newSubcategories);
+      setTagInput("");
+    } else if (e.key === "Backspace" && tagInput === "") {
+      e.preventDefault(); // Prevent default backspace action
+      const newSubcategories = subcategory.map((cat) => {
+        if (cat.id === id && cat.tags.length > 0) {
+          cat.tags.pop(); // Remove the last tag
+        }
+        return cat;
+      });
+      setSubcategory(newSubcategories);
+    }
+  };
+
+  const handleRemove = (catId, tagIndex) => {
+    const newSubcategories = subcategory.map((cat) => {
+      if (cat.id === catId) {
+        cat.tags.splice(tagIndex, 1);
+      }
+      return cat;
+    });
     setSubcategory(newSubcategories);
   };
 
@@ -123,9 +166,8 @@ const page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!"") console.log(true)
-    if (!selectedCategory && subcategory[0].subcategory_name){
-      toast.warn("Please fill the boxes before submitting!")
+    if (selectedCategory === "" || subcategory[0].subcategory_name === "") {
+      toast.warn("Please fill the boxes before submitting!");
       return;
     }
 
@@ -143,8 +185,14 @@ const page = () => {
 
     if (res) {
       toast.success("Created Successfully!");
+      setSubcategory([
+        {
+          id: 0,
+          subcategory_name: "",
+          tags: [],
+        },
+      ]);
       setLoading(false);
-      return arr;
     } else toast.error("Some went wrong!");
   };
 
@@ -208,23 +256,31 @@ const page = () => {
                         <form
                           name="category_form"
                           id="category_form"
-                          method="post"
-                          action="insert_category.html"
                           className="cre-dup-form cre-dup-form-show"
                           encType="multipart/form-data"
-                          onSubmit={handleSubmit}
+                          // onSubmit={handleSubmit}
                         >
                           {subcategory.map((cat) => (
                             <SubcategoryForm
                               key={cat.id}
                               data={cat}
-                              handleDataChange={handleDataChange}
+                              tagInput={tagInput}
+                              setTagInput={setTagInput}
+                              tagInputRef={tagInputRef}
+                              handleRemove={handleRemove}
+                              handleTagKeyPress={handleTagKeyPress}
+                              handleInputChange={handleInputChange}
                             />
                           ))}
                           <button
-                            type="submit"
+                            type="button"
                             name="category_submit"
                             className="btn btn-primary"
+                            onClick={handleSubmit}
+                            disabled={
+                              selectedCategory &&
+                              subcategory[0].subcategory_name
+                            }
                           >
                             Submit
                           </button>
