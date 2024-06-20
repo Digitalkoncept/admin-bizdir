@@ -1,10 +1,33 @@
 "use client";
-import React, { useState } from "react";
+import { client } from "@/lib/apollo";
+import { GET_CATEGORIES_NAME } from "@/lib/query";
+import React, { useEffect, useState } from "react";
 import { MutatingDots } from "react-loader-spinner";
 
 const page = () => {
-    const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  const getCategories = async () => {
+    try {
+      const { data, errors } = await client.query({
+        query: GET_CATEGORIES_NAME,
+      });
+
+      if (errors || data.getAllCategories.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      setCategories(data.getAllCategories.categories);
+      console.log(data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, [])
   return (
     <section>
       <div className="ad-com">
@@ -35,24 +58,24 @@ const page = () => {
                         -
                       </span>
 
-                      {/* <div className="form-group">
-                        <div className="col-md-6 pl-0">
+                      <div className="form-group">
+                        <div className="pl-0 mb-3">
                           <select
-                            onChange={handleChange}
-                            value={formData.role || ""}
-                            name="role"
+                            // onChange={handleChange}
+                            // value={formData.role || ""}
+                            name="category"
                             id="category_id"
                             className="form-control"
                           >
-                            <option value>Select Role</option>
-                            {roles?.map((role) => (
-                              <option key={role._id} value={role._id}>
-                                {role.role_name}
+                            <option value>Select Category</option>
+                            {categories?.map((cat) => (
+                              <option key={cat._id} value={cat._id}>
+                                {cat.category_name}
                               </option>
                             ))}
                           </select>
                         </div>
-                      </div> */}
+                      </div>
                       {loading ? (
                         <div>
                           <MutatingDots />
