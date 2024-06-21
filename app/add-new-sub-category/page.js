@@ -39,83 +39,44 @@ const page = () => {
     getCategories();
   }, [])
 
-  const handleRemoveSubcategory = () => {
-    if (subcategory.length <= 1) {
-      toast.warn("You cannot remove the last one!");
-      return;
+ 
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'tag') {
+      setTagInput(value);
+    } else {
+      setSubcategory((prevSubcategory) => ({
+        ...prevSubcategory,
+        [name]: value,
+      }));
     }
-
-    const newSubcategories = [...subcategory];
-    newSubcategories.pop();
-
-    setSubcategory(newSubcategories);
   };
-
-  const handleAddSubcategory = () => {
-    if (subcategory.length > 10) {
-      toast.warn("Max Limit reached");
-      return;
-    }
-
-    const newSubcategory = {
-      id: (subcategory[subcategory.length - 1].id || 0) + 1,
-      subcategory_name: "",
-      image: "",
-    };
-
-    setSubcategory([...subcategory, newSubcategory]);
-  };
-
-  const handleInputChange = (id,e) => {
-    const {name,value} = e.target;
-    const newSubcategories = subcategory.map((cat) => {
-      if(name === 'tag'){
-        setTagInput(value);
-        console.log(tagInput)
-      }
-     else if (cat.id === id){
-        cat[name] = value;
-      } 
-      console.log(subcategory)
-      return cat;
-    });
-
-    setSubcategory(newSubcategories);
-  };
-  const handleTagKeyPress = (id, e) => {
+  const handleTagKeyPress = (e) => {
     if (e.key === "Enter" && tagInput.trim()) {
-      console.log("function is running")
-      e.preventDefault()
-      const newSubcategories = subcategory.map((cat) => {
-        if (cat.id === id) {
-          cat.tags.push(tagInput.trim());
-        }
-        return cat;
-      });
-      setSubcategory(newSubcategories);
+      e.preventDefault(); // Prevent default form submission
+      setSubcategory((prevSubcategory) => ({
+        ...prevSubcategory,
+        tags: [...(prevSubcategory.tags || []), tagInput.trim()],
+      }));
       setTagInput("");
-    }
-   else if(e.key === "Backspace" && tagInput === "" ){
-    e.preventDefault(); // Prevent default backspace action
-    const newSubcategories = subcategory.map((cat) => {
-      if (cat.id === id && cat.tags.length > 0) {
-        cat.tags.pop(); // Remove the last tag
-      }
-      return cat;
-    });
-    setSubcategory(newSubcategories);
+      tagInputRef.current.focus(); // Keep the tag input field focused
+    } else if (e.key === "Backspace" && !tagInput) {
+      e.preventDefault(); // Prevent default backspace action
+      setSubcategory((prevSubcategory) => ({
+        ...prevSubcategory,
+        tags: (prevSubcategory.tags || []).slice(0, -1),
+      }));
     }
   };
 
-  const handleRemove = (catId, tagIndex) => {
-    const newSubcategories = subcategory.map((cat) => {
-      if (cat.id === catId) {
-        cat.tags.splice(tagIndex, 1);
-      }
-      return cat;
-    });
-    setSubcategory(newSubcategories);
+  const handleRemove = (tagIndex) => {
+    setSubcategory((prevSubcategory) => ({
+      ...prevSubcategory,
+      tags: (prevSubcategory.tags || []).filter((_, index) => index !== tagIndex),
+    }));
   };
+
 
   const addCategory = async (formData) => {
     try {
@@ -167,23 +128,6 @@ const page = () => {
                   <div className="log log-1">
                     <div className="login">
                       <h4>Add New Subcategory</h4>
-                      <span
-                        className="add-list-add-btn cate-add-btn"
-                        data-toggle="tooltip"
-                        title="Click to make additional category"
-                        onClick={handleAddSubcategory}
-                      >
-                        +
-                      </span>
-                      <span
-                        className="add-list-rem-btn cate-rem-btn"
-                        data-toggle="tooltip"
-                        title="Click to remove last category"
-                        onClick={handleRemoveSubcategory}
-                      >
-                        -
-                      </span>
-
                       <div className="form-group">
                         <div className="pl-0 mb-3">
                           <select
@@ -214,10 +158,9 @@ const page = () => {
                           className="cre-dup-form cre-dup-form-show"
                           //   onSubmit={handleSubmit}
                         >
-                          {subcategory.map((cat) => (
+            
                             <SubcategoryForm
-                              key={cat.id}
-                              data={cat}
+                              data={subcategory}
                               tagInput={tagInput}
                               setTagInput={setTagInput}
                               tagInputRef={tagInputRef}
@@ -225,11 +168,12 @@ const page = () => {
                               handleTagKeyPress={handleTagKeyPress}
                               handleInputChange={handleInputChange}
                             />
-                          ))}
+                         
                           <button
                             type="button"
                             name="category_submit"
                             className="btn btn-primary"
+                            onClick={handleSubmit}
                           >
                             Submit
                           </button>
