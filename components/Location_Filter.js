@@ -513,7 +513,7 @@ const filteredtags = tags?.filter(option =>
                     className="chosen-search-input valid"
                     type="text"
                     autoComplete="off"
-                    name="service_type"
+                    name="category"
                     value={searchCat}
                     onChange={(e)=>handleInputChange(e,4)}
                   />
@@ -618,7 +618,7 @@ const filteredtags = tags?.filter(option =>
                     }}
                     value={searchtag}
                     autoComplete="off"
-                    placeholder="select sub category"
+                    placeholder="select tags"
                   />
                 </li>
               </ul>
