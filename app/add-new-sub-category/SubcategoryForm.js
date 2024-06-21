@@ -15,7 +15,7 @@ const SubcategoryForm = ({ data, handleInputChange,handleTagKeyPress,tagInput,ta
                 placeholder="Category name *"
                 
                 value={data.subcategory_name}
-                onChange={(e) => handleInputChange(data.id, e)}
+                onChange={(e) => handleInputChange( e)}
               />
             </div>
           </div>
@@ -34,8 +34,8 @@ const SubcategoryForm = ({ data, handleInputChange,handleTagKeyPress,tagInput,ta
                         <li key={index} className="search-choice">
                           <span>{option}</span>
                           <a
-                            onClick={() => handleRemove(data.id,index)}
-                            onKeyUp={(e) => handleTagKeyPress(data.id, e)}
+                            onClick={() => handleRemove(index)}
+                            onKeyUp={(e) => handleTagKeyPress(e)}
                             className="search-choice-close"
                             data-option-array-index={0}
                           />
@@ -51,8 +51,8 @@ const SubcategoryForm = ({ data, handleInputChange,handleTagKeyPress,tagInput,ta
                       value={tagInput}
                       ref={tagInputRef}
                       name="tag"
-                      onChange={(e) => handleInputChange(data.id,e)}
-                      onKeyUp={(e) => handleTagKeyPress(data.id, e)}
+                      onChange={(e) => handleInputChange(e)}
+                      onKeyUp={(e) => handleTagKeyPress(e)}
                     />
                   </li>
                 </ul>
