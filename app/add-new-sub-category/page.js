@@ -1,23 +1,26 @@
 "use client";
 import { client } from "@/lib/apollo";
 import { GET_CATEGORIES_NAME } from "@/lib/query";
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import SubcategoryForm from "./SubcategoryForm";
+import { CREATE_SUB_CATEGORY, UPDATE_CATEGORY } from "@/lib/mutation";
 
 const page = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [subcategory, setSubcategory] = useState([
-    {
-      id: 0,
-      subcategory_name: "",
-      tags: [],
-    },
-  ]);
+  const [subcategory, setSubcategory] = useState({
+    id: 0,
+    subcategory_name: "",
+    tags: [],
+  });
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   const [tagInput, setTagInput] = useState("");
   const tagInputRef = useRef(null);
+
+  // Getting the categories to select
   const getCategories = async () => {
     try {
       const { data, errors } = await client.query({
@@ -37,13 +40,31 @@ const page = () => {
 
   useEffect(() => {
     getCategories();
-  }, [])
+  }, []);
 
- 
+  const handleTagKeyPress = (e) => {
+    if (e.key === "Enter" && tagInput.trim()) {
+      e.preventDefault();
+
+      setSubcategory((prevSubcategory) => ({
+        ...prevSubcategory,
+        tags: [...(prevSubcategory.tags || []), tagInput.trim()],
+      }));
+      setTagInput("");
+      tagInputRef.current.focus();
+    } else if (e.key === "Backspace" && tagInput === "") {
+      e.preventDefault();
+
+      setSubcategory((prevSubcategory) => ({
+        ...prevSubcategory,
+        tags: (prevSubcategory.tags || []).slice(0, -1),
+      }));
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'tag') {
+    if (name === "tag") {
       setTagInput(value);
     } else {
       setSubcategory((prevSubcategory) => ({
@@ -52,36 +73,41 @@ const page = () => {
       }));
     }
   };
-  const handleTagKeyPress = (e) => {
-    if (e.key === "Enter" && tagInput.trim()) {
-      e.preventDefault(); // Prevent default form submission
-      setSubcategory((prevSubcategory) => ({
-        ...prevSubcategory,
-        tags: [...(prevSubcategory.tags || []), tagInput.trim()],
-      }));
-      setTagInput("");
-      tagInputRef.current.focus(); // Keep the tag input field focused
-    } else if (e.key === "Backspace" && !tagInput) {
-      e.preventDefault(); // Prevent default backspace action
-      setSubcategory((prevSubcategory) => ({
-        ...prevSubcategory,
-        tags: (prevSubcategory.tags || []).slice(0, -1),
-      }));
-    }
-  };
 
   const handleRemove = (tagIndex) => {
     setSubcategory((prevSubcategory) => ({
       ...prevSubcategory,
-      tags: (prevSubcategory.tags || []).filter((_, index) => index !== tagIndex),
+      tags: (prevSubcategory.tags || []).filter(
+        (_, index) => index !== tagIndex
+      ),
     }));
   };
 
-
-  const addCategory = async (formData) => {
+  const addSubToCategory = async (subcategoryIdArray) => {
     try {
       const { data, errors } = await client.mutate({
-        mutation: CREATE_CATEGORY,
+        mutation: UPDATE_CATEGORY,
+        variables: { id: selectedCategory, subcategories: subcategoryIdArray },
+        // context: {
+        //   headers: {
+        //     Authorization: `Bearer ${session.jwt}`,
+        //   },
+        // },
+      });
+      if (errors || data.updateCategory.code !== 200) {
+        throw new Error(errors);
+      }
+      return data.updateCategory.success;
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      return false;
+    }
+  };
+
+  const createSubcategory = async (formData) => {
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: CREATE_SUB_CATEGORY,
         variables: { data: formData },
         // context: {
         //   headers: {
@@ -89,30 +115,43 @@ const page = () => {
         //   },
         // },
       });
-
-      if (errors || data.createCategory.code !== 201) {
-        throw new Error("Something went wrong");
-      }
-
       console.log(data);
+
+      if (errors || data.createSubcategory.code !== 201) {
+        throw new Error(data.createSubcategory.message);
+      }
+      return data.createSubcategory.subcategory._id;
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error: ", error);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    for (let cat of category) {
-      const { id, ...data } = cat;
 
-      console.log(data);
-      addCategory(data);
+    if (!selectedCategory && subcategory[0].subcategory_name) {
+      toast.warn("Please fill the boxes before submitting!");
+      return;
     }
+    setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000)
+    console.log(subcategory);
+
+    const { id, ...data } = subcategory;
+    const subcategoryId = await createSubcategory(data);
+
+    const res = await addSubToCategory([subcategoryId]);
+
+    if (res) {
+      toast.success("Created Successfully!");
+      setSubcategory({
+        id: 0,
+        subcategory_name: "",
+        tags: [],
+      });
+      setLoading(false);
+      setSelectedCategory("");
+    } else toast.error("Some went wrong!");
   };
 
   return (
@@ -131,8 +170,10 @@ const page = () => {
                       <div className="form-group">
                         <div className="pl-0 mb-3">
                           <select
-                            // onChange={handleChange}
-                            // value={formData.role || ""}
+                            onChange={(e) =>
+                              setSelectedCategory(e.target.value)
+                            }
+                            value={selectedCategory || ""}
                             name="category"
                             id="category_id"
                             className="form-control"
@@ -158,17 +199,16 @@ const page = () => {
                           className="cre-dup-form cre-dup-form-show"
                           //   onSubmit={handleSubmit}
                         >
-            
-                            <SubcategoryForm
-                              data={subcategory}
-                              tagInput={tagInput}
-                              setTagInput={setTagInput}
-                              tagInputRef={tagInputRef}
-                              handleRemove={handleRemove}
-                              handleTagKeyPress={handleTagKeyPress}
-                              handleInputChange={handleInputChange}
-                            />
-                         
+                          <SubcategoryForm
+                            data={subcategory}
+                            tagInput={tagInput}
+                            setTagInput={setTagInput}
+                            tagInputRef={tagInputRef}
+                            handleRemove={handleRemove}
+                            handleTagKeyPress={handleTagKeyPress}
+                            handleInputChange={handleInputChange}
+                          />
+
                           <button
                             type="button"
                             name="category_submit"
@@ -196,5 +236,4 @@ const page = () => {
     </section>
   );
 };
-
 export default page;
