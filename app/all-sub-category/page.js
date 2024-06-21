@@ -2,6 +2,7 @@
 import { client } from "@/lib/apollo";
 import { DELETE_SUBCATEGORY } from "@/lib/mutation";
 import { GET_ALL_CATEGORY_FOR_TABLE } from "@/lib/query";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const page = () => {
@@ -38,7 +39,7 @@ const page = () => {
       const { data, errors } = await client.mutate({
         mutation: DELETE_SUBCATEGORY,
         variables: { id },
-        fetchPolicy: "no-cache"
+        fetchPolicy: "no-cache",
         // context: {
         //   headers: {
         //     Authorization: `Bearer ${session.jwt}`,
@@ -57,6 +58,7 @@ const page = () => {
       console.error("Error:", error);
     }
   };
+
   return (
     <section>
       <div className="ad-com">
@@ -109,12 +111,12 @@ const page = () => {
                           {/* <td><span className="db-list-ststus" data-toggle="tooltip" title="Total listings in this category">0</span></td> */}
                           <td>{sub.tags?.join(",")}</td>
                           <td>
-                            <a
-                              href={`admin-sub-category-edit.html?row=${sub._id}`}
+                            <Link
+                              href={`/all-sub-category/${cat._id}-${sub._id}`}
                               className="db-list-edit"
                             >
                               Edit
-                            </a>
+                            </Link>
                           </td>
                           <td>
                             <span

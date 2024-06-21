@@ -40,22 +40,6 @@ export const SidebarData = [
         name:"All Claim Request",
         path:"/new-claim-request"
       },
-      {
-        name: "Listing Category",
-        path: "/admin-all-category",
-      },
-      {
-        name: "Add Listing Category",
-        path: "/admin-add-new-category",
-      },
-      {
-        name: "Listing Sub Category",
-        path: "/admin-all-sub-category",
-      },
-      {
-        name: "Add Listing Sub Category",
-        path: "/admin-add-new-sub-category",
-      },
     ],
   },
   {
