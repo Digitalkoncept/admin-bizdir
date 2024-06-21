@@ -1,5 +1,6 @@
 "use client";
 import { client } from "@/lib/apollo";
+import { DELETE_SUBCATEGORY } from "@/lib/mutation";
 import { GET_ALL_CATEGORY_FOR_TABLE } from "@/lib/query";
 import React, { useEffect, useState } from "react";
 
@@ -31,6 +32,31 @@ const page = () => {
   useEffect(() => {
     getCategories();
   }, []);
+
+  const deleteSubcategory = async (id) => {
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: DELETE_SUBCATEGORY,
+        variables: { id },
+        fetchPolicy: "no-cache"
+        // context: {
+        //   headers: {
+        //     Authorization: `Bearer ${session.jwt}`,
+        //   },
+        // },
+      });
+
+      if (errors || data.deleteSubcategory.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      toast.success("Subcategory deleted successfully!");
+
+      getCategories();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   return (
     <section>
       <div className="ad-com">
@@ -65,10 +91,10 @@ const page = () => {
                 </thead>
                 <tbody>
                   {categories.map((cat) => {
-                    return cat.subcategories.map((sub) => {
+                    return cat.subcategories.map((sub, idx) => {
                       return (
-                        <tr key={sub._id}>
-                          <td>1</td>
+                        <tr key={`${sub._id}-${idx}`}>
+                          <td>{idx + 1}</td>
                           <td>
                             <b className="db-list-rat">
                               {sub.subcategory_name}
@@ -91,12 +117,12 @@ const page = () => {
                             </a>
                           </td>
                           <td>
-                            <a
-                              href={`admin-sub-category-delete.html?row=${sub._id}`}
+                            <span
                               className="db-list-edit"
+                              onClick={() => deleteSubcategory(sub._id)}
                             >
                               Delete
-                            </a>
+                            </span>
                           </td>
                         </tr>
                       );
