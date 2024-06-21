@@ -12,6 +12,7 @@ import { CREATE_CLAIMABLE_LISTING } from "@/lib/mutation";
 import UploadGallery from "@/components/Layout/UploadGallery";
 const page = () => {
   const { data: session } = useSession();
+  const [success,setSuccess] = useState(false);
  const router = useRouter();
  
   const [inputCount, setInputCount] = useState(1);
@@ -365,7 +366,7 @@ const page = () => {
                             <div className="form-group">
                               <label>Choose profile image</label>
                               <div className="fil-img-uplo">
-                                <span className="dumfil">{selectprofile ? selectprofile: 'Upload a file'}</span>
+                                <span className={`dumfil ${selectprofile ? '!text-green-600':''}`}>{selectprofile ? selectprofile: 'Upload a file'}</span>
                                 <CldUploadWidget
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
@@ -374,6 +375,8 @@ const page = () => {
                                       ...prevFormData,
                                       listing_image: result?.info?.secure_url,
                                     }));
+                                    toast.success("your image uploaded successfully!")
+                                    console.log(result)
                                     setSelectProfile(result?.info?.original_filename)
                                     widget.close();
                                   }}
@@ -664,7 +667,7 @@ const page = () => {
 
                         {/*FILED END*/}
                           <UploadGallery formData={formData} setFormData={setFormData} />
-                        <div class="row">
+                        <div className="row">
                           <div className="col-md-6">
                             <button
                               onClick={() => handleStepClick(4)}
