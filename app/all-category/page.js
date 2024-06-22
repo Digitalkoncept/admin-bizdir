@@ -1,6 +1,8 @@
 "use client";
 import { client } from "@/lib/apollo";
+import { DELETE_CATEGORY } from "@/lib/mutation";
 import { GET_ALL_CATEGORY_FOR_TABLE } from "@/lib/query";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const page = () => {
@@ -31,6 +33,60 @@ const page = () => {
   useEffect(() => {
     getCategories();
   }, []);
+
+  // const filterCategories = (text) => {
+  //   let collection = {
+  //     categories: [],
+  //     subcategories: [],
+  //     tags: [],
+  //   };
+
+  //   for (let cat of categories) {
+  //     if (cat.category_name) collection.categories.push(cat.category_name);
+
+  //     if (cat.subcategories) {
+  //       for (let sub of cat.subcategories) {
+  //         if (sub.subcategory_name)
+  //           collection.subcategories.push(sub.subcategory_name);
+
+  //         if (sub.tags) {
+  //           for (let tag of sub.tags) {
+  //             collection.tags.push(tag);
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   for (let [key, value] of Object.entries(collection)) {
+      
+  //   }
+  // };
+
+  const deleteCategory = async (id) => {
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: DELETE_CATEGORY,
+        variables: { id },
+        fetchPolicy: "no-cache",
+        // context: {
+        //   headers: {
+        //     Authorization: `Bearer ${session.jwt}`,
+        //   },
+        // },
+      });
+
+      if (errors || data.deleteSubcategory.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      toast.success("Subcategory deleted successfully!");
+
+      getCategories();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <section>
@@ -83,7 +139,7 @@ const page = () => {
                             "Image not available"
                           )}
                         </td>
-                        <td>{cat.createdAt}</td>
+                        <td>{new Date(cat.createdAt).toLocaleDateString()}</td>
                         {/* <td>
                           <span
                             className="db-list-ststus"
@@ -99,12 +155,12 @@ const page = () => {
                           </span>
                         </td>
                         <td>
-                          <a
-                            href="admin-category-edit.html?row=19"
+                          <Link
+                            href={`/all-category/${cat._id}`}
                             className="db-list-edit"
                           >
                             Edit
-                          </a>
+                          </Link>
                         </td>
                         {/* <td>
                           <a
@@ -115,12 +171,12 @@ const page = () => {
                           </a>
                         </td> */}
                         <td>
-                          <a
-                            href="admin-category-delete.html?row=19"
+                          <span
+                            onClick={() => deleteCategory(cat._id)}
                             className="db-list-edit"
                           >
                             Delete
-                          </a>
+                          </span>
                         </td>
                       </tr>
                     );
