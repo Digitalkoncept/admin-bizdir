@@ -1,7 +1,7 @@
 
 
 @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap');
-@font-face{font-family:'Material Icons';font-weight:400;font-style:normal;font-display: swap;unicode-range: U+000-5FF;src:url("/icon.woff2") format("woff2")}
+@font-face{src:url("/icon.woff2") format("woff2"); font-family:'Material Icons';font-weight:400;font-style:normal;font-display: swap;unicode-range: U+000-5FF}
 body{
     color: #3e4676;
     background-color: #f5f6fa;

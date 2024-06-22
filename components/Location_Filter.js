@@ -152,6 +152,9 @@ const [searchtag, setSearchSubTag] = useState('');
     } else if (number === 5){
       setSearchSubCat(value)
     }
+    else if (number ===6){
+      setSearchSubTag(value)
+    }
     setSelect((prevState) => ({
         ...prevState,
         isVisible: true

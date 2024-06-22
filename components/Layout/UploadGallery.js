@@ -1,5 +1,6 @@
 import React,{useState} from "react";
 import { CldUploadWidget } from "next-cloudinary";
+import { toast } from "react-toastify";
 const UploadGallery = ({formData,setFormData}) => {
     const [image,setImage] = useState({
         name1:null,
@@ -19,10 +20,11 @@ const UploadGallery = ({formData,setFormData}) => {
             <div className="form-group">
               <label>Choose Gallery image {index + 1}</label>
               <div className="fil-img-uplo">
-              <span className="dumfil">
+              <span className={`dumfil ${image[`name${index + 1}`] ? '!text-green-600':''} `}>
               {image[`name${index + 1}`] ? image[`name${index + 1}`] : 'Upload a file'}
               </span>
                 <CldUploadWidget
+                  key={index + 1}
                   signatureEndpoint="/api/sign-cloudinary-params"
                   uploadPreset="listing_image"
                   onSuccess={(result, { widget }) => {
@@ -33,12 +35,14 @@ const UploadGallery = ({formData,setFormData}) => {
                         result?.info?.secure_url,
                       ],
                     }));
+                    toast.success("your image uploaded successfully!")
                     setImage((prevFormData) => ({
                         ...prevFormData,
                         [`name${index + 1}`]:result?.info?.original_filename
                       }));
                       console.log(result?.info)
                     widget.close();
+                    document.body.style.overflow = '';
                   }}
                 >
                   {({ open }) => {
