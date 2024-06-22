@@ -112,7 +112,7 @@ const [searchtag, setSearchSubTag] = useState('');
     fetchData();
   }, [searchState,searchCity]);
   
-  const country = ["India","Usa"]
+  const country = ["India"]
 
   const [select, setSelect] = useState({
     num: null,

@@ -39,6 +39,7 @@ const page = () => {
     listing_detail: "",
     service_location: [],
     service_provided: [],
+    offers:{offer_name:"",offer_price:"",offer_description:""},
     youtube_link: "",
     map_url: "",
   });
@@ -127,7 +128,16 @@ const page = () => {
         ...prevFormData,
         service_provided: updatedServiceProvided,
       }));
-    } else {
+    }else if(name === "offer_name" || name === "offer_price" || name === "offer_description"){
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        offers: {
+          ...prevFormData.offers, // Spread the existing offers object
+          [name]: value           // Update the specific field
+        }
+      }));
+    }
+     else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value,
@@ -563,7 +573,7 @@ const page = () => {
                                 <div className="form-group">
                                   <input
                                     type="text"
-                                    name="price"
+                                    name="offer_price"
                                     className="form-control"
                                     onKeyDown={(e) => !isNaN(e.target.value)}
                                     placeholder="Price"
@@ -580,7 +590,7 @@ const page = () => {
                                 <div className="form-group">
                                   <textarea
                                     className="form-control"
-                                    name="description"
+                                    name="offer_description"
                                     placeholder="Details about this offer"
                                     value={formData.offers?.description}
                                     onChange={handleInputChange}

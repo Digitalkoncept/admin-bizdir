@@ -60,6 +60,7 @@ const page = () => {
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_USERS,
+        fetchPolicy: 'no-cache',
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -233,14 +234,14 @@ const page = () => {
                           <td
                             className={`${
                               item.user_status === "Active" ||
-                              item.user_status === "Inactive"
+                              item.user_status === "Inactive" || item.user_status ==="Enabled"
                                 ? "!text-green-600"
                                 : "!text-[#fd5b5b]"
                             }`}
                           >
                             {item.user_status}{" "}
                             {item.user_status === "Active" ||
-                            item.user_status === "Inactive" ? (
+                            item.user_status === "Inactive" || item.user_status === "Enabled" ? (
                               <span
                                 className="db-list-edit"
                                 onClick={() => disableUser(item._id, item.name)}
