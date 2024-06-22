@@ -402,7 +402,7 @@ const page = () => {
                             <div className="form-group">
                               <label>Choose cover image</label>
                               <div className="fil-img-uplo">
-                                <span className="dumfil">{selectcover ? selectcover:' Upload a file'}</span>
+                                <span className={`dumfil ${selectcover ? '!text-green-600':''}`}>{selectcover ? selectcover:' Upload a file'}</span>
                                 <CldUploadWidget
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
@@ -411,6 +411,7 @@ const page = () => {
                                       ...prevFormData,
                                       cover_image: result?.info?.secure_url,
                                     }));
+                                    toast.success("your image uploaded successfully!")
                                     setSelectCover(result?.info?.original_filename)
                                     widget.close();
                                   }}

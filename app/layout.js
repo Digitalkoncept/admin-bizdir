@@ -25,7 +25,7 @@ export default function RootLayout({ children, session }) {
     <SessionProvider session={session}>
      
         <html>
-          <body>
+          <body className="!overflow-auto">
             <div>
               {!hideSidebar && (
                 <>
