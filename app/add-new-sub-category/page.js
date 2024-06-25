@@ -43,6 +43,7 @@ const page = () => {
   }, []);
 
   const handleTagKeyPress = (e) => {
+    console.log('tag input =>',tagInput.trim().length)
     if (e.key === "Enter" && tagInput.trim()) {
       e.preventDefault();
 
@@ -52,9 +53,8 @@ const page = () => {
       }));
       setTagInput("");
       tagInputRef.current.focus();
-    } else if (e.key === "Backspace" && tagInput === "") {
+    } else if (e.key === "Backspace" && tagInput.trim().length === 0) {
       e.preventDefault();
-
       setSubcategory((prevSubcategory) => ({
         ...prevSubcategory,
         tags: (prevSubcategory.tags || []).slice(0, -1),
@@ -66,6 +66,7 @@ const page = () => {
     const { name, value } = e.target;
     if (name === "tag") {
       setTagInput(value);
+      console.log("tag input =>",tagInput)
     } else {
       setSubcategory((prevSubcategory) => ({
         ...prevSubcategory,

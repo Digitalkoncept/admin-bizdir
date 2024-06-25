@@ -50,8 +50,8 @@ const SubcategoryForm = ({ data, handleInputChange,handleTagKeyPress,tagInput,ta
                       value={tagInput}
                       ref={tagInputRef}
                       name="tag"
-                      onChange={(e) => handleInputChange(e)}
                       onKeyUp={(e) => handleTagKeyPress(e)}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </li>
                 </ul>

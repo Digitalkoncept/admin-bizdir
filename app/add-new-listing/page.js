@@ -12,12 +12,13 @@ import { CREATE_CLAIMABLE_LISTING } from "@/lib/mutation";
 import UploadGallery from "@/components/Layout/UploadGallery";
 const page = () => {
   const { data: session } = useSession();
-  const [success,setSuccess] = useState(false);
- const router = useRouter();
- 
+  const [success, setSuccess] = useState(false);
+  const router = useRouter();
+
   const [inputCount, setInputCount] = useState(1);
-  const [selectprofile,setSelectProfile] =  useState();
- const [selectcover,setSelectCover] = useState();
+  const [selectprofile, setSelectProfile] = useState();
+  const [selectoffer, setSelectOffer] = useState();
+  const [selectcover, setSelectCover] = useState();
   const [formData, setFormData] = useState({
     listing_name: "",
     phone_number: "",
@@ -28,18 +29,24 @@ const page = () => {
     listing_image: "",
     cover_image: "",
     country: "",
-    state:"",
-    subcategory:[],
-    area:"",
-    city:"",
+    state: "",
+    subcategory: [],
+    area: "",
+    city: "",
     category: "",
-    gallery_images:[],
+    gallery_images: [],
     subcategory: "",
-    tags:[],
+    tags: [],
     listing_detail: "",
     service_location: [],
     service_provided: [],
-    offers:{offer_name:"",offer_price:"",offer_description:""},
+    offer: {
+      offer_name: "",
+      offer_amount: "",
+      offer_description: "",
+      offer_type:"percent",
+      offer_image: "",
+    },
     youtube_link: "",
     map_url: "",
   });
@@ -71,8 +78,8 @@ const page = () => {
     if (!formData.category) {
       newErrors.category = "Category is Required";
     }
-    if(!formData.subcategory){
-      newErrors.subcategory = "Subcategory is Required"
+    if (!formData.subcategory) {
+      newErrors.subcategory = "Subcategory is Required";
     }
     if (!formData.listing_detail) {
       newErrors.listing_detail = "listing detail is Required";
@@ -128,16 +135,20 @@ const page = () => {
         ...prevFormData,
         service_provided: updatedServiceProvided,
       }));
-    }else if(name === "offer_name" || name === "offer_price" || name === "offer_description"){
+    } else if (
+      name === "offer_name" ||
+      name === "offer_amount" ||
+      name === "offer_description" ||
+      name === "offer_type"
+    ) {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        offers: {
-          ...prevFormData.offers, // Spread the existing offers object
-          [name]: value           // Update the specific field
-        }
+        offer: {
+          ...prevFormData.offer, // Spread the existing offers object
+          [name]: value, // Update the specific field
+        },
       }));
-    }
-     else {
+    } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value,
@@ -145,11 +156,11 @@ const page = () => {
       if (value) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          [name]: '',
+          [name]: "",
         }));
       }
     }
-    
+
     console.log(formData);
   };
   const handleSubmit = async (event) => {
@@ -376,7 +387,15 @@ const page = () => {
                             <div className="form-group">
                               <label>Choose profile image</label>
                               <div className="fil-img-uplo">
-                                <span className={`dumfil ${selectprofile ? '!text-green-600':''}`}>{selectprofile ? selectprofile: 'Upload a file'}</span>
+                                <span
+                                  className={`dumfil ${
+                                    selectprofile ? "!text-green-600" : ""
+                                  }`}
+                                >
+                                  {selectprofile
+                                    ? selectprofile
+                                    : "Upload a file"}
+                                </span>
                                 <CldUploadWidget
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
@@ -385,9 +404,13 @@ const page = () => {
                                       ...prevFormData,
                                       listing_image: result?.info?.secure_url,
                                     }));
-                                    toast.success("your image uploaded successfully!")
-                                    console.log(result)
-                                    setSelectProfile(result?.info?.original_filename)
+                                    toast.success(
+                                      "your image uploaded successfully!"
+                                    );
+                                    console.log(result);
+                                    setSelectProfile(
+                                      result?.info?.original_filename
+                                    );
                                     widget.close();
                                   }}
                                 >
@@ -412,7 +435,13 @@ const page = () => {
                             <div className="form-group">
                               <label>Choose cover image</label>
                               <div className="fil-img-uplo">
-                                <span className={`dumfil ${selectcover ? '!text-green-600':''}`}>{selectcover ? selectcover:' Upload a file'}</span>
+                                <span
+                                  className={`dumfil ${
+                                    selectcover ? "!text-green-600" : ""
+                                  }`}
+                                >
+                                  {selectcover ? selectcover : " Upload a file"}
+                                </span>
                                 <CldUploadWidget
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
@@ -421,8 +450,12 @@ const page = () => {
                                       ...prevFormData,
                                       cover_image: result?.info?.secure_url,
                                     }));
-                                    toast.success("your image uploaded successfully!")
-                                    setSelectCover(result?.info?.original_filename)
+                                    toast.success(
+                                      "your image uploaded successfully!"
+                                    );
+                                    setSelectCover(
+                                      result?.info?.original_filename
+                                    );
                                     widget.close();
                                   }}
                                 >
@@ -557,32 +590,41 @@ const page = () => {
                           <li>
                             {/*FILED START*/}
                             <div className="row">
-                              <div className="col-md-6">
+                              <div className="col-md-5">
                                 <div className="form-group">
                                   <input
                                     type="text"
                                     name="offer_name"
                                     className="form-control"
                                     placeholder="Offer name *"
-                                    value={formData.offers?.offer_name}
+                                    value={formData.offer?.offer_name}
                                     onChange={handleInputChange}
                                   />
                                 </div>
                               </div>
-                              <div className="col-md-6">
+                              <div className="col-md-4">
                                 <div className="form-group">
                                   <input
                                     type="text"
-                                    name="offer_price"
+                                    name="offer_amount"
                                     className="form-control"
-                                    onKeyDown={(e) => !isNaN(e.target.value)}
-                                    placeholder="Price"
-                                    value={formData.offers?.price}
+                                    placeholder="amount"
+                                    value={formData.offer?.amount}
                                     onChange={handleInputChange}
                                   />
                                 </div>
                               </div>
+                              <div className="col-md-3">
+                              <div className="form-group">
+                            <select name="offer_type" required="required"  value={formData.offer.offer_type} onChange={handleInputChange}  className="form-control !w-[60px] ">
+                              <option value="percent"> %</option>
+                              <option value="flate"> ₹</option>
+                              
+                            </select>
+                          </div>
+                              </div>
                             </div>
+                            
                             {/*FILED END*/}
                             {/*FILED START*/}
                             <div className="row">
@@ -592,7 +634,7 @@ const page = () => {
                                     className="form-control"
                                     name="offer_description"
                                     placeholder="Details about this offer"
-                                    value={formData.offers?.description}
+                                    value={formData.offer?.description}
                                     onChange={handleInputChange}
                                   />
                                 </div>
@@ -603,12 +645,52 @@ const page = () => {
                             <div className="row">
                               <div className="col-md-12">
                                 <div className="form-group">
-                                  <label>Choose offer image</label>
-                                  <input
-                                    type="file"
-                                    name="service_1_image[]"
-                                    className="form-control"
-                                  />
+                                  <label>Choose profile image</label>
+                                  <div className="fil-img-uplo">
+                                    <span
+                                      className={`dumfil ${
+                                        selectoffer ? "!text-green-600" : ""
+                                      }`}
+                                    >
+                                      {selectoffer
+                                        ? selectoffer
+                                        : "Upload a file"}
+                                    </span>
+                                    <CldUploadWidget
+                                      signatureEndpoint="/api/sign-cloudinary-params"
+                                      uploadPreset="listing_image"
+                                      onSuccess={(result, { widget }) => {
+                                        setFormData((prevFormData) => ({
+                                          ...prevFormData,
+                                          offer: {
+                                            ...prevFormData.offer, // Spread the existing offers object
+                                            offer_image:  result?.info?.secure_url, // Update the specific field
+                                          },
+                                        }));
+                                        toast.success(
+                                          "your image uploaded successfully!"
+                                        );
+                                        setSelectOffer(
+                                          result?.info?.original_filename
+                                        );
+                                        widget.close();
+                                      }}
+                                    >
+                                      {({ open }) => {
+                                        function handleOnClick() {
+                                          open();
+                                        }
+                                        return (
+                                          <button
+                                            type="button"
+                                            onClick={handleOnClick}
+                                          >
+                                            upload image
+                                          </button>
+                                        );
+                                      }}
+                                    </CldUploadWidget>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -677,7 +759,10 @@ const page = () => {
                         {/*FILED START*/}
 
                         {/*FILED END*/}
-                          <UploadGallery formData={formData} setFormData={setFormData} />
+                        <UploadGallery
+                          formData={formData}
+                          setFormData={setFormData}
+                        />
                         <div className="row">
                           <div className="col-md-6">
                             <button
