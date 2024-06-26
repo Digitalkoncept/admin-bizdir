@@ -5,6 +5,7 @@ import CategoryForm from "./CategoryForm";
 import { client } from "@/lib/apollo";
 import { CREATE_CATEGORY } from "@/lib/mutation";
 import { MutatingDots } from "react-loader-spinner";
+import Link from "next/link";
 
 const page = () => {
   const [category, setCategory] = useState([
@@ -82,11 +83,11 @@ const page = () => {
       const { id, ...data } = cat;
 
       console.log(data);
-     res =  await  addCategory(data);
-  }
-  if(res){
-    toast.success("category created successfully!")
-  }
+      res = await addCategory(data);
+    }
+    if (res) {
+      toast.success("category created successfully!");
+    }
 
     setLoading(false);
   };
@@ -154,9 +155,9 @@ const page = () => {
                       )}
 
                       <div className="col-md-12">
-                        <a href="admin-all-category.html" className="skip">
+                        <Link href="/all-category" className="skip">
                           Go to All Listing Category &gt;&gt;
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>

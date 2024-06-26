@@ -168,8 +168,6 @@ const Table = ({ page, handleTotalPages }) => {
   };
 
   const enableListing = async (id) => {
-    
-
     try {
       const { data, errors } = await client.mutate({
         mutation: UPDATE_LISTING,
@@ -243,7 +241,9 @@ const Table = ({ page, handleTotalPages }) => {
                     <span className="db-list-rat">{listing.views}</span>
                   </td>
                   <td>
-                    <span className="db-list-ststus">{listing.user_name}</span>
+                    <span className="db-list-ststus">
+                      {listing.createdBy?.name || listing.user_name}
+                    </span>
                   </td>
                   <td>
                     <span className="db-list-ststus">
