@@ -2,6 +2,7 @@
 import { client } from "@/lib/apollo";
 import { DELETE_CATEGORY } from "@/lib/mutation";
 import { GET_ALL_CATEGORY_FOR_TABLE } from "@/lib/query";
+import { CldImage } from 'next-cloudinary';
 import { toast } from "react-toastify";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -139,10 +140,12 @@ const page = () => {
                         </td>
                         <td>
                           {cat.image ? (
-                            <img
-                              src="../images/services/48466ser4.jpg"
-                              alt=""
-                            />
+                             <CldImage
+                             width="75"
+                             height="75"
+                             src={cat?.image}
+                             alt="Description of my image"
+                           />
                           ) : (
                             "Image not available"
                           )}

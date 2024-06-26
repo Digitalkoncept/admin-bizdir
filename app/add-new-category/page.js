@@ -141,6 +141,7 @@ const page = () => {
                             <CategoryForm
                               key={cat.id}
                               data={cat}
+                              setCategory={setCategory}
                               handleDataChange={handleDataChange}
                             />
                           ))}

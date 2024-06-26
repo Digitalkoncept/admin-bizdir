@@ -1,7 +1,8 @@
 import { CldUploadWidget } from "next-cloudinary";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-const CategoryForm = ({ data, handleDataChange }) => {
+const CategoryForm = ({ data, handleDataChange, setCategory }) => {
   const [selectprofile, setSelectProfile] = useState();
   return (
     <ul>
@@ -47,10 +48,11 @@ const CategoryForm = ({ data, handleDataChange }) => {
                   signatureEndpoint="/api/sign-cloudinary-params"
                   uploadPreset="listing_image"
                   onSuccess={(result, { widget }) => {
-                    setFormData((prevFormData) => ({
-                      ...prevFormData,
-                      listing_image: result?.info?.secure_url,
-                    }));
+                    handleDataChange(
+                      data.id,
+                      "image",
+                      result?.info?.secure_url
+                    );
                     toast.success("your image uploaded successfully!");
                     console.log(result);
                     setSelectProfile(result?.info?.original_filename);
