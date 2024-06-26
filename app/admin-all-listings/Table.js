@@ -24,29 +24,7 @@ const Table = ({ page, handleTotalPages }) => {
   };
 
   const getListingData = async () => {
-    // try {
-    //   setLoading(true);
-
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + "/api/listing",
-    //     {
-    //       headers: {
-    //         authorization: "Bearer " + session.jwt,
-    //       },
-    //     }
-    //   );
-
-    //   const data = await res.json();
-
-    //   setListingData(data);
-
-    //   handleTotalPages(Math.ceil(data.length / PAGE_COUNT));
-
-    //   setLoading(false);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
+   
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_LISTING,
@@ -123,26 +101,6 @@ const Table = ({ page, handleTotalPages }) => {
   };
 
   const disableListing = async (id) => {
-    // try {
-    //   const res = await fetch(process.env.BACKEND_URL + `/api/listing/${id}`, {
-    //     method: "PATCH",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       authorization: "Bearer " + session.jwt,
-    //     },
-    //     body: JSON.stringify({ listing_status: "Disabled" }),
-    //   });
-    //   if (res.status === 200) {
-    //     const data = await res.json();
-    //     getListingData();
-    //     toast.success("listing disabled successfully!");
-    //   } else {
-    //     console.error("Failed to disable Listing");
-    //     // Handle error
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
 
     try {
       const { data, errors } = await client.mutate({
@@ -208,10 +166,10 @@ const Table = ({ page, handleTotalPages }) => {
             <tr>
               <th>No</th>
               <th>Listing Name</th>
-              <th>Rating</th>
               <th>Views</th>
               <th>Created by</th>
               <th>Approved by</th>
+              <th>Edit</th>
               <th>Delete</th>
               <th>Disable/Enable</th>
               <th>Preview</th>
@@ -249,6 +207,14 @@ const Table = ({ page, handleTotalPages }) => {
                     <span className="db-list-ststus">
                       {listing?.approval_by?.role}
                     </span>
+                  </td>
+                  <td>
+                    <Link
+                      href={`/update-listing/${listing._id}`}
+                      className="db-list-edit"
+                    >
+                      Edit
+                    </Link>
                   </td>
                   <td className="relative">
                     <span
