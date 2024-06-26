@@ -13,34 +13,10 @@ const page = ({ params }) => {
   const { data: session } = useSession();
 
   const getListing = async () => {
-    // try {
-    //   setLoading(true);
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + `/api/listing/${params.id}`,
-    //     {
-    //       headers: {
-    //         authorization: "Bearer " + session.jwt,
-    //       },
-    //     }
-    //   );
-
-    //   const data = await res.json();
-    //   setListing(data);
-    //   console.log(data);
-    //   setLoading(false);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
     try {
       const { data, errors } = await client.query({
         query: GET_LISTING_BY_ID,
         variables: { id: params.id },
-        context: {
-          headers: {
-            Authorization: `Bearer ${session.jwt}`,
-          },
-        },
       });
 
       if (errors || data.getListing.code !== 200) {
