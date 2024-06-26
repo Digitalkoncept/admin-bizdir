@@ -5,8 +5,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import SubcategoryForm from "./SubcategoryForm";
-import { CREATE_SUB_CATEGORY, UPDATE_CATEGORY } from "@/lib/mutation";
-import { useParams } from "next/navigation";
+import {
+  UPDATE_SUB_CATEGORY,
+} from "@/lib/mutation";
+import { useParams,useRouter } from "next/navigation";
 
 const page = () => {
   const [loading, setLoading] = useState(false);
@@ -17,13 +19,14 @@ const page = () => {
     tags: [],
   });
 
+  const router = useRouter();
+
   const params = useParams();
   const splitIds = params.id.split("-");
 
   const [tagInput, setTagInput] = useState("");
   const tagInputRef = useRef(null);
 
-  // Getting the categories to select
   const getCategory = async () => {
     try {
       const { data, errors } = await client.query({
@@ -31,7 +34,6 @@ const page = () => {
         variables: { id: splitIds[0] },
       });
 
-      
       if (errors || data.getCategory.code !== 200) {
         throw new Error("Something went wrong");
       }
@@ -39,23 +41,19 @@ const page = () => {
       const foundCategory = cat.subcategories.find(
         (val) => val._id === splitIds[1]
       );
-      console.log(data, params.id, foundCategory);
 
-      setSubcategory({
-        category: cat.category_name,
+      setSubcategory((prevState) => ({
+        category: cat._id,
         subcategory_name: foundCategory.subcategory_name,
         tags: foundCategory.tags,
-      });
-
-      console.log(data);
-
-      // console.log("sub => ", subcategory);
+      }));
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
-  const getCategories = async () => {
+  // Getting the categories to select
+  const getAllCategories = async () => {
     try {
       const { data, errors } = await client.query({
         query: GET_CATEGORIES_NAME,
@@ -66,7 +64,7 @@ const page = () => {
       }
 
       setCategories(data.getAllCategories.categories);
-      console.log(data);
+      console.log("all categories", data);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -74,7 +72,7 @@ const page = () => {
 
   useEffect(() => {
     getCategory();
-    getCategories();
+    getAllCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -119,43 +117,22 @@ const page = () => {
     }));
   };
 
-  const updateSubcategory = async (formData) => {
-    try {
-      const { data, errors } = await client.mutate({
-        mutation: CREATE_SUB_CATEGORY,
-        variables: { data: formData },
-        // context: {
-        //   headers: {
-        //     Authorization: `Bearer ${session.jwt}`,
-        //   },
-        // },
-      });
-      console.log(data);
-
-      if (errors || data.createSubcategory.code !== 201) {
-        throw new Error(data.createSubcategory.message);
-      }
-      return data.createSubcategory.subcategory._id;
-    } catch (error) {
-      console.error("Error: ", error);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (subcategory.subcategory_name) {
+    if (!subcategory.subcategory_name) {
       toast.warn("Please fill the boxes before submitting!");
       return;
     }
 
     try {
       const { data, errors } = await client.mutate({
-        mutation: UPDATE_CATEGORY,
+        mutation: UPDATE_SUB_CATEGORY,
         variables: {
-          id: params.id,
-          categoryName: category.category_name,
-          tags: category.tags,
+          subcategoryId: splitIds[1],
+          newCategoryId: subcategory.category,
+          subcategory_name: subcategory.subcategory_name,
+          tags: subcategory.tags,
         },
         // context: {
         //   headers: {
@@ -163,18 +140,22 @@ const page = () => {
         //   },
         // },
       });
+      console.log(data);
 
-      if (errors || data.updateCategory.code !== 200) {
-        throw new Error("Something went wrong");
+      if (errors || data.updateSubcategory.code !== 200) {
+        throw new Error(data.updateSubcategory.message);
       }
 
-      toast.success("Category updated successfully!");
       console.log(data);
+      toast.success("Updated Successfully!");
+
+      router.push(`/all-sub-category`)
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error: ", error);
     }
   };
 
+  console.log(subcategory);
   return (
     <section>
       <div className="ad-com">
@@ -187,19 +168,21 @@ const page = () => {
                   <span className="udb-inst">New Listing Subcategory</span>
                   <div className="log log-1">
                     <div className="login">
-                      <h4>Add New Subcategory</h4>
+                      <h4>Update Subcategory</h4>
                       <div className="form-group">
-                        <div className="pl-0 mb-3">
+                        <div className="pl-0 mb-3 border">
                           <select
                             onChange={(e) =>
-                              setSelectedCategory(e.target.value)
+                              setSubcategory({
+                                ...subcategory,
+                                category: e.target.value,
+                              })
                             }
-                            value={subcategory.category || ""}
+                            value={subcategory?.category}
                             name="category"
                             id="category_id"
                             className="form-control"
                           >
-                            <option value>Select Category</option>
                             {categories?.map((cat) => (
                               <option key={cat._id} value={cat._id}>
                                 {cat.category_name}
