@@ -138,7 +138,11 @@ export const SidebarData = [
     class: "ic-enq",
     subNav: [
       {
-        name: "All Enquiry",
+        name: "Company Enquiry",
+        path: "/admin-all-enquiry",
+      },
+      {
+        name: "Client Enquiry",
         path: "/admin-all-enquiry",
       },
     ],

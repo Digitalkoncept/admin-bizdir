@@ -30,7 +30,6 @@ const page = () => {
     cover_image: "",
     country: "",
     state: "",
-    subcategory: [],
     area: "",
     city: "",
     category: "",
