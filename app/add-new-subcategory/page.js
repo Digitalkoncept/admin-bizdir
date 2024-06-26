@@ -1,6 +1,7 @@
 "use client";
 import { client } from "@/lib/apollo";
 import { GET_CATEGORIES_NAME } from "@/lib/query";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { MutatingDots } from "react-loader-spinner";
 
@@ -109,9 +110,9 @@ const page = () => {
                       )}
 
                       <div className="col-md-12">
-                        <a href="admin-all-category.html" className="skip">
-                          Go to All Listing Category &gt;&gt;
-                        </a>
+                      <Link href="/all-sub-category" className="skip">
+                          Go to All Sub Category &gt;&gt;
+                        </Link>
                       </div>
                     </div>
                   </div>

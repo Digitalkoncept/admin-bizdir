@@ -5,10 +5,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import SubcategoryForm from "./SubcategoryForm";
-import {
-  UPDATE_SUB_CATEGORY,
-} from "@/lib/mutation";
-import { useParams,useRouter } from "next/navigation";
+import { UPDATE_SUB_CATEGORY } from "@/lib/mutation";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 const page = () => {
   const [loading, setLoading] = useState(false);
@@ -149,7 +148,7 @@ const page = () => {
       console.log(data);
       toast.success("Updated Successfully!");
 
-      router.push(`/all-sub-category`)
+      router.push(`/all-sub-category`);
     } catch (error) {
       console.error("Error: ", error);
     }
@@ -225,9 +224,9 @@ const page = () => {
                       )}
 
                       <div className="col-md-12">
-                        <a href="admin-all-category.html" className="skip">
-                          Go to All Listing Category &gt;&gt;
-                        </a>
+                        <Link href="/all-sub-category" className="skip">
+                          Go to All Sub Category &gt;&gt;
+                        </Link>
                       </div>
                     </div>
                   </div>

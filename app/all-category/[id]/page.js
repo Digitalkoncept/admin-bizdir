@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CategoryForm from "./CategoryForm";
 import { client } from "@/lib/apollo";
-import {  UPDATE_CATEGORY } from "@/lib/mutation";
+import { UPDATE_CATEGORY } from "@/lib/mutation";
 import { MutatingDots } from "react-loader-spinner";
 import { GET_CATEGORY } from "@/lib/query";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 const page = () => {
   const [category, setCategory] = useState({});
@@ -76,8 +77,6 @@ const page = () => {
     }
   };
 
-
-
   return (
     <section>
       <div className="ad-com">
@@ -114,11 +113,11 @@ const page = () => {
                         </button>
                       </form>
 
-                      {/* <div className="col-md-12">
-                        <a href="admin-all-category.html" className="skip">
+                      <div className="col-md-12">
+                        <Link href="/all-category" className="skip">
                           Go to All Listing Category &gt;&gt;
-                        </a>
-                      </div> */}
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -2,7 +2,7 @@
 import { client } from "@/lib/apollo";
 import { DELETE_CATEGORY } from "@/lib/mutation";
 import { GET_ALL_CATEGORY_FOR_TABLE } from "@/lib/query";
-import { CldImage } from 'next-cloudinary';
+import { CldImage } from "next-cloudinary";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ const page = () => {
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_CATEGORY_FOR_TABLE,
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
         // context: {
         //   headers: {
         //     Authorization: `Bearer ${session.jwt}`,
@@ -69,11 +69,11 @@ const page = () => {
   //   }
 
   //   for (let [key, value] of Object.entries(collection)) {
-      
+
   //   }
   // };
 
-  const deleteCategory = async (e,id) => {
+  const deleteCategory = async (e, id) => {
     e.preventDefault();
     try {
       const { data, errors } = await client.mutate({
@@ -114,7 +114,7 @@ const page = () => {
                 />
               </div>
               <Link href="/add-new-category" className="db-tit-btn">
-                Add New  Category
+                Add New Category
               </Link>
               <table className="responsive-table bordered" id="pg-resu">
                 <thead>
@@ -140,14 +140,14 @@ const page = () => {
                         </td>
                         <td>
                           {cat.image ? (
-                             <CldImage
-                             width="75"
-                             height="75"
-                             src={cat?.image}
-                             alt="Description of my image"
-                           />
+                            <CldImage
+                              width="75"
+                              height="75"
+                              src={cat?.image}
+                              alt="Description of my image"
+                            />
                           ) : (
-                            "Image not available"
+                            <img src="/cat-default.png" alt="" />
                           )}
                         </td>
                         <td>{new Date(cat.createdAt).toLocaleDateString()}</td>
@@ -189,54 +189,56 @@ const page = () => {
                             Delete
                           </span>
                           {showModal && showModal._id === cat._id && (
-                      <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
-                        <div className="mx-auto box-border w-[180px] border bg-white p-2">
-                          <div className="flex items-center justify-between relative">
-                            <button
-                              onClick={closeModal}
-                              className="cursor-pointer border rounded-[4px] absolute right-0"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-[15px] w-[15px] text-[#64748B]"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
-                          </div>
-                          <form id="approvalForm">
-                            <label
-                              htmlFor="description"
-                              className="block mb-2 text-sm font-medium text-gray-900 text-center "
-                            >
-                              you want to delete this listing
-                            </label>
-                            <div className="my-2 flex  justify-around ">
-                              <button
-                                onClick={closeModal}
-                                className="w-[50px] cursor-pointer rounded-[4px] bg-green-700 px-1 py-[6px] text-center font-base text-xs text-white"
-                              >
-                                close
-                              </button>
-                              <button
-                                onClick={(e) => deleteCategory(e,cat._id)}
-                                className="w-[50px] cursor-pointer rounded-[4px] bg-red-700 px-1 py-[6px] text-center font-base text-xs text-white"
-                              >
-                                delete
-                              </button>
+                            <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
+                              <div className="mx-auto box-border w-[180px] border bg-white p-2">
+                                <div className="flex items-center justify-between relative">
+                                  <button
+                                    onClick={closeModal}
+                                    className="cursor-pointer border rounded-[4px] absolute right-0"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-[15px] w-[15px] text-[#64748B]"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <form id="approvalForm">
+                                  <label
+                                    htmlFor="description"
+                                    className="block mb-2 text-sm font-medium text-gray-900 text-center "
+                                  >
+                                    you want to delete this listing
+                                  </label>
+                                  <div className="my-2 flex  justify-around ">
+                                    <button
+                                      onClick={closeModal}
+                                      className="w-[50px] cursor-pointer rounded-[4px] bg-green-700 px-1 py-[6px] text-center font-base text-xs text-white"
+                                    >
+                                      close
+                                    </button>
+                                    <button
+                                      onClick={(e) =>
+                                        deleteCategory(e, cat._id)
+                                      }
+                                      className="w-[50px] cursor-pointer rounded-[4px] bg-red-700 px-1 py-[6px] text-center font-base text-xs text-white"
+                                    >
+                                      delete
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
                             </div>
-                          </form>
-                        </div>
-                      </div>
-                    )}
+                          )}
                         </td>
                       </tr>
                     );
