@@ -8,7 +8,7 @@ export default withAuth(
   async function middleware(req,res) {
     
     const Token = req.nextauth?.token.jwt;
-    console.log("middlware running",Token)
+    // console.log("middlware running",Token)
     const publicFile = /\.(.*)$/.test(req.nextUrl.pathname);
     if (req.nextUrl.pathname.startsWith("/login") || publicFile) {
       return NextResponse.next();
@@ -25,7 +25,7 @@ export default withAuth(
       try {
         // Verify the token using jwt.verify method
         const verifiedToken =  await verifyAuth(Token);// Replace "your-secret-key" with your actual secret key
-        console.log("token verification ",verifiedToken)
+        // console.log("token verification ",verifiedToken)
         const routePermission = {
           '/all-employee':'All Employee',
           '/create-employee':'Create Employee',

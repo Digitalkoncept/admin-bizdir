@@ -139,11 +139,11 @@ export const SidebarData = [
     subNav: [
       {
         name: "Company Enquiry",
-        path: "/admin-all-enquiry",
+        path: "/company-enquiry",
       },
       {
         name: "Client Enquiry",
-        path: "/admin-all-enquiry",
+        path: "/client-enquiry",
       },
     ],
   },
