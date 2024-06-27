@@ -12,6 +12,14 @@ export const SidebarData = [
         name: "Roles",
         path: "/all-roles",
       },
+      {
+        name: "All Tasks",
+        path: "/all-tasks",
+      },
+      {
+        name: "Add Task",
+        path: "/add-task",
+      },
     ],
   },
   {

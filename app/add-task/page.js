@@ -84,7 +84,7 @@ const page = () => {
         <div className="ad-dash leftpadd">
           <div className="ud-cen">
             <div className="log-bor">&nbsp;</div>
-            <span className="udb-inst">Add new Employee</span>
+            <span className="udb-inst">Assign Task</span>
 
             <div className="ud-cen-s2 ud-pro-edit">
               <form
@@ -92,7 +92,7 @@ const page = () => {
                 onSubmit={handleSubmit}
                 encType="multipart/form-data"
               >
-                <h2>Employee Details</h2>
+                <h2>Assign Task</h2>
 
                 <table className="responsive-table bordered">
                   <tbody>
@@ -207,7 +207,7 @@ const page = () => {
                   name="sub_admin_submit"
                   className="db-pro-bot-btn"
                 >
-                  Add Employee
+                  Submit
                 </button>
               </form>
             </div>

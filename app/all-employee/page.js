@@ -21,25 +21,6 @@ const page = () => {
     setShowModal(null);
   };
   const getEmployee = async () => {
-    // try {
-    //   setLoading(true);
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + "/api/employee",
-    //     {
-    //       headers: {
-    //         authorization: "Bearer " + session.jwt,
-    //       },
-    //     }
-    //   );
-
-    //   const data = await res.json();
-
-    //   console.log(data);
-    //   setEmployee(data);
-    //   setLoading(false);
-    // } catch (error) {
-    //   console.error(error);
-    // }
     try {
       const { data, errors } = await client.query({
         query: GET_EMPLOYEES,
@@ -68,26 +49,7 @@ const page = () => {
   }, [session]);
 
   const deleteEmployee = async (id) => {
-    // try {
-    //   setLoading(true);
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + `/api/employee/${id}`,
-    //     {
-    //       method:'DELETE',
-    //       headers: {
-    //         authorization: "Bearer " + session.jwt,
-    //       },
-    //     }
-    //   );
-    //   const data = await res.json();
-    //   if(res.status=== 200){
-    //     toast.success(data.message)
-    //   }
-    //   getEmployee();
-    //   setLoading(false);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+  
 
     try {
       const { data, errors } = await client.mutate({
@@ -111,7 +73,7 @@ const page = () => {
       console.error("Error submitting form:", error);
     }
   };
-  // if (loading) return <><Skeleton count={5} /></>;
+ 
   return (
     <section>
       <div className="ad-com">

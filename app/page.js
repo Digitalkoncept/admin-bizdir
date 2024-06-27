@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Counter from '@/components/Counter'
 import { useSession } from 'next-auth/react'
 const page = () => {
   const { data: session, status } = useSession();
@@ -26,7 +27,7 @@ const page = () => {
           <li>
             <div>
               <img src="/icon/ic-1.png" className='inline-block' alt="" />
-              <h2>248</h2>
+              <Counter end={248} duration={5} />
               <h4>All Users</h4>
               <a href="admin-all-users.html" className="fclick" />
             </div>
