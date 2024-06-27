@@ -24,7 +24,6 @@ const Table = ({ page, handleTotalPages }) => {
   };
 
   const getListingData = async () => {
-   
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_LISTING,
@@ -57,24 +56,6 @@ const Table = ({ page, handleTotalPages }) => {
   }, [session]);
 
   const deleteListing = async (id) => {
-    // try {
-    //   setLoading(true);
-    //   const res = await fetch(process.env.BACKEND_URL + "/api/listing/" + id, {
-    //     headers: {
-    //       authorization: "Bearer " + session.jwt,
-    //     },
-    //     method: "DELETE",
-    //   });
-    //   const data = await res.json();
-    //   if (res.status === 200) {
-    //     toast.success(data.message);
-    //   }
-    //   getListingData();
-    //   setLoading(false);
-    // } catch (error) {
-    //   toast.error("something went wrong");
-    //   console.error(error);
-    // }
 
     try {
       const { data, errors } = await client.mutate({

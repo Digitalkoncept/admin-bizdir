@@ -32,7 +32,6 @@ const page = ({params}) => {
     cover_image: "",
     country: "",
     state: "",
-    subcategory: [],
     area: "",
     city: "",
     category: "",
