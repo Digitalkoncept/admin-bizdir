@@ -1,10 +1,38 @@
 'use client'
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Counter from '@/components/Counter'
+import Link from 'next/link'
+import { client } from '@/lib/apollo'
+import { GET_ALL_COUNT } from '@/lib/query'
 import { useSession } from 'next-auth/react'
 const page = () => {
   const { data: session, status } = useSession();
+ const [allcount,setAllCount] = useState();
+ const [loading,setLoading] = useState();
+  
+ const getAllCount = async () => {
+  try {
+    const { data, errors } = await client.query({
+      query: GET_ALL_COUNT,
+      fetchPolicy:"no-cache"
+    });
 
+    if (errors || data.getAllCounts.code !== 200) {
+      throw new Error("Something went wrong");
+    }
+
+    setAllCount(data.getAllCounts.counts);
+    setLoading(false);
+  } catch (error) {
+    console.error("something went wrong:", error);
+  }
+};
+
+useEffect(() => {
+   getAllCount();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+console.log(allcount)
   return (
     <section>
   <div className="ad-com">
@@ -27,23 +55,23 @@ const page = () => {
           <li>
             <div>
               <img src="/icon/ic-1.png" className='inline-block' alt="" />
-              <Counter end={248} duration={5} />
+              <Counter end={allcount?.userCount} duration={3} tag="h2" />
               <h4>All Users</h4>
-              <a href="admin-all-users.html" className="fclick" />
+              <Link href="/all-users" className="fclick" />
             </div>
           </li>
           <li>
             <div>
               <img src="/icon/shop.png" className='inline-block' alt="" />
-              <h2>132</h2>
+              <Counter end={allcount?.listingCount} duration={3} tag="h2" />
               <h4>All Listing</h4>
-              <a href="admin-all-listings.html" className="fclick" />
+              <Link href="/admin-all-listings" className="fclick" />
             </div>
           </li>
           <li>
             <div>
               <img src="/icon/calendar.png" className='inline-block' alt="" />
-              <h2>24</h2>
+              <Counter end={allcount?.eventCount} duration={3} tag="h2" />
               <h4>All Events</h4>
               <a href="admin-event.html" className="fclick" />
             </div>
@@ -51,17 +79,9 @@ const page = () => {
           <li>
             <div>
               <img src="/icon/cart.png" className='inline-block' alt="" />
-              <h2>24</h2>
+              <Counter end={allcount?.productCount} duration={3} tag="h2" />
               <h4>All Products</h4>
               <a href="admin-all-products.html" className="fclick" />
-            </div>
-          </li>
-          <li>
-            <div>
-              <img src="/icon/blog1.png" className='inline-block' alt="" />
-              <h2>39</h2>
-              <h4>All Blog Posts</h4>
-              <a href="admin-all-blogs.html" className="fclick" />
             </div>
           </li>
         </ul>
@@ -70,13 +90,11 @@ const page = () => {
         <ul>
           <li>
             <div className="cor-1">
-              <h4>New Users</h4>
-              <h2>User requests</h2>
-              <span>07</span>
-              <p>
-                This count for today how many get quote and enquiry you got it.
-              </p>
-              <a href="admin-new-user-requests.html" className="fclick" />
+              <h4>All Claims Request</h4>
+              <h2>Claim Request</h2>
+              <Counter end={allcount?.claimCount} duration={3} tag="span" />
+             
+              <Link href="/new-claim-request" className="fclick" />
             </div>
           </li>
           <li>
@@ -84,7 +102,7 @@ const page = () => {
               <h4>Leads &amp; Enquiry</h4>
               <h2>Get Quote</h2>
               <span>133</span>
-              <p>This count for last month get quote and enquiry you got it.</p>
+             
               <a href="admin-all-enquiry.html" className="fclick" />
             </div>
           </li>
@@ -93,10 +111,7 @@ const page = () => {
               <h4>Enquiry</h4>
               <h2>Ad Request</h2>
               <span>33</span>
-              <p>
-                This count for total get quote and enquiry leads you got it till
-                to end.
-              </p>
+              
               <a href="admin-ads-request.html" className="fclick" />
             </div>
           </li>

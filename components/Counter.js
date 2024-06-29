@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const Counter = ({ end, duration }) => {
+const Counter = ({ end, duration ,tag}) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -15,8 +15,10 @@ const Counter = ({ end, duration }) => {
 
     return () => clearInterval(timer);
   }, [end, duration]);
-
-  return <h2>{count}</h2>;
+  if (tag === "h2"){
+    return <h2>{count}</h2>;
+  }else 
+  return <span>{count}</span>;
 };
 
 export default Counter;

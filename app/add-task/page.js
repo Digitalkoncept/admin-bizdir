@@ -10,15 +10,14 @@ const page = () => {
   const [roles, setRoles] = useState();
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "",
-    image: "",
+    "title":"",
+    "description":"",
+    "assignedBy":"",
+    "assignedTo":"",
+    "permission":[],
   });
 
   const getRoles = async () => {
-
 
     try {
       const { data, errors } = await client.query({
@@ -97,29 +96,29 @@ const page = () => {
                 <table className="responsive-table bordered">
                   <tbody>
                     <tr>
-                      <td>Employee Name</td>
+                      <td>Task  Title</td>
                       <td>
                         <div className="form-group">
                           <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="title"
+                            value={formData.title}
                             onChange={handleChange}
                             required="required"
                             className="form-control"
-                            placeholder="Name"
+                            placeholder="task title"
                           />
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td>Employee Email</td>
+                      <td>Task Description</td>
                       <td>
                         <div className="form-group">
                           <input
                             type="text"
-                            name="email"
-                            value={formData.email}
+                            name="description"
+                            value={formData.description}
                             onChange={handleChange}
                             required="required"
                             className="form-control"
@@ -129,7 +128,7 @@ const page = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>Password</td>
+                      <td>Select Task</td>
                       <td>
                         <div className="form-group">
                           <input
@@ -144,62 +143,7 @@ const page = () => {
                         </div>
                       </td>
                     </tr>
-                    <tr>
-                      <td>Profile picture</td>
-                      <td>
-                        <div className="form-group">
-                          <label>Choose profile image</label>
-                          <div className="fil-img-uplo">
-                            <span className="dumfil">Upload a file</span>
-                            <CldUploadWidget
-                              signatureEndpoint="/api/sign-cloudinary-params"
-                              uploadPreset="profile_image"
-                              onSuccess={(result, { widget }) => {
-                                setFormData((prevFormData) => ({
-                                  ...prevFormData,
-                                  image: result?.info?.secure_url,
-                                }));
-                                widget.close();
-                              }}
-                            >
-                              {({ open }) => {
-                                function handleOnClick() {
-                                  open();
-                                }
-                                return (
-                                  <button type="button" onClick={handleOnClick}>
-                                    upload image
-                                  </button>
-                                );
-                              }}
-                            </CldUploadWidget>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Role</td>
-                      <td>
-                        <div className="form-group">
-                          <div className="col-md-6 pl-0">
-                            <select
-                              onChange={handleChange}
-                              value={formData.role}
-                              name="role"
-                              id="category_id"
-                              className="form-control"
-                            >
-                              <option value>Select Category</option>
-                              {roles?.map((role) => (
-                                <option key={role._id} value={role._id}>
-                                  {role.role_name}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
+                  
                   </tbody>
                 </table>
                 <button

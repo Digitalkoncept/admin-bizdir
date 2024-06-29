@@ -131,11 +131,11 @@ export const SidebarData = [
     subNav: [
       {
         name: "All Coupons",
-        path: "/admin-coupons",
+        path: "/all-coupons",
       },
       {
         name: "Add New Coupon",
-        path: "/admin-add-new-coupons",
+        path: "/add-new-coupon",
       },
     ],
   },
