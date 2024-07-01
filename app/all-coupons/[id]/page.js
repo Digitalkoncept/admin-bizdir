@@ -1,43 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import { toast } from "react-toastify";
-import { CREATE_COUPON } from "@/lib/mutation";
+import { GET_COUPON_BY_ID } from "@/lib/query";
+import { UPDATE_COUPON, UPDATE_EMPLOYEE } from "@/lib/mutation";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { client } from "@/lib/apollo";
 
-const page = () => {
-  const { data: session } = useSession();
-  const [formData, setFormData] = useState({
-    coupon_name: "",
-    coupon_code: "",
-    coupon_description: "",
-    coupon_off:null,
-    coupon_link: "",
-    coupon_image: "",
-    coupon_type:"%",
-    start_date: "",
-    end_date: "",
-  });
+const page = ({params}) => {
+  const { data: session,status } = useSession();
+  const [coupon,setCoupon] = useState();
+  const router = useRouter();
   const [selectprofile, setSelectProfile] = useState();
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: name === 'coupon_off' ? parseInt(value) : value,
-    }));
-    console.log(formData);
-  };
-
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const getCoupon = async () => {
     try {
-      const { data, errors } = await client.mutate({
-        mutation: CREATE_COUPON,
-        variables: { data: formData },
+      const { data, errors } = await client.query({
+        query: GET_COUPON_BY_ID,
+        variables: { couponId: params.id },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -45,11 +26,53 @@ const page = () => {
         },
       });
 
-      if (errors || data.createCoupon.code !== 201) {
+      if (errors || data.getCoupon.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+      const { __typename,_id,updatedAt,createdAt, ...newFormData } = await data.getCoupon.coupon;
+      setCoupon(newFormData);
+      console.log(data);
+    } catch (error) {
+      console.error("something went wrong:", error);
+    }
+  };
+
+  useEffect(() => {
+   if(status === 'authenticated'){
+       getCoupon();
+   }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setCoupon((prevCoupon) => ({
+      ...prevCoupon,
+      [name]: name === 'coupon_off' ? parseInt(value) : value,
+    }));
+    console.log(coupon);
+  };
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: UPDATE_COUPON,
+        variables: {id:params.id, data:coupon },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
+
+      if (errors || data.updateCoupon.code !== 200) {
         throw new Error("Something went wrong");
       }
 
-      toast.success("Coupon created successfully");
+      toast.success("Coupon updated successfully");
+      router.push('/all-coupons')
       console.log(data);
     } catch (error) {
       console.error("something went wrong:", error);
@@ -86,6 +109,7 @@ const page = () => {
                                     type="text"
                                     className="form-control"
                                     name="coupon_name"
+                                    value={coupon?.coupon_name}
                                     onChange={handleInputChange}
                                     placeholder="Coupon name"
                                     required
@@ -98,7 +122,7 @@ const page = () => {
                               <div className="col-md-12">
                                 <div className="form-group">
                                   <textarea
-                                    value={formData.coupon_description}
+                                    value={coupon?.coupon_description}
                                     onChange={handleInputChange}
                                     className="form-control"
                                     id="coupon_description"
@@ -116,6 +140,7 @@ const page = () => {
                                     type="text"
                                     className="form-control"
                                     name="coupon_code"
+                                    value={coupon?.coupon_code}
                                     onChange={handleInputChange}
                                     placeholder="coupon code"
                                     required
@@ -129,14 +154,14 @@ const page = () => {
                                     name="coupon_off"
                                     className="form-control"
                                     placeholder="amount"
-                                    value={formData.coupon_off}
+                                    value={coupon?.coupon_off}
                                     onChange={handleInputChange}
                                   />
                                 </div>
                               </div>
                               <div className="col-md-3">
                               <div className="form-group">
-                            <select name="coupon_type" value={formData.coupon_type} onChange={handleInputChange}      className="form-control !w-[60px] ">
+                            <select name="coupon_type" value={coupon?.coupon_type} onChange={handleInputChange}      className="form-control !w-[60px] ">
                               <option value="%"> %</option>
                               <option value="₹"> ₹</option>
                               
@@ -153,6 +178,7 @@ const page = () => {
                                     type="text"
                                     className="form-control"
                                     name="coupon_link"
+                                    value={coupon?.coupon_link}
                                     onChange={handleInputChange}
                                     placeholder="Website link(if online offer)"
                                   />
@@ -179,8 +205,8 @@ const page = () => {
                                   signatureEndpoint="/api/sign-cloudinary-params"
                                   uploadPreset="listing_image"
                                   onSuccess={(result, { widget }) => {
-                                    setFormData((prevFormData) => ({
-                                      ...prevFormData,
+                                    setCoupon((prevState) => ({
+                                      ...prevState,
                                       coupon_image: result?.info?.secure_url,
                                     }));
                                     toast.success(
@@ -219,6 +245,7 @@ const page = () => {
                                   <label>Start date</label>
                                   <input
                                     type="date"
+                                    value={coupon?.start_date}
                                     className="form-control"
                                     onChange={handleInputChange}
                                     name="start_date"
@@ -231,6 +258,7 @@ const page = () => {
                                   <label>End date</label>
                                   <input
                                     type="date"
+                                    value={coupon?.end_date}
                                     className="form-control"
                                     onChange={handleInputChange}
                                     name="end_date"

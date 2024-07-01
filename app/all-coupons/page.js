@@ -2,6 +2,7 @@
 import React,{useState,useEffect} from 'react'
 import { client } from '@/lib/apollo'
 import { GET_ALL_COUPONS } from '@/lib/query'
+import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 const page = () => {
 const [coupons,setCoupons] = useState();
@@ -31,7 +32,7 @@ const getAllCoupons = async () => {
 };
 
 useEffect(() => {
-  if(status){
+  if(status === 'authenticated'){
     getAllCoupons();
   }
 // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,16 +47,18 @@ console.log(coupons)
         <span className="udb-inst">Coupons and deals</span>
         <div className="ud-cen-s2">
           <h2>All Coupons details</h2>
-          <a href="admin-add-new-coupons.html" className="db-tit-btn">Add new Coupons</a>
+          <Link href="/add-new-coupon" className="db-tit-btn">Add new Coupons</Link>
           <table className="responsive-table bordered">
             <thead>
               <tr>
                 <th>No</th>
                 <th>Coupon Name</th>
                 <th>Coupon Code</th>
+                <th>Created By</th>
                 <th>Expiry date</th>  
                 <th>Edit</th>
                 <th>Delete</th>
+                <th>Preview</th>
               </tr>
             </thead>
             <tbody>
@@ -65,9 +68,15 @@ console.log(coupons)
                   <td>{index +1}</td>
                   <td>{item.coupon_name}<span>{item.createdAt}</span></td>
                   <td>{item.coupon_code}</td>
+                  <td>
+                    <span className="db-list-ststus">
+                      {item.createdBy.name || ''}
+                    </span>
+                  </td>
                   <td>{item.end_date}</td>
-                  <td><a href="admin-edit-coupons.html?row=1" className="db-list-edit">Edit</a></td>
+                  <td><Link href={`/all-coupons/${item._id}`} className="db-list-edit">Edit</Link></td>
                   <td><a href="admin-delete-coupons.html?row=1" className="db-list-edit">Delete</a></td>
+                  <td><Link href={item.coupon_link} target='_blank' className="db-list-edit">preview</Link></td>
                 </tr>
                 </>)
                 })

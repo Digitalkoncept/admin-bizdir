@@ -3,14 +3,47 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { client } from "@/lib/apollo";
-import { CREATE_TASK } from "@/lib/mutation";
-const page = () => {
-  const { data: session } = useSession();
+import { GET_TASK_BY_ID } from "@/lib/query";
+import { UPDATE_TASK } from "@/lib/mutation";
+const page = ({ params }) => {
+  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     permissions: [],
   });
+
+  const getTask = async () => {
+    try {
+      const { data, errors } = await client.query({
+        query: GET_TASK_BY_ID,
+        variables: { id: params.id },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
+
+      if (errors || data.getTaskById.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      const { title, description, permissions } = data.getTaskById.task;
+      setFormData({ title, description, permissions });
+      console.log(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("something went wrong:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") getTask();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -38,11 +71,11 @@ const page = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
     try {
+      console.log(formData);
       const { data, errors } = await client.mutate({
-        mutation: CREATE_TASK,
-        variables: { data: formData },
+        mutation: UPDATE_TASK,
+        variables: { id: params.id, data: formData },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -50,24 +83,24 @@ const page = () => {
         },
       });
 
-      if (errors || data.createTask.code !== 201) {
+      if (errors || data.updateTask.code !== 200) {
         throw new Error("Something went wrong");
       }
 
-      toast.success("Task Created Successully.");
+      toast.success("task updated successfully");
       console.log(data);
     } catch (error) {
-      console.error("something went wrong:", error);
+      console.error("Error submitting form:", error);
     }
   };
-
+  if (loading) return <>Loading</>;
   return (
     <section>
       <div className="ad-com">
         <div className="ad-dash leftpadd">
           <div className="ud-cen">
             <div className="log-bor">&nbsp;</div>
-            <span className="udb-inst">Add new Task</span>
+            <span className="udb-inst">Update Task</span>
 
             <div className="ud-cen-s2 ud-pro-edit">
               <form
@@ -75,12 +108,12 @@ const page = () => {
                 onSubmit={handleSubmit}
                 encType="multipart/form-data"
               >
-                <h2>Create Task</h2>
+                <h2>Update Task</h2>
 
                 <table className="responsive-table bordered">
                   <tbody>
                     <tr>
-                      <td>Task Title</td>
+                      <td>Role Name</td>
                       <td>
                         <div className="form-group">
                           <input
@@ -135,23 +168,6 @@ const page = () => {
                               <div className="chbox">
                                 <input
                                   type="checkbox"
-                                  name="admin_user_options"
-                                  checked={formData.permissions.includes(
-                                    "Create Employee"
-                                  )}
-                                  value="Create Employee"
-                                  onChange={handleChange}
-                                  id="create-employee"
-                                />
-                                <label htmlFor="create-employee">
-                                  Create Employee{" "}
-                                </label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
                                   name="admin_listing_options"
                                   checked={formData.permissions.includes(
                                     "Roles"
@@ -161,23 +177,6 @@ const page = () => {
                                   id="1"
                                 />
                                 <label htmlFor="1">Employee Roles</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_listing_options"
-                                  checked={formData.permissions.includes(
-                                    "Create Roles"
-                                  )}
-                                  value="Roles"
-                                  onChange={handleChange}
-                                  id="create-roles"
-                                />
-                                <label htmlFor="create-roles">
-                                  Create Roles
-                                </label>
                               </div>
                             </li>
                             <li>
@@ -220,10 +219,27 @@ const page = () => {
                                   )}
                                   value="Create Listing"
                                   onChange={handleChange}
-                                  id="Create Listing"
+                                  id="create-list"
                                 />
-                                <label htmlFor="Create Listing">
+                                <label htmlFor="create-list">
                                   Create Listing
+                                </label>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="chbox">
+                                <input
+                                  type="checkbox"
+                                  name="admin_blog_options"
+                                  checked={formData.permissions.includes(
+                                    "Update Listing"
+                                  )}
+                                  value="All Listings"
+                                  onChange={handleChange}
+                                  id="update-list"
+                                />
+                                <label htmlFor="update-list">
+                                  Update Listing
                                 </label>
                               </div>
                             </li>
@@ -463,7 +479,7 @@ const page = () => {
                   name="sub_admin_submit"
                   className="db-pro-bot-btn"
                 >
-                  Add Role
+                  update task
                 </button>
               </form>
             </div>
