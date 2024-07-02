@@ -36,7 +36,7 @@ const page = () => {
       }
 
       console.log(data);
-      setEmployee(data.getEmployees.employee);
+      setEmployee(data.getEmployees.employees);
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);

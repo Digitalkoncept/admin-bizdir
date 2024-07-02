@@ -20,6 +20,14 @@ export const SidebarData = [
         name: "Add Task",
         path: "/add-task",
       },
+      {
+        name:"All Assigned Task",
+        path:"/assigned-task"
+      },
+      {
+        name:"Assign New Task",
+        path:"/assign-new-task"
+      }
     ],
   },
   {

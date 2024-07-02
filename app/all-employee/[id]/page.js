@@ -102,6 +102,8 @@ const page = ({ params }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
+  console.log("all tasks =>", task)
+  console.log("all roles =>", roles)
   const handleChange = (event) => {
     setFormData({
       ...formData,
@@ -263,14 +265,6 @@ const page = ({ params }) => {
                               ))}
                             </select>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Assign Task</td>
-                      <td>
-                        <div className="form-group">
-                          
                         </div>
                       </td>
                     </tr>

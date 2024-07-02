@@ -72,9 +72,9 @@ const page = () => {
         <div className="ad-dash leftpadd">
           <div className="ud-cen">
             <div className="log-bor">&nbsp;</div>
-            <span className="udb-inst">All Tasks</span>
+            <span className="udb-inst">All Assigned Task</span>
             <div className="ud-cen-s2">
-              <h2>All Tasks</h2>
+              <h2>All Assigned Task</h2>
               <Link href="/create-role" className="db-tit-btn">
                 Add new Role
               </Link>
