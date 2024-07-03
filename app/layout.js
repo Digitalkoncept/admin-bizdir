@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-head-element */
 "use client";
 import React, { useState } from "react";
+import Head from "next/head";
+import Loading from "./loading";
 import TopNav from "@/components/Admin/TopNav";
 import LeftSidebar from "@/components/Admin/LeftSidebar/LeftSidebar";
 import { ToastContainer } from "react-toastify";
@@ -11,6 +13,8 @@ import Auth from "@/components/Auth";
 import "@/styles/admin-style.css";
 import "@/styles/globals.css";
 import "@/css/bootstrap.css";
+import Layout from "@/components/Layout/Layout";
+
 
 export default function RootLayout({ children, session }) {
   const pathname = usePathname();
@@ -25,16 +29,22 @@ export default function RootLayout({ children, session }) {
     <SessionProvider session={session}>
      
         <html>
+          <Head>
+          <link rel="preload" href="/icon.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+          </Head>
           <body className="!overflow-auto">
             <div>
+            <Layout>
               {!hideSidebar && (
                 <>
                   <TopNav toggleCart={toggleCart} showadMenu={showadMenu} />
                   <LeftSidebar showadMenu={showadMenu} />
                 </>
               )}
+              
               {children}
               <ToastContainer />
+              </Layout>
             </div>
           </body>
         </html>

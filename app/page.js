@@ -1,5 +1,5 @@
 'use client'
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect, Suspense} from 'react'
 import Counter from '@/components/Counter'
 import Link from 'next/link'
 import { client } from '@/lib/apollo'
@@ -34,6 +34,7 @@ useEffect(() => {
 }, []);
 console.log(allcount)
   return (
+    <Suspense>
     <section>
   <div className="ad-com">
     <div className="ad-dash adda-oly leftpadd">
@@ -231,6 +232,7 @@ console.log(allcount)
     </div>
   </div>
   </section>
+  </Suspense>
  
   )
 }

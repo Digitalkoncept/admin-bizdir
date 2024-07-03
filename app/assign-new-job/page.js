@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import { CREATE_EMPLOYEE } from "@/lib/mutation";
+import { ASSIGN_TASK_TO_EMP } from "@/lib/mutation";
 import { client } from "@/lib/apollo";
-import { GET_ALL_ROLES, GET_EMPLOYEES } from "@/lib/query";
+import { GET_ALL_TASK, GET_EMPLOYEES } from "@/lib/query";
 const page = () => {
   const [roles, setRoles] = useState();
   const divRef1 = useRef(null);
@@ -36,7 +36,8 @@ const page = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        !divRef1.current.contains(event.target)
+        !divRef1.current.contains(event.target) &&
+        !divRef2.current.contains(event.target)
       ) {
         setSelect((prevState) => ({
           ...prevState,
@@ -118,6 +119,11 @@ const page = () => {
           ...prevState,
           keyword: value,
       }));
+  } else if (number === 2){
+    setSearchTask((prevState) => ({
+      ...prevState,
+      keyword: value,
+  }));
   }
     setSelect((prevState) => ({
         ...prevState,
@@ -136,6 +142,16 @@ const page = () => {
       ...prevState,
       value: option.name,
   }));
+    }else if (number === 2){
+      setFormData(prevState =>({
+        ...prevState,
+        task:option._id
+    }));
+     
+    setSearchTask((prevState) => ({
+      ...prevState,
+      value: option.title,
+  }));
     }
     setSelect((prevState) => ({
         ...prevState,
@@ -145,11 +161,10 @@ const page = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
       const { data, errors } = await client.mutate({
-        mutation: CREATE_EMPLOYEE,
-        variables: { data: formData },
+        mutation: ASSIGN_TASK_TO_EMP,
+        variables: {employee: formData.employee,task:formData.task },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -157,11 +172,11 @@ const page = () => {
         },
       });
 
-      if (errors || data.CREATE_EMPLOYEE.code !== 201) {
+      if (errors || data.assignTask.code !== 200) {
         throw new Error("Something went wrong");
       }
 
-      toast.success("Employee created successfully");
+      toast.success(`task assign to ${searchemp.value} successfully.`);
       console.log(data);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -172,7 +187,7 @@ const page = () => {
     option.name.toLowerCase().includes(searchemp.keyword.toLowerCase())
   );
   const filteredtask = task?.filter((option) =>
-    option.name.toLowerCase().includes(searchtask.keyword.toLowerCase())
+    option.title.toLowerCase().includes(searchtask.keyword.toLowerCase())
   );
   return (
     <section>
@@ -302,7 +317,7 @@ const page = () => {
                                     className="active-result"
                                     data-option-array-index={1}
                                   >
-                                    {option.name}
+                                    {option.title}
                                   </li>
                                 ))}
                               </ul>
@@ -319,7 +334,7 @@ const page = () => {
                   name="sub_admin_submit"
                   className="db-pro-bot-btn"
                 >
-                  Add Employee
+                  submit
                 </button>
               </form>
             </div>

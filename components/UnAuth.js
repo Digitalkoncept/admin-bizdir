@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Spinner from "./Spinner";
 import { useEffect } from "react";
 
 export default function UnAuth({ children }) {
@@ -15,5 +16,5 @@ export default function UnAuth({ children }) {
   if (!session) {
     return <>{children}</>;
   }
-  return <p>Loading...</p>;
+  return <Spinner/>;
 }

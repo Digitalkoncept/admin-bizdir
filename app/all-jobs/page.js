@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import {  GET_ALL_TASK } from "@/lib/query";
+import {  GET_ALL_JOBS } from "@/lib/query";
 import { client } from "@/lib/apollo";
 import { DELETE_ROLE } from "@/lib/mutation";
 const page = () => {
@@ -13,10 +13,10 @@ const page = () => {
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
 
-  const getTasks = async () => {
+  const getJobs = async () => {
     try {
       const { data, errors } = await client.query({
-        query: GET_ALL_TASK,
+        query: GET_ALL_JOBS,
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -24,19 +24,19 @@ const page = () => {
         },
       });
 
-      if (errors || data.getAllTasks.code !== 200) {
+      if (errors || data.getAllJobs.code !== 200) {
         throw new Error("Something went wrong");
       }
 
       console.log(data);
-      setTasks(data.getAllTasks.tasks);
+      setTasks(data.getAllJobs.jobs);
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
   useEffect(() => {
-    if (status === "authenticated") getTasks();
+    if (status === "authenticated") getJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -75,8 +75,8 @@ const page = () => {
             <span className="udb-inst">All Tasks</span>
             <div className="ud-cen-s2">
               <h2>All Tasks</h2>
-              <Link href="/create-role" className="db-tit-btn">
-                Add new Role
+              <Link href="/add-job" className="db-tit-btn">
+                Add New Job
               </Link>
               {loading ? (
                 <Skeleton count={4} />
@@ -98,7 +98,7 @@ const page = () => {
                         <td>{index + 1}</td>
                         <td>{item?.title}</td>
                         <td>{item?.description}</td>
-                        <td>{item?.permissions.join(", ")}</td>
+                        <td>{item?.tasks.join(", ")}</td>
                         <td>
                           <Link
                             href={`/all-tasks/${item._id}`}

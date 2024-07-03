@@ -1,20 +1,27 @@
-import React from 'react'
-import { RotatingLines } from "react-loader-spinner";
+import  PuffLoader from "react-spinners/PuffLoader";
 
-const Spinner = () => {
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "#4a63e4",
+};
+
+function Spinner() {
+  console.log('loader is running')
   return (
-    <RotatingLines
-    visible={true}
-    height="96"
-    width="96"
-    color="grey"
-    strokeWidth="5"
-    animationDuration="0.75"
-    ariaLabel="rotating-lines-loading"
-    wrapperStyle={{margin:'auto'}}
-    wrapperClass="rotating-lines-loading"
-    />
-  )
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
+    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+      <div style={{ marginBottom: '20px' }}>
+        <PuffLoader
+          color="#4a63e4"
+          size={60}
+          loading={true}
+        />
+      </div>
+      <div style={{color:'#4a63e4',marginRight:'20px'}}>please wait</div>
+    </div>
+  </div>
+  );
 }
 
-export default Spinner
+export default Spinner;

@@ -6,24 +6,31 @@ import { client } from "@/lib/apollo";
 import { CREATE_TASK } from "@/lib/mutation";
 const page = () => {
   const { data: session } = useSession();
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     title: "",
     description: "",
-    permissions: [],
-  });
+    tasks: [],
+  };
+  const [formData, setFormData] = useState(initialFormState);
 
+  const availableTasks = [
+    { name: "create listing", permissions: ["create listing", "update listing"] },
+    { name: "delete listing", permissions: ["delete listing"] },
+    { name: "update listing", permissions: ["update listing"] },
+    { name: "create blog", permissions: ["create blog"] },
+  ];
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     if (type === "checkbox") {
       if (checked) {
         setFormData((prevFormData) => ({
           ...prevFormData,
-          permissions: [...prevFormData.permissions, value],
+          tasks: [...prevFormData.tasks, value],
         }));
       } else {
         setFormData((prevFormData) => ({
           ...prevFormData,
-          permissions: prevFormData.permissions.filter(
+          tasks: prevFormData.tasks.filter(
             (permission) => permission !== value
           ),
         }));
@@ -53,7 +60,7 @@ const page = () => {
       if (errors || data.createTask.code !== 201) {
         throw new Error("Something went wrong");
       }
-
+      setFormData(initialFormState);
       toast.success("Task Created Successully.");
       console.log(data);
     } catch (error) {
@@ -67,7 +74,7 @@ const page = () => {
         <div className="ad-dash leftpadd">
           <div className="ud-cen">
             <div className="log-bor">&nbsp;</div>
-            <span className="udb-inst">Add new Task</span>
+            <span className="udb-inst">Add new Job</span>
 
             <div className="ud-cen-s2 ud-pro-edit">
               <form
@@ -75,13 +82,14 @@ const page = () => {
                 onSubmit={handleSubmit}
                 encType="multipart/form-data"
               >
-                <h2>Create Task</h2>
+                <h2>Create Job</h2>
 
                 <table className="responsive-table bordered">
                   <tbody>
                     <tr>
-                      <td>Task Title</td>
+                      <td>Job Title</td>
                       <td>
+                        <div className="col-md-6 ml-0">
                         <div className="form-group">
                           <input
                             type="text"
@@ -93,6 +101,7 @@ const page = () => {
                             placeholder="Enter Title"
                           />
                         </div>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -100,7 +109,7 @@ const page = () => {
                       <td>
                         <div className="form-group">
                           <input
-                            type="text"
+                            type="textarea"
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
@@ -121,7 +130,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_user_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Employee"
                                   )}
                                   value="All Employee"
@@ -136,7 +145,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_user_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Create Employee"
                                   )}
                                   value="Create Employee"
@@ -153,7 +162,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_listing_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Roles"
                                   )}
                                   value="Roles"
@@ -168,7 +177,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_listing_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Create Roles"
                                   )}
                                   value="Roles"
@@ -185,7 +194,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_event_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Users"
                                   )}
                                   value="Users"
@@ -200,7 +209,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_blog_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Listings"
                                   )}
                                   value="All Listings"
@@ -215,7 +224,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_blog_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Create Listing"
                                   )}
                                   value="Create Listing"
@@ -232,7 +241,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_product_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "New Listing Request"
                                   )}
                                   value="New Listing Request"
@@ -247,7 +256,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_product_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Delete Listing"
                                   )}
                                   value="Delete Listing"
@@ -262,7 +271,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_category_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Events"
                                   )}
                                   value="All Events"
@@ -277,7 +286,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_product_category_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "New Event Request"
                                   )}
                                   value="New Event Request"
@@ -292,7 +301,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_enquiry_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Products"
                                   )}
                                   value="All Products"
@@ -307,7 +316,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_review_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "New Product Request"
                                   )}
                                   value="New Product Request"
@@ -322,7 +331,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_feedback_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Payments"
                                   )}
                                   value="All Payments"
@@ -337,7 +346,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_notification_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Coupons"
                                   )}
                                   value="All Coupons"
@@ -352,7 +361,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_ads_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Add New Coupon"
                                   )}
                                   value="Add New Coupon"
@@ -367,7 +376,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_home_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Enquiry"
                                   )}
                                   value="All Enquiry"
@@ -382,7 +391,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_country_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Reviews"
                                   )}
                                   value="All Reviews"
@@ -397,7 +406,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_city_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Feedbacks"
                                   )}
                                   value="All Feedbacks"
@@ -412,7 +421,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_listing_filter_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "All Notifications"
                                   )}
                                   value="All Notifications"
@@ -427,7 +436,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_invoice_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Pricing Plans"
                                   )}
                                   value="Pricing Plans"
@@ -442,7 +451,7 @@ const page = () => {
                                 <input
                                   type="checkbox"
                                   name="admin_import_options"
-                                  checked={formData.permissions.includes(
+                                  checked={formData.tasks.includes(
                                     "Setting"
                                   )}
                                   value="Setting"
@@ -463,7 +472,7 @@ const page = () => {
                   name="sub_admin_submit"
                   className="db-pro-bot-btn"
                 >
-                  Add Role
+                  Submit
                 </button>
               </form>
             </div>

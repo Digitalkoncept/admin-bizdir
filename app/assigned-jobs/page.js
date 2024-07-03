@@ -1,22 +1,25 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { CldImage } from "next-cloudinary";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import {  GET_ALL_TASK } from "@/lib/query";
+import {  GET_ALL_EMP_ASSIGNED_TASK } from "@/lib/query";
 import { client } from "@/lib/apollo";
 import { DELETE_ROLE } from "@/lib/mutation";
+import DateFormatter from "@/components/DateFormatter";
 const page = () => {
   const [tasks, setTasks] = useState();
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
 
-  const getTasks = async () => {
+  const getEmpTask = async () => {
     try {
       const { data, errors } = await client.query({
-        query: GET_ALL_TASK,
+        query: GET_ALL_EMP_ASSIGNED_TASK,
+        fetchPolicy:'no-cache',
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -24,19 +27,19 @@ const page = () => {
         },
       });
 
-      if (errors || data.getAllTasks.code !== 200) {
+      if (errors || data.getTaskAssignedEmployee.code !== 200) {
         throw new Error("Something went wrong");
       }
 
       console.log(data);
-      setTasks(data.getAllTasks.tasks);
+      setTasks(data.getTaskAssignedEmployee.employees);
       setLoading(false);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("something went wrong:", error);
     }
   };
   useEffect(() => {
-    if (status === "authenticated") getTasks();
+    if (status === "authenticated") getEmpTask();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -85,6 +88,7 @@ const page = () => {
                   <thead>
                     <tr>
                       <th>No</th>
+                      <th>profile</th>
                       <th>Title</th>
                       <th>Description</th>
                       <th>Permissions</th>
@@ -96,12 +100,22 @@ const page = () => {
                     {tasks?.map((item, index) => (
                       <tr key={item._id}>
                         <td>{index + 1}</td>
-                        <td>{item?.title}</td>
-                        <td>{item?.description}</td>
-                        <td>{item?.permissions.join(", ")}</td>
+                        <td>
+                          <CldImage
+                            width="36"
+                            height="36"
+                            src={item.image}
+                            alt="Description of my image"
+                          />
+                          {item.name}
+                          <DateFormatter dateString={item?.createdAt} />
+                        </td>
+                        <td>{item?.task?.assigned_task?.title}</td>
+                        <td>{item?.task?.assigned_task?.description}</td>
+                        <td>{item?.task?.assigned_task?.permissions.join(", ")}</td>
                         <td>
                           <Link
-                            href={`/all-tasks/${item._id}`}
+                            href={`/assigned-task/${item._id}`}
                             className="db-list-edit"
                           >
                             Update

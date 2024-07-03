@@ -13,20 +13,20 @@ export const SidebarData = [
         path: "/all-roles",
       },
       {
-        name: "All Tasks",
-        path: "/all-tasks",
+        name: "All Jobs",
+        path: "/all-jobs",
       },
       {
-        name: "Add Task",
-        path: "/add-task",
+        name: "Add Job",
+        path: "/add-job",
       },
       {
-        name:"All Assigned Task",
-        path:"/assigned-task"
+        name:"All Assigned Job",
+        path:"/assigned-jobs"
       },
       {
-        name:"Assign New Task",
-        path:"/assign-new-task"
+        name:"Assign New Job",
+        path:"/assign-new-job"
       }
     ],
   },
