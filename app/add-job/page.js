@@ -2,17 +2,50 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import JobCategory from "@/components/JobCategory";
 import { client } from "@/lib/apollo";
 import { CREATE_TASK } from "@/lib/mutation";
+import { GET_ALL_JOB_CATEGORY } from "@/lib/query";
 const page = () => {
-  const { data: session } = useSession();
+  const { data: session,status } = useSession();
+  const [jobs,setJobs] = useState();
+  const [task,setTask] = useState();
   const initialFormState = {
     title: "",
     description: "",
+    job_category:"",
+    job_subcategory:"",
     tasks: [],
   };
   const [formData, setFormData] = useState(initialFormState);
 
+  const getJobCategory = async () => {
+    try {
+      const { data, errors } = await client.query({
+        query: GET_ALL_JOB_CATEGORY,
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
+
+      if (errors || data.getAllJobCategories.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      console.log(data);
+      setJobs(data.getAllJobCategories.jobCategories);
+      
+    } catch (error) {
+      console.error("something went wrong:", error);
+    }
+  };
+  useEffect(() => {
+    if (status === "authenticated") getJobCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+  console.log("all job category =>",jobs)
   const availableTasks = [
     { name: "create listing", permissions: ["create listing", "update listing"] },
     { name: "delete listing", permissions: ["delete listing"] },
@@ -86,8 +119,9 @@ const page = () => {
 
                 <table className="responsive-table bordered">
                   <tbody>
+                        <JobCategory formData={formData} setFormData={setFormData} category={jobs} setTask={setTask} task={task} />
                     <tr>
-                      <td>Job Title</td>
+                      <td className="col-md-4">Job Title</td>
                       <td>
                         <div className="col-md-6 ml-0">
                         <div className="form-group">
@@ -106,10 +140,9 @@ const page = () => {
                     </tr>
                     <tr>
                       <td>Description</td>
-                      <td>
+                      <td className="ml-[16px]">
                         <div className="form-group">
-                          <input
-                            type="textarea"
+                          <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
@@ -125,342 +158,25 @@ const page = () => {
                       <td>
                         <div className="ad-sub-cre">
                           <ul>
-                            <li>
+                            {task?.map((item,index) =>{
+                           return   <li>
                               <div className="chbox">
                                 <input
                                   type="checkbox"
                                   name="admin_user_options"
                                   checked={formData.tasks.includes(
-                                    "All Employee"
+                                    item
                                   )}
-                                  value="All Employee"
+                                  value={item}
                                   onChange={handleChange}
-                                  id="0"
+                                  id={index}
                                 />
-                                <label htmlFor="0">All Employee </label>
+                                <label htmlFor={index}>{item} </label>
                               </div>
                             </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_user_options"
-                                  checked={formData.tasks.includes(
-                                    "Create Employee"
-                                  )}
-                                  value="Create Employee"
-                                  onChange={handleChange}
-                                  id="create-employee"
-                                />
-                                <label htmlFor="create-employee">
-                                  Create Employee{" "}
-                                </label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_listing_options"
-                                  checked={formData.tasks.includes(
-                                    "Roles"
-                                  )}
-                                  value="Roles"
-                                  onChange={handleChange}
-                                  id="1"
-                                />
-                                <label htmlFor="1">Employee Roles</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_listing_options"
-                                  checked={formData.tasks.includes(
-                                    "Create Roles"
-                                  )}
-                                  value="Roles"
-                                  onChange={handleChange}
-                                  id="create-roles"
-                                />
-                                <label htmlFor="create-roles">
-                                  Create Roles
-                                </label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_event_options"
-                                  checked={formData.tasks.includes(
-                                    "Users"
-                                  )}
-                                  value="Users"
-                                  onChange={handleChange}
-                                  id="2"
-                                />
-                                <label htmlFor="2">Users</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_blog_options"
-                                  checked={formData.tasks.includes(
-                                    "All Listings"
-                                  )}
-                                  value="All Listings"
-                                  onChange={handleChange}
-                                  id="3"
-                                />
-                                <label htmlFor="3">All Listings</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_blog_options"
-                                  checked={formData.tasks.includes(
-                                    "Create Listing"
-                                  )}
-                                  value="Create Listing"
-                                  onChange={handleChange}
-                                  id="Create Listing"
-                                />
-                                <label htmlFor="Create Listing">
-                                  Create Listing
-                                </label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_product_options"
-                                  checked={formData.tasks.includes(
-                                    "New Listing Request"
-                                  )}
-                                  value="New Listing Request"
-                                  onChange={handleChange}
-                                  id="4"
-                                />
-                                <label htmlFor="4">Listing Approval</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_product_options"
-                                  checked={formData.tasks.includes(
-                                    "Delete Listing"
-                                  )}
-                                  value="Delete Listing"
-                                  onChange={handleChange}
-                                  id="5"
-                                />
-                                <label htmlFor="5">Delete Listing</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_category_options"
-                                  checked={formData.tasks.includes(
-                                    "All Events"
-                                  )}
-                                  value="All Events"
-                                  onChange={handleChange}
-                                  id="6"
-                                />
-                                <label htmlFor="6">All Events</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_product_category_options"
-                                  checked={formData.tasks.includes(
-                                    "New Event Request"
-                                  )}
-                                  value="New Event Request"
-                                  onChange={handleChange}
-                                  id="7"
-                                />
-                                <label htmlFor="7">Event Approval</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_enquiry_options"
-                                  checked={formData.tasks.includes(
-                                    "All Products"
-                                  )}
-                                  value="All Products"
-                                  onChange={handleChange}
-                                  id="8"
-                                />
-                                <label htmlFor="8">All Products</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_review_options"
-                                  checked={formData.tasks.includes(
-                                    "New Product Request"
-                                  )}
-                                  value="New Product Request"
-                                  onChange={handleChange}
-                                  id="9"
-                                />
-                                <label htmlFor="9">Product Approval</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_feedback_options"
-                                  checked={formData.tasks.includes(
-                                    "All Payments"
-                                  )}
-                                  value="All Payments"
-                                  onChange={handleChange}
-                                  id="10"
-                                />
-                                <label htmlFor="10">All Payments</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_notification_options"
-                                  checked={formData.tasks.includes(
-                                    "All Coupons"
-                                  )}
-                                  value="All Coupons"
-                                  onChange={handleChange}
-                                  id="11"
-                                />
-                                <label htmlFor="11">All Coupons</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_ads_options"
-                                  checked={formData.tasks.includes(
-                                    "Add New Coupon"
-                                  )}
-                                  value="Add New Coupon"
-                                  onChange={handleChange}
-                                  id="12"
-                                />
-                                <label htmlFor="12">Add New Coupon</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_home_options"
-                                  checked={formData.tasks.includes(
-                                    "All Enquiry"
-                                  )}
-                                  value="All Enquiry"
-                                  onChange={handleChange}
-                                  id="13"
-                                />
-                                <label htmlFor="13">All Enquiry</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_country_options"
-                                  checked={formData.tasks.includes(
-                                    "All Reviews"
-                                  )}
-                                  value="All Reviews"
-                                  onChange={handleChange}
-                                  id="14"
-                                />
-                                <label htmlFor="14">All Reviews</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_city_options"
-                                  checked={formData.tasks.includes(
-                                    "All Feedbacks"
-                                  )}
-                                  value="All Feedbacks"
-                                  onChange={handleChange}
-                                  id="15"
-                                />
-                                <label htmlFor="15">All Feedbacks</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_listing_filter_options"
-                                  checked={formData.tasks.includes(
-                                    "All Notifications"
-                                  )}
-                                  value="All Notifications"
-                                  onChange={handleChange}
-                                  id="16"
-                                />
-                                <label htmlFor="16">All Notifications</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_invoice_options"
-                                  checked={formData.tasks.includes(
-                                    "Pricing Plans"
-                                  )}
-                                  value="Pricing Plans"
-                                  onChange={handleChange}
-                                  id="17"
-                                />
-                                <label htmlFor="17">Pricing Plans</label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_import_options"
-                                  checked={formData.tasks.includes(
-                                    "Setting"
-                                  )}
-                                  value="Setting"
-                                  onChange={handleChange}
-                                  id="18"
-                                />
-                                <label htmlFor="18">Setting</label>
-                              </div>
-                            </li>
+                            })}
+                            
+                            
                           </ul>
                         </div>
                       </td>

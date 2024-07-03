@@ -26,18 +26,13 @@ export default function RootLayout({ children, session }) {
   }
   return (
     <SessionProvider session={session}>
-      <html>
-        <Head>
-          <link
-            rel="preload"
-            href="/icon.woff2"
-            as="font"
-            type="font/woff2"
-            crossOrigin="anonymous"
-          />
-        </Head>
-        <body className="!overflow-auto">
-          <div>
+     
+        <html>
+          <Head>
+          <link rel="preload" href="/icon.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+          </Head>
+          <body className="!overflow-auto">
+            <div>
             <Layout>
               {!hideSidebar && (
                 <>
@@ -48,10 +43,11 @@ export default function RootLayout({ children, session }) {
 
               {children}
               <ToastContainer />
-            </Layout>
-          </div>
-        </body>
-      </html>
+              </Layout>
+            </div>
+          </body>
+        </html>
+      
     </SessionProvider>
   );
 }
