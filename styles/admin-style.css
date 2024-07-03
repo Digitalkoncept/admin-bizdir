@@ -1,6 +1,12 @@
 
 @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap');
-
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url("/icon.woff2") format("woff2");
+    font-display: fallback;
+  }
 body{
     color: #3e4676;
     background-color: #f5f6fa;
