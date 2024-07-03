@@ -34,7 +34,7 @@ export default function RootLayout({ children, session }) {
           </Head>
           <body className="!overflow-auto">
             <div>
-            
+            <Layout>
               {!hideSidebar && (
                 <>
                   <TopNav toggleCart={toggleCart} showadMenu={showadMenu} />
@@ -44,7 +44,7 @@ export default function RootLayout({ children, session }) {
               
               {children}
               <ToastContainer />
-          
+              </Layout>
             </div>
           </body>
         </html>
