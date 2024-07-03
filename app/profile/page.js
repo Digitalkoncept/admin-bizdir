@@ -29,6 +29,8 @@ const page = () => {
         },
       });
 
+      console.log(data);
+
       if (errors || data.getEmployeeById.code !== 200) {
         throw new Error("Something went wrong");
       }

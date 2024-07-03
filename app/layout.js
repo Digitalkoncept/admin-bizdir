@@ -15,7 +15,6 @@ import "@/styles/globals.css";
 import "@/css/bootstrap.css";
 import Layout from "@/components/Layout/Layout";
 
-
 export default function RootLayout({ children, session }) {
   const pathname = usePathname();
   const path = ["/login"];
@@ -27,28 +26,32 @@ export default function RootLayout({ children, session }) {
   }
   return (
     <SessionProvider session={session}>
-     
-        <html>
-          <Head>
-          <link rel="preload" href="/icon.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-          </Head>
-          <body className="!overflow-auto">
-            <div>
-            
+      <html>
+        <Head>
+          <link
+            rel="preload"
+            href="/icon.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+        </Head>
+        <body className="!overflow-auto">
+          <div>
+            <Layout>
               {!hideSidebar && (
                 <>
                   <TopNav toggleCart={toggleCart} showadMenu={showadMenu} />
                   <LeftSidebar showadMenu={showadMenu} />
                 </>
               )}
-              
+
               {children}
               <ToastContainer />
-          
-            </div>
-          </body>
-        </html>
-      
+            </Layout>
+          </div>
+        </body>
+      </html>
     </SessionProvider>
   );
 }
