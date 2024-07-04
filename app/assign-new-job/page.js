@@ -2,20 +2,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import { ASSIGN_TASK_TO_EMP } from "@/lib/mutation";
+import { ASSIGN_JOB_TO_EMP } from "@/lib/mutation";
 import { client } from "@/lib/apollo";
-import { GET_ALL_TASK, GET_EMPLOYEES } from "@/lib/query";
+import { GET_ALL_JOBS, GET_EMPLOYEES } from "@/lib/query";
 const page = () => {
   const [roles, setRoles] = useState();
   const divRef1 = useRef(null);
   const divRef2 = useRef(null);
   const [employee, setEmployee] = useState();
-  const [task,setTask] = useState();
+  const [jobs,setJobs] = useState();
 
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     employee: "",
-    task: "",
+    job: "",
   });
 
   const [select, setSelect] = useState({
@@ -75,10 +75,10 @@ const page = () => {
     }
   };
 
-  const getTasks = async () => {
+  const getJobs = async () => {
     try {
       const { data, errors } = await client.query({
-        query: GET_ALL_TASK,
+        query: GET_ALL_JOBS,
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -86,13 +86,12 @@ const page = () => {
         },
       });
 
-      if (errors || data.getAllTasks.code !== 200) {
+      if (errors || data.getAllJobs.code !== 200) {
         throw new Error("Something went wrong");
       }
 
       console.log(data);
-      setTask(data.getAllTasks.tasks);
-      setLoading(false);
+      setJobs(data.getAllJobs.jobs);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -100,7 +99,7 @@ const page = () => {
   useEffect(() => {
     if (status === "authenticated") 
       getEmployee();
-      getTasks();
+      getJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
   console.log("all employee =>", employee);
@@ -145,7 +144,7 @@ const page = () => {
     }else if (number === 2){
       setFormData(prevState =>({
         ...prevState,
-        task:option._id
+        job:option._id
     }));
      
     setSearchTask((prevState) => ({
@@ -163,8 +162,8 @@ const page = () => {
     event.preventDefault();
     try {
       const { data, errors } = await client.mutate({
-        mutation: ASSIGN_TASK_TO_EMP,
-        variables: {employee: formData.employee,task:formData.task },
+        mutation: ASSIGN_JOB_TO_EMP,
+        variables: {employee: formData.employee,job:formData.job },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -172,7 +171,7 @@ const page = () => {
         },
       });
 
-      if (errors || data.assignTask.code !== 200) {
+      if (errors || data.assignJob.code !== 200) {
         throw new Error("Something went wrong");
       }
 
@@ -186,7 +185,7 @@ const page = () => {
   const filteredemp = employee?.filter((option) =>
     option.name.toLowerCase().includes(searchemp.keyword.toLowerCase())
   );
-  const filteredtask = task?.filter((option) =>
+  const filteredjob = jobs?.filter((option) =>
     option.title.toLowerCase().includes(searchtask.keyword.toLowerCase())
   );
   return (
@@ -287,7 +286,7 @@ const page = () => {
                               className="chosen-single"
                               onClick={() => handleClick(2)}
                             >
-                              <span>{formData.task.length > 0 ? searchtask.value : 'select employee'}</span>
+                              <span>{formData.job.length > 0 ? searchtask.value : 'select job'}</span>
                               <div>
                                 <b />
                               </div>
@@ -310,7 +309,7 @@ const page = () => {
                                 >
                                   Select Task
                                 </li>
-                                {filteredtask?.map((option) => (
+                                {filteredjob?.map((option) => (
                                   <li
                                     key={option._id}
                                     onClick={() => handleOptionClick(option, 2)}

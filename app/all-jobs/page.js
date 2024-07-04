@@ -9,7 +9,7 @@ import {  GET_ALL_JOBS } from "@/lib/query";
 import { client } from "@/lib/apollo";
 import { DELETE_ROLE } from "@/lib/mutation";
 const page = () => {
-  const [tasks, setTasks] = useState();
+  const [jobs, setJobs] = useState();
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
 
@@ -29,7 +29,7 @@ const page = () => {
       }
 
       console.log(data);
-      setTasks(data.getAllJobs.jobs);
+      setJobs(data.getAllJobs.jobs);
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -40,7 +40,7 @@ const page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  console.log("all tasks fatched =>",tasks)
+  console.log("all tasks fatched =>",jobs)
   const deleteRole = async (id) => {
  
     try {
@@ -93,7 +93,7 @@ const page = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {tasks?.map((item, index) => (
+                    {jobs?.map((item, index) => (
                       <tr key={item._id}>
                         <td>{index + 1}</td>
                         <td>{item?.title}</td>

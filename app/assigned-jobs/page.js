@@ -27,12 +27,12 @@ const page = () => {
         },
       });
 
-      if (errors || data.getTaskAssignedEmployee.code !== 200) {
+      if (errors || data.getJobAssignedEmployee.code !== 200) {
         throw new Error("Something went wrong");
       }
 
       console.log(data);
-      setTasks(data.getTaskAssignedEmployee.employees);
+      setTasks(data.getJobAssignedEmployee.employees);
       setLoading(false);
     } catch (error) {
       console.error("something went wrong:", error);
