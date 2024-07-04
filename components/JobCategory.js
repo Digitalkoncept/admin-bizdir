@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const JobCategory = ({ formData, setFormData, category,setTask,task }) => {
-  const [subcategory, setSubCategory] = useState();
+const JobCategory = ({ formData, setFormData, category,setTask,task,subcategory,setSubCategory }) => {
   const divRef1 = useRef(null);
   const divRef2 = useRef(null);
   const [select, setSelect] = useState({

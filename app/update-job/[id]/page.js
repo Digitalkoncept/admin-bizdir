@@ -4,13 +4,14 @@ import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import JobCategory from "@/components/JobCategory";
 import { client } from "@/lib/apollo";
-import { CREATE_JOB } from "@/lib/mutation";
-import { GET_ALL_JOB_CATEGORY } from "@/lib/query";
+import { UPDATE_JOb } from "@/lib/mutation";
+import { GET_ALL_JOB_CATEGORY, GET_JOB_BY_ID } from "@/lib/query";
 
-const page = () => {
-  const { data: session, status } = useSession();
+const page = ({params}) => {
   const [subcategory, setSubCategory] = useState();
-
+  const [cat,setCat] = useState();
+  const [subcat,setSubCat] = useState();
+  const { data: session, status } = useSession();
   const [jobs, setJobs] = useState();
   const [task, setTask] = useState();
   const initialFormState = {
@@ -22,8 +23,32 @@ const page = () => {
   };
 
   const [formData, setFormData] = useState(initialFormState);
+  const getJobById = async () => {
+    try {
+      const { data, errors } = await client.query({
+        query: GET_JOB_BY_ID,
+        variables: { id: params.id },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
 
-  const getJobCategory = async () => {
+      if (errors || data.getJobById.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      const { title, description, tasks,job_subcategory,job_category } = await data.getJobById.job;
+      setCat(job_category)
+      setSubCat(job_subcategory);
+      setFormData({ title, description,tasks,job_subcategory,job_category });
+
+    } catch (error) {
+      console.error("something went wrong:", error);
+    }
+  };
+  const getJobCategory = async (cat,subcat) => {
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_JOB_CATEGORY,
@@ -37,19 +62,28 @@ const page = () => {
       if (errors || data.getAllJobCategories.code !== 200) {
         throw new Error("Something went wrong");
       }
-
-      console.log(data);
-      setJobs(data.getAllJobCategories.jobCategories);
+      const {jobCategories} = await data.getAllJobCategories;
+      const temp = await jobCategories.find(category => category.name === cat)?.job_subcategories || [];
+      const temp2 = await temp.find(item => item.name === subcat)?.tasks || [];
+      setJobs(jobCategories);
+      setSubCategory(temp);
+      setTask(temp2);
+      
     } catch (error) {
       console.error("something went wrong:", error);
     }
   };
+ 
 
   useEffect(() => {
-    if (status === "authenticated") getJobCategory();
+    if (status === "authenticated") 
+      getJobById();
+      getJobCategory(cat,subcat);
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-  console.log("all job category =>",jobs)
+  }, [session,cat,subcat]);
+  console.log("name=>",cat)
+  console.log("filtersubcategory =>",subcategory)
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     if (type === "checkbox") {
@@ -79,8 +113,8 @@ const page = () => {
 
     try {
       const { data, errors } = await client.mutate({
-        mutation: CREATE_JOB,
-        variables: { data: formData },
+        mutation: UPDATE_JOb,
+        variables: { data: formData,id:params.id },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -88,11 +122,11 @@ const page = () => {
         },
       });
 
-      if (errors || data.createJob.code !== 201) {
+      if (errors || data.updateJob.code !== 200) {
         throw new Error("Something went wrong");
       }
       setFormData(initialFormState);
-      toast.success("Job Created Successully.");
+      toast.success("Job updated Successully.");
       console.log(data);
     } catch (error) {
       console.error("something went wrong:", error);
@@ -113,15 +147,15 @@ const page = () => {
                 onSubmit={handleSubmit}
                 encType="multipart/form-data"
               >
-                <h2>Create Job</h2>
+                <h2>Update Job</h2>
 
                 <table className="responsive-table bordered">
                   <tbody>
                     <JobCategory
                       formData={formData}
+                      setFormData={setFormData}
                       subcategory={subcategory}
                       setSubCategory={setSubCategory}
-                      setFormData={setFormData}
                       category={jobs}
                       setTask={setTask}
                       task={task}

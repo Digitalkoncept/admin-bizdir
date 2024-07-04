@@ -102,7 +102,7 @@ const page = () => {
                         <td>{item?.tasks.join(", ")}</td>
                         <td>
                           <Link
-                            href={`/all-jobs/${item._id}`}
+                            href={`/update-job/${item._id}`}
                             className="db-list-edit"
                           >
                             Update

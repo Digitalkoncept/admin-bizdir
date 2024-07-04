@@ -11,9 +11,19 @@ export const SidebarData = [
         permission:"view employee"
       },
       {
+        name: "Add Employee",
+        path: "/create-employee",
+        permission:"add employee"
+      },
+      {
         name: "Roles",
         path: "/all-roles",
         permission:"view roles"
+      },
+      {
+        name: "Add Role",
+        path: "/add-role",
+        permission:"add role"
       },
       {
         name: "All Jobs",
@@ -80,22 +90,22 @@ export const SidebarData = [
     subNav: [
       {
         name: "Listing Category",
-        path: "/all-category",
+        path: "/all-listing-category",
         permission:"view listing category"
       },
       {
         name: "Add Listing Category",
-        path: "/add-new-category",
+        path: "/add-listing-category",
         permission:"add listing category"
       },
       {
         name: "Listing Sub Category",
-        path: "/all-sub-category",
+        path: "/all-listing-sub-category",
         permission:"view listing sub category"
       },
       {
         name: "Add Listing Sub Category",
-        path: "/add-new-sub-category",
+        path: "/add-listing-sub-category",
         permission:"add listing sub category"
       },
     ],
@@ -225,7 +235,7 @@ export const SidebarData = [
   },
   {
     title: "All Notifications",
-    path: "/admin-notification-all",
+    path: "/all-notifications",
     class: "ic-noti",
     permission:"view notifications"
   },

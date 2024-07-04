@@ -28,18 +28,28 @@ export default withAuth(
       const routePermission = {
         '/all-employee': 'view employee',
         '/create-employee': 'Create Employee',
-        '/all-roles': 'Roles',
-        '/create-roles': 'Create Roles',
-        '/all-users': 'Users',
+        '/all-jobs':'view jobs',
+        '/add-job':'add job',
+        '/assigned-jobs':'view  assigned jobs',
+        '/assign-new-job':'assign new job',
+        '/all-roles': 'view roles',
+        '/add-role': 'add role',
+        '/all-users': 'view Users',
         '/admin-all-listings': 'view listings',
-        '/add-new-listing': 'Create Listing',
-        '/new-listing-request': 'New Listing Request',
-        '/all-category': 'Listing Category',
-        '/admin-add-new-category': 'Add Listing Category',
-        '/admin-all-sub-category': 'Listing Sub Category',
-        '/admin-add-new-sub-category': 'Add Listing Sub Category',
-        '/admin/ecommerce/shipments': 'Shipments',
-        '/admin/ecommerce/categories': 'Categories'
+        '/add-new-listing': 'add listing',
+        '/new-listing-request': 'view listing request',
+        '/all-listing-category': 'view listing category',
+        '/new-claim-request': 'view claim request',
+        '/add-listing-category': 'add listing category',
+        '/all-listing-sub-category': 'view listing sub category',
+        '/add-listing-sub-category': 'add listing sub category',
+        '/view-company-enquiry':'view company enquiry',
+        '/view-client-enquiry':'view client enquiry',
+        '/all-coupons':'view coupons',
+        '/add-new-coupon':'add coupon',
+        '/all-notifications':'view notifications'
+
+
       };
 
       const requiredPermission = routePermission[req.nextUrl.pathname];
