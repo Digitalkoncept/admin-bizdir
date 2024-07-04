@@ -15,7 +15,6 @@ import "@/styles/globals.css";
 import "@/css/bootstrap.css";
 import Layout from "@/components/Layout/Layout";
 
-
 export default function RootLayout({ children, session }) {
   const pathname = usePathname();
   const path = ["/login"];
@@ -41,7 +40,7 @@ export default function RootLayout({ children, session }) {
                   <LeftSidebar showadMenu={showadMenu} />
                 </>
               )}
-              
+
               {children}
               <ToastContainer />
               </Layout>

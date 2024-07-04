@@ -13,10 +13,10 @@ const page = () => {
     coupon_name: "",
     coupon_code: "",
     coupon_description: "",
-    coupon_off:null,
+    coupon_off: null,
     coupon_link: "",
     coupon_image: "",
-    coupon_type:"%",
+    coupon_type: "%",
     start_date: "",
     end_date: "",
   });
@@ -26,11 +26,10 @@ const page = () => {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: name === 'coupon_off' ? parseInt(value) : value,
+      [name]: name === "coupon_off" ? parseInt(value) : value,
     }));
     console.log(formData);
   };
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -98,7 +97,7 @@ const page = () => {
                               <div className="col-md-12">
                                 <div className="form-group">
                                   <textarea
-                                    value={formData.coupon_description}
+                                    value={formData.coupon_description || ""}
                                     onChange={handleInputChange}
                                     className="form-control"
                                     id="coupon_description"
@@ -129,19 +128,23 @@ const page = () => {
                                     name="coupon_off"
                                     className="form-control"
                                     placeholder="amount"
-                                    value={formData.coupon_off}
+                                    value={formData.coupon_off || ""}
                                     onChange={handleInputChange}
                                   />
                                 </div>
                               </div>
                               <div className="col-md-3">
-                              <div className="form-group">
-                            <select name="coupon_type" value={formData.coupon_type} onChange={handleInputChange}      className="form-control !w-[60px] ">
-                              <option value="%"> %</option>
-                              <option value="₹"> ₹</option>
-                              
-                            </select>
-                          </div>
+                                <div className="form-group">
+                                  <select
+                                    name="coupon_type"
+                                    value={formData.coupon_type || ""}
+                                    onChange={handleInputChange}
+                                    className="form-control !w-[60px] "
+                                  >
+                                    <option value="%"> %</option>
+                                    <option value="₹"> ₹</option>
+                                  </select>
+                                </div>
                               </div>
                             </div>
                             {/*FILED END*/}
@@ -162,54 +165,55 @@ const page = () => {
                             {/*FILED END*/}
                             {/*FILED START*/}
                             <div className="row">
-                            <div className="col-md-12">
-                            <div className="form-group">
-                              <label>Choose coupon image</label>
-                              <div className="fil-img-uplo">
-                                <span
-                                  className={`dumfil ${
-                                    selectprofile ? "!text-green-600" : ""
-                                  }`}
-                                >
-                                  {selectprofile
-                                    ? selectprofile
-                                    : "Upload a file"}
-                                </span>
-                                <CldUploadWidget
-                                  signatureEndpoint="/api/sign-cloudinary-params"
-                                  uploadPreset="listing_image"
-                                  onSuccess={(result, { widget }) => {
-                                    setFormData((prevFormData) => ({
-                                      ...prevFormData,
-                                      coupon_image: result?.info?.secure_url,
-                                    }));
-                                    toast.success(
-                                      "your image uploaded successfully!"
-                                    );
-                                    console.log(result);
-                                    setSelectProfile(
-                                      result?.info?.original_filename
-                                    );
-                                    widget.close();
-                                  }}
-                                >
-                                  {({ open }) => {
-                                    function handleOnClick() {
-                                      open();
-                                    }
-                                    return (
-                                      <button
-                                        type="button"
-                                        onClick={handleOnClick}
-                                      >
-                                        upload image
-                                      </button>
-                                    );
-                                  }}
-                                </CldUploadWidget>
+                              <div className="col-md-12">
+                                <div className="form-group">
+                                  <label>Choose coupon image</label>
+                                  <div className="fil-img-uplo">
+                                    <span
+                                      className={`dumfil ${
+                                        selectprofile ? "!text-green-600" : ""
+                                      }`}
+                                    >
+                                      {selectprofile
+                                        ? selectprofile
+                                        : "Upload a file"}
+                                    </span>
+                                    <CldUploadWidget
+                                      signatureEndpoint="/api/sign-cloudinary-params"
+                                      uploadPreset="listing_image"
+                                      onSuccess={(result, { widget }) => {
+                                        setFormData((prevFormData) => ({
+                                          ...prevFormData,
+                                          coupon_image:
+                                            result?.info?.secure_url,
+                                        }));
+                                        toast.success(
+                                          "your image uploaded successfully!"
+                                        );
+                                        console.log(result);
+                                        setSelectProfile(
+                                          result?.info?.original_filename
+                                        );
+                                        widget.close();
+                                      }}
+                                    >
+                                      {({ open }) => {
+                                        function handleOnClick() {
+                                          open();
+                                        }
+                                        return (
+                                          <button
+                                            type="button"
+                                            onClick={handleOnClick}
+                                          >
+                                            upload image
+                                          </button>
+                                        );
+                                      }}
+                                    </CldUploadWidget>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
                             </div>
                             {/*FILED END*/}
                             {/*FILED START*/}

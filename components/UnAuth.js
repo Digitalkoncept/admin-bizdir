@@ -4,14 +4,14 @@ import Spinner from "./Spinner";
 import { useEffect } from "react";
 
 export default function UnAuth({ children }) {
-  const { data: session, loading } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && session) {
+    if (status !== 'loading' && session) {
       router.push("/");
     }
-  }, [session, loading, router]);
+  }, [session, status, router]);
 
   if (!session) {
     return <>{children}</>;
