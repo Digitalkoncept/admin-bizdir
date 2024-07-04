@@ -27,7 +27,7 @@ export default withAuth(
         const verifiedToken =  await verifyAuth(Token);// Replace "your-secret-key" with your actual secret key
         // console.log("token verification ",verifiedToken)
         const routePermission = {
-          '/all-employee':'All Employee',
+          '/all-employee':'view employee',
           '/create-employee':'Create Employee',
           '/all-roles':'Roles',
           '/create-roles':'Create Roles',
@@ -35,7 +35,7 @@ export default withAuth(
           '/admin-all-listings':'All Listings',
           '/add-new-listing':'Create Listing',
           '/new-listing-request':'New Listing Request',
-          '/admin-all-category':'Listing Category',
+          '/all-category':'Listing Category',
           '/admin-add-new-category':'Add Listing Category',
           '/admin-all-sub-category':'Listing Sub Category',
           '/admin-add-new-sub-category':'Add Listing Sub Category', 
@@ -43,7 +43,7 @@ export default withAuth(
           '/admin/ecommerce/shipments':'Categories'
         }
         const requiredPermission = routePermission[req.nextUrl.pathname];
-        const hasPermission = req.nextauth.token.role.permissions.includes(requiredPermission);
+        const hasPermission = req.nextauth.token.permissions.includes(requiredPermission);
         if(requiredPermission && !hasPermission){
            return NextResponse.redirect(new URL('/',req.url));
         }

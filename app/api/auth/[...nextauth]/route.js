@@ -1,5 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { client } from "@/lib/apollo";
+import { LOGIN_EMPLOYEE } from "@/lib/mutation";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 const authOptions = {
@@ -17,33 +19,30 @@ const authOptions = {
             async authorize(credentials) {
                 try {
                     const { email, password } = credentials;
-                    const response = await fetch(
-                        `${process.env.BACKEND_URL}/api/auth/admin/login`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({ email, password }),
-                        }
-                    );
+                    const { data, errors } = await client.mutate({
+                        mutation: LOGIN_EMPLOYEE,
+                        variables: { email: email, password: password },
+                      });
 
-                    if (!response.ok) {
-                        throw new Error("Invalid credentials");
-                    }
+                      if (errors || data.loginEmployee.code !== 200) {
+                        console.log(data.loginEmployee.message);
+                        throw new Error(data.loginEmployee.message);
+                      }
 
-                    const data = await response.json();
-                    console.log(data)
+                      const employee = await data.loginEmployee.employee;
+                      console.log('employee logged in =>',employee)
                     return {
-                        token: data.token,
-                        id: data.id,
-                        name: data.employee.name,
-                        email: data.employee.email,
-                        image: data.employee.image,
-                        role: data.employee.role
+                        token: employee.token,
+                        id: employee.id,
+                        name: employee.name,
+                        email: employee.email,
+                        image: employee.image,
+                        role: employee.role,
+                        permissions:employee.permissions,
                         
                     };
                 } catch (error) {
+                    console.log('something went wrong ',error)
                     throw new Error(error.message);
                 }
             },
@@ -61,7 +60,9 @@ const authOptions = {
                 token.name = user.name; // Store the user name in the JWT token
                 token.email = user.email; // Store the user email in the JWT token
                 token.image = user.image; // Store the user image in the JWT token // 
-                token.role = user.role
+                token.role = user.role;
+                token.permissions = user.permissions;
+                
             }
             if (trigger === "update" && session?.image) {
                 // Note, that `session` can be any arbitrary object, remember to validate it!
@@ -76,11 +77,12 @@ const authOptions = {
                 id:token.id,
                 email: token.email,
                 image: token.image,
-                role: token.role
+                role: token.role,
+                permissions: token.permissions,
 
             };
             // Attach the token to the session object
-
+            console.log('employee session=>',token)
             return session;
         },
     },

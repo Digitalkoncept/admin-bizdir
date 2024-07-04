@@ -6,7 +6,7 @@ import { SidebarData } from "@/components/Admin/LeftSidebar/ListData";
 import { useSession } from "next-auth/react";
 const LeftSidebar = ({ showadMenu }) => {
     const {data:session} = useSession();
-    const permissions = session?.user?.role?.permissions;
+    const permissions = session?.user?.permissions;
     return (
         <section>
             <div className={`ad-menu-lhs ${showadMenu ? "mshow" : ""}`}>
