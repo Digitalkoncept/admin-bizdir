@@ -99,7 +99,7 @@ const page = () => {
                         <td>{index + 1}</td>
                         <td>{item?.title}</td>
                         <td>{item?.description}</td>
-                        <td>{item?.jobs.join(", ")}</td>
+                        <td>{item?.tasks.join(", ")}</td>
                         <td>
                           <Link
                             href={`/all-jobs/${item._id}`}
