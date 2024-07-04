@@ -5,11 +5,12 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import {  GET_ALL_JOBS } from "@/lib/query";
+import { GET_ALL_JOBS } from "@/lib/query";
 import { client } from "@/lib/apollo";
-import { DELETE_ROLE } from "@/lib/mutation";
+import { DELETE_JOB, DELETE_ROLE } from "@/lib/mutation";
+
 const page = () => {
-  const [tasks, setTasks] = useState();
+  const [jobs, setJobs] = useState();
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
 
@@ -29,23 +30,22 @@ const page = () => {
       }
 
       console.log(data);
-      setTasks(data.getAllJobs.jobs);
+      setJobs(data.getAllJobs.jobs);
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
+
   useEffect(() => {
     if (status === "authenticated") getJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  console.log("all tasks fatched =>",tasks)
-  const deleteRole = async (id) => {
- 
+  const deleteJob = async (id) => {
     try {
       const { data, errors } = await client.mutate({
-        mutation: DELETE_ROLE,
+        mutation: DELETE_JOB,
         variables: { id },
         context: {
           headers: {
@@ -54,12 +54,12 @@ const page = () => {
         },
       });
 
-      if (errors || data.deleteRole.code !== 200) {
+      if (errors || data.deleteJob.code !== 200) {
         throw new Error("Something went wrong");
       }
 
-      toast.success("Role created successfully");
-      getRoles();
+      toast.success("Job deleted successfully");
+      getJobs();
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -81,7 +81,8 @@ const page = () => {
               {loading ? (
                 <Skeleton count={4} />
               ) : (
-                <table className="responsive-table bordered">
+                <>
+                  <table className="responsive-table bordered">
                   <thead>
                     <tr>
                       <th>No</th>
@@ -93,15 +94,15 @@ const page = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {tasks?.map((item, index) => (
+                    {jobs?.map((item, index) => (
                       <tr key={item._id}>
                         <td>{index + 1}</td>
                         <td>{item?.title}</td>
                         <td>{item?.description}</td>
-                        <td>{item?.tasks.join(", ")}</td>
+                        <td>{item?.jobs.join(", ")}</td>
                         <td>
                           <Link
-                            href={`/all-tasks/${item._id}`}
+                            href={`/all-jobs/${item._id}`}
                             className="db-list-edit"
                           >
                             Update
@@ -111,7 +112,7 @@ const page = () => {
                           <Link
                             href="#!"
                             className="db-list-edit"
-                            onClick={() => deleteRole(item._id)}
+                            onClick={() => deleteJob(item._id)}
                           >
                             Delete
                           </Link>
@@ -120,6 +121,7 @@ const page = () => {
                     ))}
                   </tbody>
                 </table>
+                </>
               )}
             </div>
           </div>

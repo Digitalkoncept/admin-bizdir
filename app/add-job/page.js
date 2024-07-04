@@ -4,19 +4,21 @@ import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import JobCategory from "@/components/JobCategory";
 import { client } from "@/lib/apollo";
-import { CREATE_TASK } from "@/lib/mutation";
+import { CREATE_JOB } from "@/lib/mutation";
 import { GET_ALL_JOB_CATEGORY } from "@/lib/query";
+
 const page = () => {
-  const { data: session,status } = useSession();
-  const [jobs,setJobs] = useState();
-  const [task,setTask] = useState();
+  const { data: session, status } = useSession();
+  const [jobs, setJobs] = useState();
+  const [task, setTask] = useState();
   const initialFormState = {
     title: "",
     description: "",
-    job_category:"",
-    job_subcategory:"",
+    job_category: "",
+    job_subcategory: "",
     tasks: [],
   };
+
   const [formData, setFormData] = useState(initialFormState);
 
   const getJobCategory = async () => {
@@ -36,18 +38,23 @@ const page = () => {
 
       console.log(data);
       setJobs(data.getAllJobCategories.jobCategories);
-      
     } catch (error) {
       console.error("something went wrong:", error);
     }
   };
+
   useEffect(() => {
     if (status === "authenticated") getJobCategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-  console.log("all job category =>",jobs)
+
+  console.log("all job category =>", jobs);
+  
   const availableTasks = [
-    { name: "create listing", permissions: ["create listing", "update listing"] },
+    {
+      name: "create listing",
+      permissions: ["create listing", "update listing"],
+    },
     { name: "delete listing", permissions: ["delete listing"] },
     { name: "update listing", permissions: ["update listing"] },
     { name: "create blog", permissions: ["create blog"] },
@@ -78,10 +85,10 @@ const page = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     try {
       const { data, errors } = await client.mutate({
-        mutation: CREATE_TASK,
+        mutation: CREATE_JOB,
         variables: { data: formData },
         context: {
           headers: {
@@ -119,22 +126,28 @@ const page = () => {
 
                 <table className="responsive-table bordered">
                   <tbody>
-                        <JobCategory formData={formData} setFormData={setFormData} category={jobs} setTask={setTask} task={task} />
+                    <JobCategory
+                      formData={formData}
+                      setFormData={setFormData}
+                      category={jobs}
+                      setTask={setTask}
+                      task={task}
+                    />
                     <tr>
                       <td className="col-md-4">Job Title</td>
                       <td>
                         <div className="col-md-6 ml-0">
-                        <div className="form-group">
-                          <input
-                            type="text"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleChange}
-                            required="required"
-                            className="form-control"
-                            placeholder="Enter Title"
-                          />
-                        </div>
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              name="title"
+                              value={formData.title}
+                              onChange={handleChange}
+                              required="required"
+                              className="form-control"
+                              placeholder="Enter Title"
+                            />
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -158,25 +171,23 @@ const page = () => {
                       <td>
                         <div className="ad-sub-cre">
                           <ul>
-                            {task?.map((item,index) =>{
-                           return   <li>
-                              <div className="chbox">
-                                <input
-                                  type="checkbox"
-                                  name="admin_user_options"
-                                  checked={formData.tasks.includes(
-                                    item
-                                  )}
-                                  value={item}
-                                  onChange={handleChange}
-                                  id={index}
-                                />
-                                <label htmlFor={index}>{item} </label>
-                              </div>
-                            </li>
+                            {task?.map((item, index) => {
+                              return (
+                                <li key={index}>
+                                  <div className="chbox">
+                                    <input
+                                      type="checkbox"
+                                      name="admin_user_options"
+                                      checked={formData.tasks.includes(item)}
+                                      value={item}
+                                      onChange={handleChange}
+                                      id={index}
+                                    />
+                                    <label htmlFor={index}>{item} </label>
+                                  </div>
+                                </li>
+                              );
                             })}
-                            
-                            
                           </ul>
                         </div>
                       </td>

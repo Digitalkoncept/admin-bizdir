@@ -7,26 +7,32 @@ export const SidebarData = [
       {
         name: "All Employee",
         path: "/all-employee",
+        permission:"view employee"
       },
       {
         name: "Roles",
         path: "/all-roles",
+        permission:"view roles"
       },
       {
         name: "All Jobs",
         path: "/all-jobs",
+        permission:"view jobs"
       },
       {
         name: "Add Job",
         path: "/add-job",
+        permission:"add job"
       },
       {
         name:"All Assigned Job",
-        path:"/assigned-jobs"
+        path:"/assigned-jobs",
+        permission:"view assigned jobs"
       },
       {
         name:"Assign New Job",
-        path:"/assign-new-job"
+        path:"/assign-new-job",
+        permission:"assign new job"
       }
     ],
   },
@@ -34,6 +40,7 @@ export const SidebarData = [
     title: "Users",
     path: "/all-users",
     class: "ic-user",
+    permission:"view users"
   },
   {
     title: "Listings",
@@ -43,18 +50,23 @@ export const SidebarData = [
       {
         name: "All Listings",
         path: "/admin-all-listings",
+        permission:"view listings"
+
       },
       {
-        name:"Create Listing",
-        path:"/add-new-listing"
+        name:"Add  Listing",
+        path:"/add-new-listing",
+        permission:"add listing"
       },
       {
         name: "New Listing Request",
         path: "/new-listing-request",
+        permission:"view listing request"
       },
       {
         name:"All Claim Request",
-        path:"/new-claim-request"
+        path:"/new-claim-request",
+        permission:"view claim request"
       },
     ],
   },
@@ -66,18 +78,22 @@ export const SidebarData = [
       {
         name: "Listing Category",
         path: "/all-category",
+        permission:"view listing category"
       },
       {
         name: "Add Listing Category",
         path: "/add-new-category",
+        permission:"add listing category"
       },
       {
         name: "Listing Sub Category",
         path: "/all-sub-category",
+        permission:"view listing sub category"
       },
       {
         name: "Add Listing Sub Category",
         path: "/add-new-sub-category",
+        permission:"add listing sub category"
       },
     ],
   },
@@ -89,10 +105,12 @@ export const SidebarData = [
       {
         name: "All Events",
         path: "/admin-event",
+        permission:"view events"
       },
       {
         name: "New Event Request",
         path: "/new-event-request",
+        permission:"view event request"
       },
     ],
   },
@@ -104,26 +122,32 @@ export const SidebarData = [
       {
         name: "All Products",
         path: "#",
+        permission:"view products"
       },
       {
         name: "New Product Request",
         path: "#",
+        permission:"view product request"
       },
       {
         name: "Product Category",
         path: "/admin-all-product-category",
+        permission:"view product category"
       },
       {
         name: "Add Product Category",
         path: "/admin-add-new-product-category",
+        permission:"add product category"
       },
       {
         name: "Product Sub Category",
         path: "/admin-all-product-sub-category",
+        permission:"view product sub category"
       },
       {
         name: "Add Product Sub Category",
         path: "/admin-add-new-product-sub-category",
+        permission:"add product sub category"
       },
     ],
   },
@@ -131,6 +155,7 @@ export const SidebarData = [
     title: "All Payments",
     path: "/admin-all-payments",
     class: "ic-pay",
+    permission:"view payments"
   },
   {
     title: "Coupon and deals",
@@ -140,10 +165,12 @@ export const SidebarData = [
       {
         name: "All Coupons",
         path: "/all-coupons",
+        permission:"view coupons"
       },
       {
         name: "Add New Coupon",
         path: "/add-new-coupon",
+        permission:"add coupon"
       },
     ],
   },
@@ -156,10 +183,12 @@ export const SidebarData = [
       {
         name: "Company Enquiry",
         path: "/company-enquiry",
+        permission:"view company enquiry"
       },
       {
         name: "Client Enquiry",
         path: "/client-enquiry",
+        permission:"view client enquiry"
       },
     ],
   },
@@ -171,6 +200,7 @@ export const SidebarData = [
       {
         name: "All Reviews",
         path: "/admin-all-reviews",
+        permission:"view reviews"
       },
     ],
   },
@@ -189,33 +219,7 @@ export const SidebarData = [
     title: "All Notifications",
     path: "/admin-notification-all",
     class: "ic-noti",
-  },
-  {
-    title: "Ads",
-    path: "#",
-    class: "ic-ads",
-    subNav: [
-      {
-        name: "Current Ads",
-        path: "/admin-current-ads",
-      },
-      {
-        name: "Create new Ads",
-        path: "/admin-create-ads",
-      },
-      {
-        name: "Ad Request & Enquiry",
-        path: "/admin-ads-request",
-      },
-      {
-        name: "Ad Pricing",
-        path: "/admin-ads-price",
-      },
-      {
-        name: "Google AdSense",
-        path: "/seo-google-adsense",
-      },
-    ],
+    permission:"view notifications"
   },
   {
     title: "Home Page",
