@@ -47,18 +47,7 @@ const page = () => {
     if (status === "authenticated") getJobCategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-
-  console.log("all job category =>", jobs);
-  
-  const availableTasks = [
-    {
-      name: "create listing",
-      permissions: ["create listing", "update listing"],
-    },
-    { name: "delete listing", permissions: ["delete listing"] },
-    { name: "update listing", permissions: ["update listing"] },
-    { name: "create blog", permissions: ["create blog"] },
-  ];
+  console.log("all job category =>",jobs)
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     if (type === "checkbox") {
@@ -97,11 +86,11 @@ const page = () => {
         },
       });
 
-      if (errors || data.createTask.code !== 201) {
+      if (errors || data.createJob.code !== 201) {
         throw new Error("Something went wrong");
       }
       setFormData(initialFormState);
-      toast.success("Task Created Successully.");
+      toast.success("Job Created Successully.");
       console.log(data);
     } catch (error) {
       console.error("something went wrong:", error);
@@ -153,7 +142,7 @@ const page = () => {
                     </tr>
                     <tr>
                       <td>Description</td>
-                      <td className="ml-[16px]">
+                      <td className="col-md-6 ml-[16px]">
                         <div className="form-group">
                           <textarea
                             name="description"

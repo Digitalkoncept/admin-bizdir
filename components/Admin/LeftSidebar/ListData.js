@@ -3,6 +3,7 @@ export const SidebarData = [
     title: "Employee",
     path: "#",
     class: "ic-user",
+    permission:"view employee",
     subNav: [
       {
         name: "All Employee",
@@ -46,6 +47,7 @@ export const SidebarData = [
     title: "Listings",
     path: "#",
     class: "ic-li",
+    permission:"view listings",
     subNav: [
       {
         name: "All Listings",
@@ -74,6 +76,7 @@ export const SidebarData = [
     title: "Category",
     path: "#",
     class: "ic-li",
+    permission:"view listing category",
     subNav: [
       {
         name: "Listing Category",
@@ -101,6 +104,7 @@ export const SidebarData = [
     title: "Events",
     path: "#",
     class: "ic-eve",
+    permission:"view events",
     subNav: [
       {
         name: "All Events",
@@ -118,6 +122,7 @@ export const SidebarData = [
     title: "Products",
     path: "/all-products",
     class: "ic-prod",
+    permission:"view products",
     subNav: [
       {
         name: "All Products",
@@ -161,6 +166,7 @@ export const SidebarData = [
     title: "Coupon and deals",
     path: "#",
     class: "ic-coup",
+    permission:"view coupons",
     subNav: [
       {
         name: "All Coupons",
@@ -179,6 +185,7 @@ export const SidebarData = [
     title: "Enquiry & Get Quote",
     path: "#",
     class: "ic-enq",
+    permission:"view company enquiry, view client enquiry",
     subNav: [
       {
         name: "Company Enquiry",
@@ -196,6 +203,7 @@ export const SidebarData = [
     title: "Reviews",
     path: "#",
     class: "ic-rev",
+    permission:"view reviews",
     subNav: [
       {
         name: "All Reviews",
