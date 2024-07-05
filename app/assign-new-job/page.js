@@ -270,7 +270,7 @@ const page = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>Select Task:</td>
+                      <td>Select Job:</td>
                       <td>
                         <div className="col-md-6 pl-0">
                         <div className="form-group">

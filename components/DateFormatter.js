@@ -4,7 +4,7 @@ const DateFormatter = ({ dateString }) => {
     const dateObject = new Date(dateString);
   const date =  dateObject.toLocaleDateString('en-US', {day : "numeric", month : "long", year : "numeric"})
   return (
-    <span>Join:{date}</span>
+    <span>{date}</span>
   )
 }
 
