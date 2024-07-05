@@ -6,11 +6,10 @@ import { CldUploadWidget } from "next-cloudinary";
 import { toast } from "react-toastify";
 import { UPDATE_EMPLOYEE } from "@/lib/mutation";
 import { client } from "@/lib/apollo";
-import { GET_ALL_ROLES, GET_EMPLOYEE_BY_ID, GET_ALL_TASK } from "@/lib/query";
+import { GET_ALL_ROLES, GET_EMPLOYEE_BY_ID } from "@/lib/query";
 
 const page = ({ params }) => {
   const [roles, setRoles] = useState();
-  const [task,setTask] = useState();
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
@@ -71,39 +70,15 @@ const page = ({ params }) => {
     }
   };
 
-  const getTasks = async () => {
-    try {
-      const { data, errors } = await client.query({
-        query: GET_ALL_TASK,
-        context: {
-          headers: {
-            Authorization: `Bearer ${session.jwt}`,
-          },
-        },
-      });
-
-      if (errors || data.getAllTasks.code !== 200) {
-        throw new Error("Something went wrong");
-      }
-
-      console.log(data);
-      setTask(data.getAllTasks.tasks);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
+ 
   useEffect(() => {
     if (status === "authenticated") {
       getEmployee();
       getRoles();
-      getTasks();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  console.log("all tasks =>", task)
-  console.log("all roles =>", roles)
   const handleChange = (event) => {
     setFormData({
       ...formData,
