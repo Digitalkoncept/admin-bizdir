@@ -58,7 +58,7 @@ export default withAuth(
       if (requiredPermission && !hasPermission) {
         return NextResponse.redirect(new URL('/', req.url));
       }
-
+      console.log("middleware is running")
       return NextResponse.next();
     } catch (error) {
       console.error("An error occurred:", error);

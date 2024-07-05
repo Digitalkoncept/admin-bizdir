@@ -25,12 +25,11 @@ const authOptions = {
                       });
 
                       if (errors || data.loginEmployee.code !== 200) {
-                        console.log(data.loginEmployee.message);
                         throw new Error(data.loginEmployee.message);
                       }
 
                       const employee = await data.loginEmployee.employee;
-                      console.log('employee logged in =>',employee)
+                    
                     return {
                         token: employee.token,
                         id: employee.id,
@@ -82,7 +81,7 @@ const authOptions = {
 
             };
             // Attach the token to the session object
-            console.log('employee session=>',token)
+           
             return session;
         },
     },

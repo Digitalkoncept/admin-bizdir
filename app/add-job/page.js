@@ -160,7 +160,7 @@ const page = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>Credentials</td>
+                      <td>Tasks</td>
                       <td>
                         <div className="ad-sub-cre">
                           <ul>

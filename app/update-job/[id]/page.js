@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import JobCategory from "@/components/JobCategory";
 import { client } from "@/lib/apollo";
@@ -8,6 +9,7 @@ import { UPDATE_JOb } from "@/lib/mutation";
 import { GET_ALL_JOB_CATEGORY, GET_JOB_BY_ID } from "@/lib/query";
 
 const page = ({params}) => {
+  const router = useRouter();
   const [subcategory, setSubCategory] = useState();
   const [cat,setCat] = useState();
   const [subcat,setSubCat] = useState();
@@ -127,6 +129,7 @@ const page = ({params}) => {
       }
       setFormData(initialFormState);
       toast.success("Job updated Successully.");
+      router.push('/all-jobs')
       console.log(data);
     } catch (error) {
       console.error("something went wrong:", error);
