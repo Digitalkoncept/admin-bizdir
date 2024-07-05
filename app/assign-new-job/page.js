@@ -172,12 +172,15 @@ const page = () => {
       });
 
       if (errors || data.assignJob.code !== 200) {
-        throw new Error("Something went wrong");
+        console.log("error is =>",data.assignJob.message)
+        throw new Error(data.assignJob.message);
+
       }
 
       toast.success(`task assign to ${searchemp.value} successfully.`);
       console.log(data);
     } catch (error) {
+      toast.error(error.message)
       console.error("Error submitting form:", error);
     }
   };
