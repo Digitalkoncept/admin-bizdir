@@ -72,9 +72,9 @@ const page = () => {
         <div className="ad-dash leftpadd">
           <div className="ud-cen">
             <div className="log-bor">&nbsp;</div>
-            <span className="udb-inst">All Tasks</span>
+            <span className="udb-inst">All Jobs</span>
             <div className="ud-cen-s2">
-              <h2>All Tasks</h2>
+              <h2>All Jobs</h2>
               <Link href="/add-job" className="db-tit-btn">
                 Add New Job
               </Link>
@@ -90,7 +90,7 @@ const page = () => {
                       <th>Description</th>
                       <th>Permissions</th>
                       <th>Update</th>
-                      <th>Delete</th>
+                      <th>Preview</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -110,11 +110,10 @@ const page = () => {
                         </td>
                         <td>
                           <Link
-                            href="#!"
+                            href={`/all-jobs/${item._id}`}
                             className="db-list-edit"
-                            onClick={() => deleteJob(item._id)}
                           >
-                            Delete
+                            Preview
                           </Link>
                         </td>
                       </tr>
