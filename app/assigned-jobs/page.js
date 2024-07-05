@@ -6,7 +6,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import {  GET_ALL_EMP_ASSIGNED_TASK } from "@/lib/query";
+import {  GET_ALL_EMP_ASSIGNED_JOB } from "@/lib/query";
 import { client } from "@/lib/apollo";
 import { DELETE_ROLE } from "@/lib/mutation";
 import DateFormatter from "@/components/DateFormatter";
@@ -15,10 +15,10 @@ const page = () => {
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
 
-  const getEmpTask = async () => {
+  const getEmpJobs = async () => {
     try {
       const { data, errors } = await client.query({
-        query: GET_ALL_EMP_ASSIGNED_TASK,
+        query: GET_ALL_EMP_ASSIGNED_JOB,
         fetchPolicy:'no-cache',
         context: {
           headers: {
@@ -32,14 +32,13 @@ const page = () => {
       }
 
       console.log(data);
-      setTasks(data.getJobAssignedEmployee.employees);
-      setLoading(false);
+      setTasks(data.getJobAssignedEmployee.jobs);
     } catch (error) {
       console.error("something went wrong:", error);
     }
   };
   useEffect(() => {
-    if (status === "authenticated") getEmpTask();
+    if (status === "authenticated") getEmpJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -75,9 +74,9 @@ const page = () => {
         <div className="ad-dash leftpadd">
           <div className="ud-cen">
             <div className="log-bor">&nbsp;</div>
-            <span className="udb-inst">All Assigned Task</span>
+            <span className="udb-inst">All Assigned Jobs</span>
             <div className="ud-cen-s2">
-              <h2>All Assigned Task</h2>
+              <h2>All Assigned Jobs</h2>
               <Link href="/create-role" className="db-tit-btn">
                 Add new Role
               </Link>
