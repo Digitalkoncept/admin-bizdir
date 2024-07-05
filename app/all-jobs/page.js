@@ -13,11 +13,19 @@ const page = () => {
   const [jobs, setJobs] = useState();
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
+  const [showModal, setShowModal] = useState(null);
+  const openModal = (item) => {
+    setShowModal(item);
+  };
+  const closeModal = () => {
+    setShowModal(null);
+  };
 
   const getJobs = async () => {
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_JOBS,
+        fetchPolicy:'no-cache',
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -55,14 +63,15 @@ const page = () => {
       });
 
       if (errors || data.deleteJob.code !== 200) {
-        throw new Error("Something went wrong");
+        throw new Error(data.deleteJob.message);
       }
 
       toast.success("Job deleted successfully");
       getJobs();
       setLoading(false);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error(error.message);
+      toast.error(error.message)
     }
   };
 
@@ -90,6 +99,7 @@ const page = () => {
                       <th>Description</th>
                       <th>Permissions</th>
                       <th>Update</th>
+                      <th>Delete</th>
                       <th>Preview</th>
                     </tr>
                   </thead>
@@ -108,6 +118,65 @@ const page = () => {
                             Update
                           </Link>
                         </td>
+                        <td className="relative">
+                    <span
+                      className="db-list-edit"
+                      onClick={() => openModal(item)}
+                    >
+                      Delete
+                    </span>
+                    {showModal && showModal._id === item._id && (
+                      <div className="font-manrope flex   items-center justify-center absolute right-0 top-0 z-10">
+                        <div className="mx-auto box-border w-[180px] border bg-white p-2">
+                          <div className="flex items-center justify-between relative">
+                            <button
+                              onClick={closeModal}
+                              type="button"
+                              className="cursor-pointer border rounded-[4px] absolute right-0"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-[15px] w-[15px] text-[#64748B]"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                          <form id="approvalForm">
+                            <label
+                              htmlFor="description"
+                              className="block mb-2 text-sm font-medium text-gray-900 text-center "
+                            >
+                              you want to delete this listing
+                            </label>
+                            <div className="my-2 flex  justify-around ">
+                              <button
+                                onClick={closeModal}
+                                className="w-[50px] cursor-pointer rounded-[4px] bg-green-700 px-1 py-[6px] text-center font-base text-xs text-white"
+                              >
+                                close
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => deleteJob(item._id)}
+                                className="w-[50px] cursor-pointer rounded-[4px] bg-red-700 px-1 py-[6px] text-center font-base text-xs text-white"
+                              >
+                                delete
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    )}
+                  </td>
                         <td>
                           <Link
                             href={`/all-jobs/${item._id}`}

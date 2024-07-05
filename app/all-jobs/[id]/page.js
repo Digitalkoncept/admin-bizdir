@@ -16,6 +16,7 @@ const page = ({ params }) => {
     try {
       const { data, errors } = await client.query({
         query: GET_JOB_BY_ID,
+        fetchPolicy:'no-cache',
         variables: { id: params.id },
         context: {
           headers: {
@@ -89,12 +90,15 @@ console.log('job by id =>',job)
 
                   <tr>
                     <td>Job Assign To</td>
-                    <td></td>
+                    <td>{
+                          job?.job_assigned_to.map((item,index)=> (
+                            <>{index +1}. {item.name} <br/></>
+                          ))}</td>
                   </tr>
 
                   <tr>
                     <td>Created By</td>
-                    <td></td>
+                    <td>{job?.createdBy.name}</td>
                   </tr>
 
                   <tr>

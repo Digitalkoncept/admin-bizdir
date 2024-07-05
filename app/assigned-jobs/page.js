@@ -64,8 +64,8 @@ console.log("job id is =>",jobid)
         },
       });
 
-      if (errors || data.removeJob.code !== 200) {
-        throw new Error(data.removeJob.message);
+      if (errors || data.removeEmpJob.code !== 200) {
+        throw new Error(data.removeEmpJob.message);
       }
 
       toast.success("job removed successfully.");
@@ -84,8 +84,8 @@ console.log("job id is =>",jobid)
             <span className="udb-inst">All Assigned Jobs</span>
             <div className="ud-cen-s2">
               <h2>All Assigned Jobs</h2>
-              <Link href="/create-role" className="db-tit-btn">
-                Add new Role
+              <Link href="/assign-new-job" className="db-tit-btn">
+                Add new Job
               </Link>
               {loading ? (
                 <Skeleton count={4} />
@@ -102,7 +102,7 @@ console.log("job id is =>",jobid)
                     </tr>
                   </thead>
                   <tbody>
-                    {tasks?.map((item, index) => (
+                    {tasks?.length > 0 && tasks?.map((item, index) => (
                       <tr key={item._id}>
                         <td>{index + 1}</td>
                         <td>
@@ -117,7 +117,7 @@ console.log("job id is =>",jobid)
                         <td>
                           {
                             item?.job.map((item,index) =>(
-                            <Link href={`/all-jobs/${item.assigned_job._id}`}> <span>{index +1}. {item.assigned_job.title} <br/> </span>  </Link>
+                            <Link key={index} href={`/all-jobs/${item?.assigned_job?._id}`}> <span>{index +1}. {item?.assigned_job?.title} <br/> </span>  </Link>
                             ))
                           }
                          </td>
