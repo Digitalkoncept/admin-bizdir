@@ -10,7 +10,7 @@ import { client } from "@/lib/apollo";
 import { DELETE_JOB, DELETE_ROLE } from "@/lib/mutation";
 
 const page = () => {
-  const [jobs, setJobs] = useState();
+  const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
   const [showModal, setShowModal] = useState(null);

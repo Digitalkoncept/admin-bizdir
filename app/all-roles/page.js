@@ -9,7 +9,7 @@ import { GET_ALL_ROLES } from "@/lib/query";
 import { client } from "@/lib/apollo";
 import { DELETE_ROLE } from "@/lib/mutation";
 const page = () => {
-  const [roles, setRoles] = useState();
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
   const PAGE_COUNT = 5;

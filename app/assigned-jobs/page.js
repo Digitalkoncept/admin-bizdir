@@ -11,7 +11,7 @@ import { client } from "@/lib/apollo";
 import { DELETE_ROLE, REMOVE_EMP_JOB } from "@/lib/mutation";
 import DateFormatter from "@/components/DateFormatter";
 const page = () => {
-  const [tasks, setTasks] = useState();
+  const [tasks, setTasks] = useState([]);
   const [jobid, setJobId] = useState();
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();

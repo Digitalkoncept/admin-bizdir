@@ -11,7 +11,7 @@ import { GET_EMPLOYEES } from "@/lib/query";
 import { DELETE_EMPLOYEE } from "@/lib/mutation";
 
 const page = () => {
-  const [employee, setEmployee] = useState();
+  const [employee, setEmployee] = useState([]);
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(null);
