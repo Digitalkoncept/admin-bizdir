@@ -11,6 +11,33 @@ const page = () => {
   const [showModal, setShowModal] = useState(null);
   let counter = 0;
 
+  const PAGE_COUNT = 5;
+
+  const [page, setPage] = useState({
+    totalPages: 1,
+    current: 1,
+  });
+
+  const handlePageNumber = (number) => {
+    if (number >= 1 && number <= page.totalPages) {
+      setPage((prevState) => ({
+        ...prevState,
+        current: number,
+      }));
+    }
+  };
+
+  const handleTotalPages = (number) => {
+    setPage((prevState) => {
+      const currentPage = Math.min(prevState.current, number);
+      return {
+        ...prevState,
+        totalPages: number,
+        current: currentPage,
+      };
+    });
+  };
+
   const openModal = (item) => setShowModal(item);
   const closeModal = () => setShowModal(null);
 
@@ -32,6 +59,9 @@ const page = () => {
 
       setCategories(data.getAllCategories.categories);
       console.log(data);
+      handleTotalPages(
+        Math.ceil(data.getAllCategories.categories.length / PAGE_COUNT)
+      );
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -39,6 +69,7 @@ const page = () => {
 
   useEffect(() => {
     getCategories();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteSubcategory = async (e, id) => {
@@ -65,7 +96,10 @@ const page = () => {
       console.error("Error:", error);
     }
   };
+  let end = page.current * PAGE_COUNT;
+  let start = end - PAGE_COUNT;
 
+  const paginatedCategories = categories.slice(start, end);
   return (
     <section>
       <div className="ad-com">
@@ -99,7 +133,7 @@ const page = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {categories.map((cat) => {
+                  {paginatedCategories.map((cat) => {
                     return cat.subcategories.map((sub, idx) => {
                       counter += 1;
                       return (
@@ -192,6 +226,49 @@ const page = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <div className="ad-pgnat">
+            <ul className="pagination">
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current - 1)}
+                >
+                  Previous
+                </a>
+              </li>
+
+              {Array.from({ length: page.totalPages }, (_, idx) => {
+                const currentPage = idx + 1;
+                return (
+                  <li
+                    className={`page-item ${
+                      page.current === currentPage ? "active" : ""
+                    }`}
+                    key={idx}
+                  >
+                    <a
+                      className="page-link"
+                      href="#"
+                      onClick={() => handlePageNumber(currentPage)}
+                    >
+                      {currentPage}
+                    </a>
+                  </li>
+                );
+              })}
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current + 1)}
+                >
+                  Next
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
