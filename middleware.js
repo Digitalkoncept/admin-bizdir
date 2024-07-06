@@ -7,16 +7,17 @@ export default withAuth(
     const token = req.nextauth?.token?.jwt;
 
     const publicFile = /\.(.*)$/.test(req.nextUrl.pathname);
-    if (req.nextUrl.pathname.startsWith("/login") || publicFile) {
+    if (req.nextUrl.pathname.startsWith("/login") || publicFile ) {
       return NextResponse.next();
     }
+    
 
     // Exclude static files from being intercepted by middleware
     if (req.nextUrl.pathname.startsWith("/_next") || req.nextUrl.pathname.startsWith("/api")) {
       return NextResponse.next();
     }
 
-    if (!token) {
+    if (token === undefined) {
       console.log("Token undefined");
       return NextResponse.redirect(new URL('/login', req.url));
     }
@@ -75,4 +76,4 @@ export default withAuth(
   }
 );
 
-export const config = { matcher: [ '/((?!login|api|_next/static|_next/image|favicon.ico|/public/:path))'] }
+export const config = { matcher: [ '/((?!login|api|_next/static|_next/image|favicon.ico|/public/:path*)):path*'] }

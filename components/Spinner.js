@@ -7,7 +7,6 @@ const override = {
 };
 
 function Spinner() {
-  console.log('loader is running')
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
