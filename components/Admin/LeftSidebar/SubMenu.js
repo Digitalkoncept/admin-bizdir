@@ -10,7 +10,7 @@ const SubMenu = ({ item, permissions }) => {
   const pathname = usePathname();
 
   const hasPermission = (permissions, requiredPermission) => {
-    return permissions.includes(requiredPermission);
+    return permissions?.includes(requiredPermission);
   };
 
   const checkPermission = (item) => {

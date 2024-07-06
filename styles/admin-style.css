@@ -2660,7 +2660,7 @@ html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:activ
 .ud-cen-s2 table tr{transition: all 0.3s ease;}
 .ud-cen-s2 table tr:hover{/* transform: translateY(-4px); *//* box-shadow: 0px 18px 22px -18px rgba(83, 81, 81, 0.28); */}
 .ad-login-reg{
-    background: url("/admin-log-bg.jpg") no-repeat;
+    background: url("https://res.cloudinary.com/dncikfz66/image/upload/v1720256297/bizdir/42a470ca1e4798b6191688c3c6766029.jpg") no-repeat;
     position: fixed;
     background-attachment: fixed;
     width: 100%;
