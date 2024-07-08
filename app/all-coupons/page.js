@@ -5,8 +5,35 @@ import { GET_ALL_COUPONS } from "@/lib/query";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 const page = () => {
-  const [coupons, setCoupons] = useState();
+  const [coupons, setCoupons] = useState([]);
   const { data: session, status } = useSession();
+
+  const PAGE_COUNT = 5;
+
+  const [page, setPage] = useState({
+    totalPages: 1,
+    current: 1,
+  });
+
+  const handlePageNumber = (number) => {
+    if (number >= 1 && number <= page.totalPages) {
+      setPage((prevState) => ({
+        ...prevState,
+        current: number,
+      }));
+    }
+  };
+
+  const handleTotalPages = (number) => {
+    setPage((prevState) => {
+      const currentPage = Math.min(prevState.current, number);
+      return {
+        ...prevState,
+        totalPages: number,
+        current: currentPage,
+      };
+    });
+  };
 
   const getAllCoupons = async () => {
     try {
@@ -26,6 +53,9 @@ const page = () => {
 
       setCoupons(data.getAllCoupons.coupons);
       console.log(data);
+      handleTotalPages(
+        Math.ceil(data.getAllCoupons.coupons.length / PAGE_COUNT)
+      );
     } catch (error) {
       console.error("something went wrong:", error.message);
     }
@@ -39,6 +69,11 @@ const page = () => {
   }, [session]);
 
   console.log(coupons);
+
+  let end = page.current * PAGE_COUNT;
+  let start = end - PAGE_COUNT;
+
+  const paginatedCoupons = coupons.slice(start, end);
   return (
     <section>
       <div className="ad-com">
@@ -66,7 +101,7 @@ const page = () => {
                 </thead>
                 <tbody>
                   {coupons?.length > 0 &&
-                    coupons?.map((item, index) => {
+                    paginatedCoupons?.map((item, index) => {
                       return (
                         <tr key={index}>
                           <td>{index + 1}</td>
@@ -116,27 +151,40 @@ const page = () => {
           <div className="ad-pgnat">
             <ul className="pagination">
               <li className="page-item">
-                <a className="page-link" href="#">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current - 1)}
+                >
                   Previous
                 </a>
               </li>
-              <li className="page-item active">
-                <a className="page-link" href="#">
-                  1
-                </a>
-              </li>
+
+              {Array.from({ length: page.totalPages }, (_, idx) => {
+                const currentPage = idx + 1;
+                return (
+                  <li
+                    className={`page-item ${
+                      page.current === currentPage ? "active" : ""
+                    }`}
+                    key={idx}
+                  >
+                    <a
+                      className="page-link"
+                      href="#"
+                      onClick={() => handlePageNumber(currentPage)}
+                    >
+                      {currentPage}
+                    </a>
+                  </li>
+                );
+              })}
               <li className="page-item">
-                <a className="page-link" href="#">
-                  2
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  3
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current + 1)}
+                >
                   Next
                 </a>
               </li>

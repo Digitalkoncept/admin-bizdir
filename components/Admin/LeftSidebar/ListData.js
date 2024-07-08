@@ -3,82 +3,89 @@ export const SidebarData = [
     title: "Employee",
     path: "#",
     class: "ic-user",
-    permission:"view employee",
+    permission: "view employee",
     subNav: [
       {
         name: "All Employee",
         path: "/all-employee",
-        permission:"view employee"
+        permission: "view employee",
       },
       {
         name: "Add Employee",
         path: "/create-employee",
-        permission:"add employee"
+        permission: "add employee",
       },
       {
         name: "Roles",
         path: "/all-roles",
-        permission:"view roles"
+        permission: "view roles",
       },
       {
         name: "Add Role",
         path: "/add-role",
-        permission:"add role"
+        permission: "add role",
       },
+    ],
+  },
+  {
+    title: "Jobs",
+    path: "#",
+    class: "ic-sub",
+    permission: "view jobs",
+    subNav: [
       {
         name: "All Jobs",
         path: "/all-jobs",
-        permission:"view jobs"
+        permission: "view jobs",
       },
       {
         name: "Add Job",
         path: "/add-job",
-        permission:"add job"
+        permission: "add job",
       },
       {
-        name:"All Assigned Job",
-        path:"/assigned-jobs",
-        permission:"view assigned jobs"
+        name: "All Assigned Job",
+        path: "/assigned-jobs",
+        permission: "view assigned jobs",
       },
       {
-        name:"Assign New Job",
-        path:"/assign-new-job",
-        permission:"assign new job"
-      }
+        name: "Assign New Job",
+        path: "/assign-new-job",
+        permission: "assign new job",
+      },
     ],
   },
   {
     title: "Users",
     path: "/all-users",
     class: "ic-user",
-    permission:"view users"
+    permission: "view users",
   },
   {
     title: "Listings",
     path: "#",
     class: "ic-li",
-    permission:"view listings",
+    permission: "view listings",
     subNav: [
       {
         name: "All Listings",
         path: "/admin-all-listings",
-        permission:"view listings"
-
+        permission: "view listings",
       },
       {
-        name:"Add  Listing",
-        path:"/add-new-listing",
-        permission:"add listing"
+        name: "Add  Listing",
+        path: "/add-new-listing",
+        permission: "add listing",
       },
       {
         name: "New Listing Request",
         path: "/new-listing-request",
-        permission:"view listing request"
+        permission: "view listing request",
       },
       {
-        name:"All Claim Request",
-        path:"/new-claim-request",
-        permission:"view claim request"
+        name: "All Claim Request",
+        path: "/new-claim-request",
+        permission: "view claim request",
       },
     ],
   },
@@ -86,27 +93,27 @@ export const SidebarData = [
     title: "Category",
     path: "#",
     class: "ic-li",
-    permission:"view listing category",
+    permission: "view listing category",
     subNav: [
       {
         name: "Listing Category",
         path: "/all-listing-category",
-        permission:"view listing category"
+        permission: "view listing category",
       },
       {
         name: "Add Listing Category",
         path: "/add-listing-category",
-        permission:"add listing category"
+        permission: "add listing category",
       },
       {
         name: "Listing Sub Category",
         path: "/all-listing-sub-category",
-        permission:"view listing sub category"
+        permission: "view listing sub category",
       },
       {
         name: "Add Listing Sub Category",
         path: "/add-listing-sub-category",
-        permission:"add listing sub category"
+        permission: "add listing sub category",
       },
     ],
   },
@@ -114,17 +121,17 @@ export const SidebarData = [
     title: "Events",
     path: "#",
     class: "ic-eve",
-    permission:"view events",
+    permission: "view events",
     subNav: [
       {
         name: "All Events",
         path: "/admin-event",
-        permission:"view events"
+        permission: "view events",
       },
       {
         name: "New Event Request",
         path: "/new-event-request",
-        permission:"view event request"
+        permission: "view event request",
       },
     ],
   },
@@ -132,37 +139,37 @@ export const SidebarData = [
     title: "Products",
     path: "/all-products",
     class: "ic-prod",
-    permission:"view products",
+    permission: "view products",
     subNav: [
       {
         name: "All Products",
         path: "#",
-        permission:"view products"
+        permission: "view products",
       },
       {
         name: "New Product Request",
         path: "#",
-        permission:"view product request"
+        permission: "view product request",
       },
       {
         name: "Product Category",
         path: "/admin-all-product-category",
-        permission:"view product category"
+        permission: "view product category",
       },
       {
         name: "Add Product Category",
         path: "/admin-add-new-product-category",
-        permission:"add product category"
+        permission: "add product category",
       },
       {
         name: "Product Sub Category",
         path: "/admin-all-product-sub-category",
-        permission:"view product sub category"
+        permission: "view product sub category",
       },
       {
         name: "Add Product Sub Category",
         path: "/admin-add-new-product-sub-category",
-        permission:"add product sub category"
+        permission: "add product sub category",
       },
     ],
   },
@@ -170,23 +177,23 @@ export const SidebarData = [
     title: "All Payments",
     path: "/admin-all-payments",
     class: "ic-pay",
-    permission:"view payments"
+    permission: "view payments",
   },
   {
     title: "Coupon and deals",
     path: "#",
     class: "ic-coup",
-    permission:"view coupons",
+    permission: "view coupons",
     subNav: [
       {
         name: "All Coupons",
         path: "/all-coupons",
-        permission:"view coupons"
+        permission: "view coupons",
       },
       {
         name: "Add New Coupon",
         path: "/add-new-coupon",
-        permission:"add coupon"
+        permission: "add coupon",
       },
     ],
   },
@@ -195,17 +202,17 @@ export const SidebarData = [
     title: "Enquiry & Get Quote",
     path: "#",
     class: "ic-enq",
-    permission:"view company enquiry, view client enquiry",
+    permission: "view company enquiry, view client enquiry",
     subNav: [
       {
         name: "Company Enquiry",
-        path: "/company-enquiry",
-        permission:"view company enquiry"
+        path: "/view-company-enquiry",
+        permission: "view company enquiry",
       },
       {
         name: "Client Enquiry",
-        path: "/client-enquiry",
-        permission:"view client enquiry"
+        path: "/view-client-enquiry",
+        permission: "view client enquiry",
       },
     ],
   },
@@ -213,12 +220,12 @@ export const SidebarData = [
     title: "Reviews",
     path: "#",
     class: "ic-rev",
-    permission:"view reviews",
+    permission: "view reviews",
     subNav: [
       {
         name: "All Reviews",
         path: "/admin-all-reviews",
-        permission:"view reviews"
+        permission: "view reviews",
       },
     ],
   },
@@ -237,7 +244,7 @@ export const SidebarData = [
     title: "All Notifications",
     path: "/all-notifications",
     class: "ic-noti",
-    permission:"view notifications"
+    permission: "view notifications",
   },
   {
     title: "Home Page",

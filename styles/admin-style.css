@@ -646,6 +646,7 @@ a:hover {
 }
 
 .ud-cen {
+    height: 600px;
     float: left;
     width: 94%;
     margin: 50px 3%;

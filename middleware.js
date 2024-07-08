@@ -7,19 +7,21 @@ export default withAuth(
     const token = req.nextauth?.token?.jwt;
 
     const publicFile = /\.(.*)$/.test(req.nextUrl.pathname);
-    if (req.nextUrl.pathname.startsWith("/login") || publicFile ) {
+    if (req.nextUrl.pathname.startsWith("/login") || publicFile) {
       return NextResponse.next();
     }
-    
 
     // Exclude static files from being intercepted by middleware
-    if (req.nextUrl.pathname.startsWith("/_next") || req.nextUrl.pathname.startsWith("/api")) {
+    if (
+      req.nextUrl.pathname.startsWith("/_next") ||
+      req.nextUrl.pathname.startsWith("/api")
+    ) {
       return NextResponse.next();
     }
 
     if (token === undefined) {
       console.log("Token undefined");
-      return NextResponse.redirect(new URL('/login', req.url));
+      return NextResponse.redirect(new URL("/login", req.url));
     }
 
     try {
@@ -59,26 +61,31 @@ export default withAuth(
       };
 
       const requiredPermission = routePermission[req.nextUrl.pathname];
-      const hasPermission = verifiedToken.permissions.includes(requiredPermission);
+      const hasPermission =
+        verifiedToken.permissions.includes(requiredPermission);
 
       if (requiredPermission && !hasPermission) {
-        return NextResponse.redirect(new URL('/', req.url));
+        return NextResponse.redirect(new URL("/", req.url));
       }
-      console.log("middleware is running")
+      console.log("middleware is running");
       return NextResponse.next();
     } catch (error) {
       console.error("An error occurred:", error);
       // Redirect the user to the login page when the token is not verified
-      return NextResponse.redirect(new URL('/login', req.url));
+      return NextResponse.redirect(new URL("/login", req.url));
     }
   },
   {
     callbacks: {
       async authorized({ token }) {
         return !!token;
-      }
-    }
+      },
+    },
   }
 );
 
-export const config = { matcher: [ '/((?!login|api|_next/static|_next/image|favicon.ico|/public/:path*)):path*'] }
+export const config = {
+  matcher: [
+    "/((?!login|api|_next/static|_next/image|favicon.ico|/public/:path*)):path*",
+  ],
+};

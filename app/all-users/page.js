@@ -60,7 +60,7 @@ const page = () => {
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_USERS,
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -72,9 +72,8 @@ const page = () => {
         throw new Error("Something went wrong");
       }
 
-      
       const usersList = data.getAllUsers.users;
-      console.log(usersList)
+      console.log(usersList);
       setUsers(usersList);
 
       handleTotalPages(Math.ceil(usersList.length / PAGE_COUNT));
@@ -234,14 +233,16 @@ const page = () => {
                           <td
                             className={`${
                               item.user_status === "Active" ||
-                              item.user_status === "Inactive" || item.user_status ==="Enabled"
+                              item.user_status === "Inactive" ||
+                              item.user_status === "Enabled"
                                 ? "!text-green-600"
                                 : "!text-[#fd5b5b]"
                             }`}
                           >
-                            {item.user_status}{" "}
+                            {item.user_status}
                             {item.user_status === "Active" ||
-                            item.user_status === "Inactive" || item.user_status === "Enabled" ? (
+                            item.user_status === "Inactive" ||
+                            item.user_status === "Enabled" ? (
                               <span
                                 className="db-list-edit"
                                 onClick={() => disableUser(item._id, item.name)}
@@ -274,53 +275,53 @@ const page = () => {
                       ))}
                     </tbody>
                   </table>
-                  <div className="ad-pgnat">
-                    <ul className="pagination">
-                      <li className="page-item">
-                        <a
-                          className="page-link"
-                          href="#"
-                          onClick={() => handlePageNumber(page.current - 1)}
-                        >
-                          Previous
-                        </a>
-                      </li>
-                      {Array(page.totalPages)
-                        .fill(0)
-                        .map((_, idx) => {
-                          const currentPage = idx + 1;
-
-                          return (
-                            <li
-                              className={`page-item ${
-                                page.current === currentPage ? "active" : ""
-                              }`}
-                              key={idx}
-                            >
-                              <a
-                                className="page-link"
-                                href="#"
-                                onClick={() => handlePageNumber(currentPage)}
-                              >
-                                {currentPage}
-                              </a>
-                            </li>
-                          );
-                        })}
-                      <li className="page-item">
-                        <a
-                          className="page-link"
-                          href="#"
-                          onClick={() => handlePageNumber(page.current + 1)}
-                        >
-                          Next
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
                 </>
               )}
             </div>
+          </div>
+          <div className="ad-pgnat">
+            <ul className="pagination">
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current - 1)}
+                >
+                  Previous
+                </a>
+              </li>
+              {Array(page.totalPages)
+                .fill(0)
+                .map((_, idx) => {
+                  const currentPage = idx + 1;
+
+                  return (
+                    <li
+                      className={`page-item ${
+                        page.current === currentPage ? "active" : ""
+                      }`}
+                      key={idx}
+                    >
+                      <a
+                        className="page-link"
+                        href="#"
+                        onClick={() => handlePageNumber(currentPage)}
+                      >
+                        {currentPage}
+                      </a>
+                    </li>
+                  );
+                })}
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current + 1)}
+                >
+                  Next
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

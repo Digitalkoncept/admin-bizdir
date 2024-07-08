@@ -9,17 +9,42 @@ import Link from "next/link";
 import { client } from "@/lib/apollo";
 import { GET_EMPLOYEES } from "@/lib/query";
 import { DELETE_EMPLOYEE } from "@/lib/mutation";
+
 const page = () => {
-  const [employee, setEmployee] = useState();
+  const [employee, setEmployee] = useState([]);
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(null);
-  const openModal = (item) => {
-    setShowModal(item);
+  const PAGE_COUNT = 5;
+
+  const [page, setPage] = useState({
+    totalPages: 1,
+    current: 1,
+  });
+
+  const handlePageNumber = (number) => {
+    if (number >= 1 && number <= page.totalPages) {
+      setPage((prevState) => ({
+        ...prevState,
+        current: number,
+      }));
+    }
   };
-  const closeModal = () => {
-    setShowModal(null);
+
+  const handleTotalPages = (number) => {
+    setPage((prevState) => {
+      const currentPage = Math.min(prevState.current, number);
+      return {
+        ...prevState,
+        totalPages: number,
+        current: currentPage,
+      };
+    });
   };
+
+  const openModal = (item) => setShowModal(item);
+  const closeModal = () => setShowModal(null);
+
   const getEmployee = async () => {
     try {
       const { data, errors } = await client.query({
@@ -37,6 +62,9 @@ const page = () => {
 
       console.log(data);
       setEmployee(data.getEmployees.employees);
+      handleTotalPages(
+        Math.ceil(data.getEmployees.employees.length / PAGE_COUNT)
+      );
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -49,8 +77,6 @@ const page = () => {
   }, [session]);
 
   const deleteEmployee = async (id) => {
-  
-
     try {
       const { data, errors } = await client.mutate({
         mutation: DELETE_EMPLOYEE,
@@ -73,7 +99,12 @@ const page = () => {
       console.error("Error submitting form:", error);
     }
   };
- 
+
+  let end = page.current * PAGE_COUNT;
+  let start = end - PAGE_COUNT;
+
+  const paginatedEmployee = employee.slice(start, end);
+
   return (
     <section>
       <div className="ad-com">
@@ -188,6 +219,49 @@ const page = () => {
                 </table>
               )}
             </div>
+          </div>
+
+          <div className="ad-pgnat">
+            <ul className="pagination">
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current - 1)}
+                >
+                  Previous
+                </a>
+              </li>
+
+              {Array.from({ length: page.totalPages }, (_, idx) => {
+                const currentPage = idx + 1;
+                return (
+                  <li
+                    className={`page-item ${
+                      page.current === currentPage ? "active" : ""
+                    }`}
+                    key={idx}
+                  >
+                    <a
+                      className="page-link"
+                      href="#"
+                      onClick={() => handlePageNumber(currentPage)}
+                    >
+                      {currentPage}
+                    </a>
+                  </li>
+                );
+              })}
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current + 1)}
+                >
+                  Next
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

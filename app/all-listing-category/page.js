@@ -10,6 +10,34 @@ import React, { useEffect, useState } from "react";
 const page = () => {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(null);
+
+  const PAGE_COUNT = 5;
+
+  const [page, setPage] = useState({
+    totalPages: 1,
+    current: 1,
+  });
+
+  const handlePageNumber = (number) => {
+    if (number >= 1 && number <= page.totalPages) {
+      setPage((prevState) => ({
+        ...prevState,
+        current: number,
+      }));
+    }
+  };
+
+  const handleTotalPages = (number) => {
+    setPage((prevState) => {
+      const currentPage = Math.min(prevState.current, number);
+      return {
+        ...prevState,
+        totalPages: number,
+        current: currentPage,
+      };
+    });
+  };
+
   const openModal = (item) => {
     setShowModal(item);
   };
@@ -33,8 +61,11 @@ const page = () => {
         throw new Error("Something went wrong");
       }
 
-      setCategories(data.getAllCategories.categories);
       console.log(data);
+      setCategories(data.getAllCategories.categories);
+      handleTotalPages(
+        Math.ceil(data.getAllCategories.categories.length / PAGE_COUNT)
+      );
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -42,36 +73,8 @@ const page = () => {
 
   useEffect(() => {
     getCategories();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // const filterCategories = (text) => {
-  //   let collection = {
-  //     categories: [],
-  //     subcategories: [],
-  //     tags: [],
-  //   };
-
-  //   for (let cat of categories) {
-  //     if (cat.category_name) collection.categories.push(cat.category_name);
-
-  //     if (cat.subcategories) {
-  //       for (let sub of cat.subcategories) {
-  //         if (sub.subcategory_name)
-  //           collection.subcategories.push(sub.subcategory_name);
-
-  //         if (sub.tags) {
-  //           for (let tag of sub.tags) {
-  //             collection.tags.push(tag);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   for (let [key, value] of Object.entries(collection)) {
-
-  //   }
-  // };
 
   const deleteCategory = async (e, id) => {
     e.preventDefault();
@@ -96,6 +99,11 @@ const page = () => {
       console.error("Error:", error);
     }
   };
+
+  let end = page.current * PAGE_COUNT;
+  let start = end - PAGE_COUNT;
+
+  const paginatedCategory = categories.slice(start, end);
 
   return (
     <section>
@@ -131,7 +139,7 @@ const page = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {categories.map((cat, idx) => {
+                  {paginatedCategory.map((cat, idx) => {
                     return (
                       <tr key={cat._id}>
                         <td>{idx + 1}</td>
@@ -246,6 +254,49 @@ const page = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <div className="ad-pgnat">
+            <ul className="pagination">
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current - 1)}
+                >
+                  Previous
+                </a>
+              </li>
+
+              {Array.from({ length: page.totalPages }, (_, idx) => {
+                const currentPage = idx + 1;
+                return (
+                  <li
+                    className={`page-item ${
+                      page.current === currentPage ? "active" : ""
+                    }`}
+                    key={idx}
+                  >
+                    <a
+                      className="page-link"
+                      href="#"
+                      onClick={() => handlePageNumber(currentPage)}
+                    >
+                      {currentPage}
+                    </a>
+                  </li>
+                );
+              })}
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => handlePageNumber(page.current + 1)}
+                >
+                  Next
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

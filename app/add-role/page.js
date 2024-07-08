@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { client } from "@/lib/apollo";
 import { CREATE_ROLE } from "@/lib/mutation";
+import { useRouter } from "next/navigation";
 const page = () => {
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const page = () => {
     description: "",
     permissions: [],
   });
+
+  const router = useRouter();
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -64,6 +67,7 @@ const page = () => {
 
       toast.success("Role created successfully");
       console.log(data);
+      router.push("/all-roles")
     } catch (error) {
       console.error("Error submitting form:", error);
     }

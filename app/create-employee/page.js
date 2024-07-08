@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { CREATE_EMPLOYEE } from "@/lib/mutation";
 import { client } from "@/lib/apollo";
 import { GET_ALL_ROLES } from "@/lib/query";
+import { useRouter } from "next/navigation";
 const page = () => {
   const [roles, setRoles] = useState();
   const { data: session } = useSession();
@@ -17,9 +18,9 @@ const page = () => {
     image: "",
   });
 
+  const router = useRouter();
+
   const getRoles = async () => {
-
-
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_ROLES,
@@ -54,7 +55,6 @@ const page = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
 
     try {
       const { data, errors } = await client.mutate({
@@ -73,6 +73,7 @@ const page = () => {
 
       toast.success("Employee created successfully");
       console.log(data);
+      router.push("/all-employee")
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -207,7 +208,7 @@ const page = () => {
                   name="sub_admin_submit"
                   className="db-pro-bot-btn"
                 >
-                  Add Employee
+                  Submit
                 </button>
               </form>
             </div>
