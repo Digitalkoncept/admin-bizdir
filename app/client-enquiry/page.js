@@ -2,6 +2,7 @@
 import { client } from "@/lib/apollo";
 import { DELETE_ENQUIRY, UPDATE_ENQUIRY_STATUS } from "@/lib/mutation";
 import { GET_ALL_ENQUIRY } from "@/lib/query";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -10,7 +11,6 @@ const page = () => {
   const [enquiries, setEnquiries] = useState([]);
   const { data: session, status } = useSession();
   // const searchParams = useSearchParams();
-
   const PAGE_COUNT = 5;
 
   const [page, setPage] = useState({
@@ -43,12 +43,7 @@ const page = () => {
       const { data, errors } = await client.query({
         query: GET_ALL_ENQUIRY,
         fetchPolicy: "no-cache",
-        variables: { enquiryType: "internal" },
-        // context: {
-        //   headers: {
-        //     Authorization: `Bearer ${session.jwt}`,
-        //   },
-        // },
+        variables : {enquiryType: "listing"}
       });
 
       if (errors || data.getAllEnquiry.code !== 200) {
@@ -67,7 +62,7 @@ const page = () => {
 
   useEffect(() => {
     fetchEnquiries();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const deleteEnquiry = async (id) => {
@@ -92,6 +87,31 @@ const page = () => {
       fetchEnquiries();
     } catch (error) {
       console.error("Error submitting form:", error);
+    }
+  };
+
+  const updateEnquiryStatus = async (id, status) => {
+    try {
+      console.log(session.jwt);
+      const { data, errors } = await client.mutate({
+        mutation: UPDATE_ENQUIRY_STATUS,
+        variables: { id, status },
+        context: {
+          headers: {
+            Authorization: `Bearer ${session.jwt}`,
+          },
+        },
+      });
+      console.log(data);
+      if (errors || data.approveEnquiry.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+
+      toast.success("Enquiry " + status + " and sent!");
+
+      fetchEnquiries();
+    } catch (error) {
+      console.error("Error :", error);
     }
   };
 
@@ -128,7 +148,9 @@ const page = () => {
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Message</th>
+                    <th>Listing</th>
                     <th>Delete</th>
+                    <th>Send</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -157,7 +179,14 @@ const page = () => {
                         </td>
                         <td>{enquiry.enquirer_email}</td>
                         <td>{enquiry.enquirer_mobile}</td>
-                        <td>{enquiry.message}</td>
+                        <td>{enquiry?.message.length > 50 ? enquiry?.message.slice(0,50)+'...': enquiry?.message}
+                          {enquiry?.message.length > 50 && <Link href={`/client-enquiry/${enquiry._id}`}> read more </Link>}
+                        </td>
+                        <td>
+                          {enquiry?.listing?.listing_name || ""}
+                          {enquiry?.listing?.isClaimed === "unclaimed" &&
+                            "(unclaimed)"}
+                        </td>
                         <td>
                           <span
                             className="db-list-edit"
@@ -165,6 +194,56 @@ const page = () => {
                           >
                             Delete
                           </span>
+                        </td>
+                        <td>
+                          <>
+                            {enquiry?.listing?.isClaimed === "unclaimed" ? (
+                              <></>
+                            ) : (
+                              <>
+                                {enquiry.approve_status === "pending" ? (
+                                  <>
+                                    <span
+                                      className="db-list-edit"
+                                      style={{
+                                        // color: "green",
+                                        // borderColor: "green",
+                                        marginRight: "2px",
+                                      }}
+                                      onClick={() =>
+                                        updateEnquiryStatus(
+                                          enquiry._id,
+                                          "approved"
+                                        )
+                                      }
+                                    >
+                                      Send
+                                    </span>
+                                    <span
+                                      className="db-list-edit"
+                                      // style={{ color: "red", borderColor: "red" }}
+                                      onClick={() =>
+                                        updateEnquiryStatus(
+                                          enquiry._id,
+                                          "rejected"
+                                        )
+                                      }
+                                    >
+                                      Reject
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span
+                                      title={`${enquiry.approve_status} by ${enquiry.approver?.role}`}
+                                    >
+                                      Enquiry {enquiry.approve_status}
+                                    </span>
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </>
                         </td>
                       </tr>
                     );

@@ -3,3 +3,10 @@
 @tailwind utilities;
 
 *{font-family:'Noto Sans',sans-serif;}
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url("/icon.woff2") format("woff2");
+    font-display: swap;
+  }

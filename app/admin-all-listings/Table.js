@@ -172,11 +172,6 @@ const Table = ({ page, handleTotalPages }) => {
                     </span>
                   </td>
                   <td>
-                    <span className="db-list-rat">
-                      {listing.ratings?.$numberDecimal}
-                    </span>
-                  </td>
-                  <td>
                     <span className="db-list-rat">{listing.views}</span>
                   </td>
                   <td>

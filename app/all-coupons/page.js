@@ -118,7 +118,7 @@ const page = () => {
                           <td>{item.end_date}</td>
                           <td>
                             <Link
-                              href={`/all-coupons/${item._id}`}
+                              href={`/update-coupon/${item._id}`}
                               className="db-list-edit"
                             >
                               Edit
