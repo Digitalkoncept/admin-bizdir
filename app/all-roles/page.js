@@ -14,29 +14,11 @@ const page = () => {
   const { data: session, status } = useSession();
 
   const getRoles = async () => {
-    // try {
-    //   setLoading(true);
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + "/api/role",
-    //     {
-    //       headers: {
-    //         authorization: "Bearer " + session.jwt,
-    //       },
-    //     }
-    //   );
-
-    //   const data = await res.json();
-
-    //   console.log(data);
-    //   setRoles(data);
-    //   setLoading(false);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
+   
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_ROLES,
+        fetchPolicy:'no-cache',
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -61,23 +43,6 @@ const page = () => {
   }, [session]);
 
   const deleteRole = async (id) => {
-    // try {
-    //   setLoading(true);
-    //   const res = await fetch(process.env.BACKEND_URL + `/api/role/${id}`, {
-    //     method: "DELETE",
-    //     headers: {
-    //       authorization: "Bearer " + session.jwt,
-    //     },
-    //   });
-    //   const data = await res.json();
-    //   if (res.status === 200) {
-    //     toast.success(data.message);
-    //   }
-    //   getRoles();
-    //   setLoading(false);
-    // } catch (error) {
-    //   console.error(error);
-    // }
 
     try {
       const { data, errors } = await client.mutate({
@@ -111,7 +76,7 @@ const page = () => {
             <span className="udb-inst">All Roles</span>
             <div className="ud-cen-s2">
               <h2>All Roles</h2>
-              <Link href="/create-role" className="db-tit-btn">
+              <Link href="/add-role" className="db-tit-btn">
                 Add new Role
               </Link>
               {loading ? (
@@ -137,7 +102,7 @@ const page = () => {
                         <td>{item?.permissions.join(", ")}</td>
                         <td>
                           <Link
-                            href={`/all-roles/${item._id}`}
+                            href={`/update-role/${item._id}`}
                             className="db-list-edit"
                           >
                             Update

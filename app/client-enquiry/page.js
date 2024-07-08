@@ -2,6 +2,7 @@
 import { client } from "@/lib/apollo";
 import { DELETE_ENQUIRY, UPDATE_ENQUIRY_STATUS } from "@/lib/mutation";
 import { GET_ALL_ENQUIRY } from "@/lib/query";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -17,11 +18,6 @@ const page = () => {
         query: GET_ALL_ENQUIRY,
         fetchPolicy: "no-cache",
         variables : {enquiryType: "listing"}
-        // context: {
-        //   headers: {
-        //     Authorization: `Bearer ${session.jwt}`,
-        //   },
-        // },
       });
 
       if (errors || data.getAllEnquiry.code !== 200) {
@@ -149,7 +145,9 @@ const page = () => {
                         </td>
                         <td>{enquiry.enquirer_email}</td>
                         <td>{enquiry.enquirer_mobile}</td>
-                        <td>{enquiry.message}</td>
+                        <td>{enquiry?.message.length > 50 ? enquiry?.message.slice(0,50)+'...': enquiry?.message}
+                          {enquiry?.message.length > 50 && <Link href={`/client-enquiry/${enquiry._id}`}> read more </Link>}
+                        </td>
                         <td>
                           {enquiry?.listing?.listing_name || ""}
                           {enquiry?.listing?.isClaimed === "unclaimed" &&

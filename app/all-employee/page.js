@@ -118,7 +118,7 @@ const page = () => {
                         <td>**********</td>
                         <td>
                           <Link
-                            href={`/all-employee/${item._id}`}
+                            href={`/update-employee/${item._id}`}
                             className="db-list-edit"
                           >
                             Update

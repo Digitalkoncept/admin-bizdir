@@ -27,10 +27,16 @@ export default function RootLayout({ children, session }) {
   return (
     <SessionProvider session={session}>
      
-        <html>
-          <Head>
-          <link rel="preload" href="/icon.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-          </Head>
+        <html lang="en">
+        <Head>
+        <link
+          rel="preload"
+          href="/icon.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </Head>
           <body className="!overflow-auto">
             <div>
             <Layout>
