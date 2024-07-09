@@ -74,29 +74,7 @@ const page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  const deleteEmployee = async (id) => {
-    try {
-      const { data, errors } = await client.mutate({
-        mutation: DELETE_EMPLOYEE,
-        variables: { id },
-        context: {
-          headers: {
-            Authorization: `Bearer ${session.jwt}`,
-          },
-        },
-      });
-
-      if (errors || data.createRole.code !== 200) {
-        throw new Error("Something went wrong");
-      }
-
-      toast.success("Role created successfully");
-      getEmployee();
-      setLoading(false);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
+  
 
   let end = page.current * PAGE_COUNT;
   let start = end - PAGE_COUNT;
