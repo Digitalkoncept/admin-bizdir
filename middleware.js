@@ -32,6 +32,7 @@ export default withAuth(
         '/all-employee': 'view employee',
         '/create-employee': 'add employee',
         '/update-employee':'update employee',
+        '/view-logs':'view logs',
         '/all-jobs':'view jobs',
         '/add-job':'add job',
         '/update-job':'update-job',

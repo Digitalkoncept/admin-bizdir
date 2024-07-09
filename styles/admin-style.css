@@ -361,6 +361,36 @@ a:hover {
 .ad-dash{
     margin-top: 52px;transition: all 0.5s ease-in-out;
 }
+div.dataTables_wrapper div.dataTables_length label{
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+}
+div.dataTables_wrapper div.dataTables_length select{
+width: auto;
+display: inline-block;
+}
+div.dataTables_wrapper div.dataTables_filter{
+    text-align: left;
+}
+div.dataTables_wrapper div.dataTables_filter label{
+    font-weight: normal;
+    text-align: left;
+    white-space: nowrap;
+}
+div.dataTables_wrapper div.dataTables_filter input{
+    margin-left: 0.5em;
+    display: inline-block;
+    width: auto;
+}
+.dataTables_length label select{
+    height: 25px;
+    padding: 2px 20px 2px 10px;
+    line-height: 22px;
+    font-weight: 500;
+    color: #333;
+}
+
 .ad-com #email_content table{
     background: none !important;
     box-shadow: none !important;

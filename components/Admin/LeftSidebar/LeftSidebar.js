@@ -1,6 +1,7 @@
 import React from "react";
 import { signOut } from "next-auth/react";
 import SubMenu from "./SubMenu";
+import Head from "next/head";
 import Link from "next/link";
 import { SidebarData } from "@/components/Admin/LeftSidebar/ListData";
 import { useSession } from "next-auth/react";
@@ -9,6 +10,15 @@ const LeftSidebar = ({ showadMenu }) => {
     const permissions = session?.user?.permissions;
     return (
         <section>
+            <style jsx>
+            {`@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url("/icon.woff2") format("woff2");
+    font-display: fallback;
+  }`}
+            </style>
             <div className={`ad-menu-lhs ${showadMenu ? "mshow" : ""}`}>
                 <div className="ad-menu">
                     <ul><li className="ic-db">

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-head-element */
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Head from "next/head";
 import Loading from "./loading";
 import TopNav from "@/components/Admin/TopNav";
@@ -24,19 +24,11 @@ export default function RootLayout({ children, session }) {
   function toggleCart() {
     setShowAdMenu(!showadMenu);
   }
+ 
   return (
     <SessionProvider session={session}>
      
         <html lang="en">
-        <Head>
-        <link
-          rel="preload"
-          href="/icon.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-      </Head>
           <body className="!overflow-auto">
             <div>
             <Layout>

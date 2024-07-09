@@ -8,5 +8,5 @@
     font-style: normal;
     font-weight: 400;
     src: url("/icon.woff2") format("woff2");
-    font-display: swap;
+    font-display: fallback;
   }

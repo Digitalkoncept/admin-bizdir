@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import DateFormatter from "@/components/DateFormatter";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
@@ -11,6 +12,8 @@ import { DELETE_JOB, DELETE_ROLE } from "@/lib/mutation";
 
 const page = () => {
   const [jobs, setJobs] = useState([]);
+  const [search,setSearch] = useState('');
+  const [filteredjob,setFilteredJob] = useState();
   const [loading, setLoading] = useState();
   const { data: session, status } = useSession();
   const [showModal, setShowModal] = useState(null);
@@ -107,7 +110,26 @@ const page = () => {
   let end = page.current * PAGE_COUNT;
   let start = end - PAGE_COUNT;
 
-  const paginatedJobs = jobs.slice(start, end);
+
+
+  useEffect(() => {
+    const lowercasedSearch = search.toLowerCase();
+    const filtered = jobs.filter(job => {
+      // Check if name or role includes the search term
+      const titleMatch = job.title.toLowerCase().includes(lowercasedSearch);
+      
+      // Check if createdAt date includes the search term
+      const dateMatch = new Date(job.createdAt).toLocaleDateString().toLowerCase().includes(lowercasedSearch);
+
+      // Check if any task includes the search term
+      const tasksMatch = job.tasks.some(task => task.toLowerCase().includes(lowercasedSearch));
+
+      return titleMatch  || dateMatch || tasksMatch;
+    });
+    setFilteredJob(filtered);
+  }, [search, jobs]);
+
+  const paginatedJobs = filteredjob?.slice(start, end);
   return (
     <section>
       <div className="ad-com">
@@ -117,6 +139,25 @@ const page = () => {
             <span className="udb-inst">All Jobs</span>
             <div className="ud-cen-s2">
               <h2>All Jobs</h2>
+              <div id="pg-resu_wrapper" className="dataTables_wrapper dt-bootstrap4 no-footer">
+              <div className="row">
+                
+                <div className="col-sm-12 col-md-6">
+                  <div id="pg-resu_filter" className="dataTables_filter">
+                    <label className="text-xs">
+                      Search:
+                      <input
+                        type="search"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="form-control form-control-sm"
+                        placeholder
+                        aria-controls="pg-resu"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
               <Link href="/add-job" className="db-tit-btn">
                 Add New Job
               </Link>
@@ -140,7 +181,9 @@ const page = () => {
                       {paginatedJobs?.map((item, index) => (
                         <tr key={item._id}>
                           <td>{index + 1}</td>
-                          <td>{item?.title}</td>
+                          <td>{item?.title}
+                          <span> <DateFormatter dateString={item.createdAt} /> </span>
+                          </td>
                           <td>{item?.description}</td>
                           <td>{item?.tasks.join(", ")}</td>
                           <td>
@@ -224,6 +267,7 @@ const page = () => {
                   </table>
                 </>
               )}
+              </div>
             </div>
           </div>
 

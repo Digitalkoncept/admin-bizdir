@@ -397,4 +397,10 @@ export const SidebarData = [
     path: "/admin-social-share",
     class: "ic-soci",
   },
+  {
+    title:"Logs",
+    path:"/view-logs",
+    class:"ic-db",
+    permission:"view logs"
+  }
 ];
