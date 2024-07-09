@@ -9,10 +9,11 @@ import { client } from "@/lib/apollo";
 import { GET_ALL_LISTING } from "@/lib/query";
 import { DELETE_LISTING, UPDATE_LISTING } from "@/lib/mutation";
 
-const Table = ({ page, handleTotalPages }) => {
+const Table = ({ page, handleTotalPages,search,setSearch }) => {
   const PAGE_COUNT = 5;
 
   const [listingData, setListingData] = useState([]);
+  const [filteredlist,setFilteredList] = useState();
   const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
   const [showModal, setShowModal] = useState(null);
@@ -27,6 +28,7 @@ const Table = ({ page, handleTotalPages }) => {
     try {
       const { data, errors } = await client.query({
         query: GET_ALL_LISTING,
+        fetchPolicy:'no-cache',
         variables: { type: "approved" },
         context: {
           headers: {
@@ -133,7 +135,29 @@ const Table = ({ page, handleTotalPages }) => {
   let end = page.current * PAGE_COUNT;
   let start = end - PAGE_COUNT;
 
-  const paginatedListing = listingData.slice(start, end);
+  useEffect(() => {
+    const lowercasedSearch = search.toLowerCase();
+    const filtered = listingData.filter(item => {
+      // Check if name or role includes the search term
+      const nameMatch = item.listing_name.toLowerCase().includes(lowercasedSearch);
+      
+      // Check if createdAt date includes the search term
+      const dateMatch = new Date(item?.createdAt).toLocaleDateString().toLowerCase().includes(lowercasedSearch);
+      const createBy = item?.createdBy?.name?.toLowerCase().includes(lowercasedSearch);
+      const approveBy = item?.approval_by?.role?.toLowerCase().includes(lowercasedSearch);
+      const statusMatch = item?.listing_status?.toLowerCase().includes(lowercasedSearch);
+      // Check if any task includes the search term
+     
+      return nameMatch || dateMatch || createBy || approveBy || statusMatch;
+    });
+    setFilteredList(filtered);
+    if(filtered.length > 0 ){
+      handleTotalPages(
+        Math.ceil(filtered.length / PAGE_COUNT)
+      );
+    }
+  }, [search, listingData]);
+  const paginatedListing = filteredlist?.slice(start, end);
 
   return (
     <>

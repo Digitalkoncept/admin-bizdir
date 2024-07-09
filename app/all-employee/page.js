@@ -9,9 +9,12 @@ import Link from "next/link";
 import { client } from "@/lib/apollo";
 import { GET_EMPLOYEES } from "@/lib/query";
 import { DELETE_EMPLOYEE } from "@/lib/mutation";
+import DateFormatter from "@/components/DateFormatter";
 
 const page = () => {
   const [employee, setEmployee] = useState([]);
+  const [search, setSearch] = useState('');
+  const [filteredemp,setFilteredEmp] = useState();
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(null);
@@ -103,17 +106,46 @@ const page = () => {
   let end = page.current * PAGE_COUNT;
   let start = end - PAGE_COUNT;
 
-  const paginatedEmployee = employee.slice(start, end);
 
+
+  useEffect(() => {
+    const lowercasedSearch = search.toLowerCase();
+    const filtered = employee.filter(emp =>
+      emp.name.toLowerCase().includes(lowercasedSearch) ||
+      emp.role.role_name.toLowerCase().includes(lowercasedSearch) ||
+      emp.createdAt.toLowerCase().includes(lowercasedSearch)
+    );
+    setFilteredEmp(filtered);
+  }, [search, employee]);
+
+  const paginatedEmployee = filteredemp?.slice(start, end);
   return (
     <section>
       <div className="ad-com">
         <div className="ad-dash leftpadd">
           <div className="ud-cen">
             <div className="log-bor">&nbsp;</div>
-            <span className="udb-inst">All Employee</span>
+            <span className="udb-inst">All employee</span>
             <div className="ud-cen-s2">
               <h2>All Employee</h2>
+            <div id="pg-resu_wrapper" className="dataTables_wrapper dt-bootstrap4 no-footer">
+              <div className="row">
+                <div className="col-sm-12 col-md-6">
+                  <div id="pg-resu_filter" className="dataTables_filter">
+                    <label className="text-xs">
+                      Search:
+                      <input
+                        type="search"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="form-control form-control-sm"
+                        placeholder
+                        aria-controls="pg-resu"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
               <Link href="/create-employee" className="db-tit-btn">
                 Add new Employee
               </Link>
@@ -132,7 +164,7 @@ const page = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {employee?.map((item, index) => (
+                    {paginatedEmployee?.map((item, index) => (
                       <tr key={item._id}>
                         <td>{index + 1}</td>
                         <td>
@@ -143,7 +175,7 @@ const page = () => {
                             alt="Description of my image"
                           />
                           {item.name}
-                          <span>08, Jan 2020</span>
+                          <span> <DateFormatter dateString={item.createdAt} /> </span>
                         </td>
                         <td>{item?.role?.role_name}</td>
                         <td>**********</td>
@@ -218,6 +250,7 @@ const page = () => {
                   </tbody>
                 </table>
               )}
+              </div>
             </div>
           </div>
 
