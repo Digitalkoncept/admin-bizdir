@@ -14,7 +14,12 @@ ul{padding: 0px;margin: 0px;}
 li{list-style-type: none;}
 /* fallback */
 
-
+.rmdp-input{
+    height:30px!important;
+}
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input{
+    padding:8px 14px!important
+}
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
@@ -706,7 +711,7 @@ div.dataTables_wrapper div.dataTables_filter input{
     color: #81898d;
 }
 .log div input, .log div select{
-    height: 50px;
+    height: auto;
     border: 1px solid #e4e6f2;
     font-size: 15px;
     font-weight: 500;
@@ -2716,7 +2721,10 @@ html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:activ
 .chosen-container .chosen-results li.group-result{display:list-item;cursor:default;color:#999;font-weight:700}
 .chosen-container .chosen-results li.group-option{padding-left:15px}
 .chosen-container .chosen-results li.active-result{cursor:pointer;display:list-item;width:100%;font-size: 14px;font-weight:600;color: #333;border: 1px solid #e0dfe6;border-bottom: 0;border-radius:0;padding: 10px 10px 10px 15px;transition:all .3s ease;background: none;}
-.chosen-container .chosen-results li.highlighted{background-color:#428bca;background-image:none;color:#fff}
+.chosen-container .chosen-results li.highlighted{
+    background-color: #e7fbe8;
+    background-image: none;
+    color: #2d8632;}
 .chosen-container .chosen-results li.highlighted em{background:transparent}
 .chosen-container .chosen-results li.disabled-result{display:list-item;color:#777}
 .chosen-container .chosen-results .no-results{background:#eee;display:list-item}

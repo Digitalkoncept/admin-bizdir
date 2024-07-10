@@ -8,10 +8,11 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import { client } from "@/lib/apollo";
 import { GET_ALL_LOGS } from "@/lib/query";
-import { DELETE_EMPLOYEE } from "@/lib/mutation";
 
 const page = () => {
   const [logs, setLogs] = useState([]);
+  const [search,setSearch] = useState('');
+  const [filteredlog,setFilteredLog] = useState();
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
  
@@ -79,7 +80,27 @@ const page = () => {
   let end = page.current * PAGE_COUNT;
   let start = end - PAGE_COUNT;
 
-  const paginatedLogs = logs.slice(start, end);
+  useEffect(() => {
+    const lowercasedSearch = search.toLowerCase();
+    const filtered = logs.filter(log => {
+      const levelText = log.level === 30 ? 'info' : log.level === 40 ? 'warning' : 'error';
+
+      return (
+        levelText.toLowerCase().includes(lowercasedSearch) ||
+        log.msg.toLowerCase().includes(lowercasedSearch) ||
+        timeAgo(log.time).toLowerCase().includes(lowercasedSearch) ||
+        log.ip.toLowerCase().includes(lowercasedSearch)
+      );
+    });
+
+    setFilteredLog(filtered);
+    if(filtered.length > 0 ){
+      handleTotalPages(
+        Math.ceil(filtered.length / PAGE_COUNT)
+      );
+    }
+  }, [search, logs]);
+  const paginatedLogs = filteredlog?.slice(start, end);
 
   return (
     <section>
@@ -98,6 +119,8 @@ const page = () => {
                       Search:
                       <input
                         type="search"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                         className="form-control form-control-sm"
                         placeholder
                         aria-controls="pg-resu"
@@ -121,10 +144,10 @@ const page = () => {
                   <tbody>
                     {paginatedLogs?.map((item, index) => (
                       <tr key={item._id}>
-                        <td>{index + 1}</td>
+                        <td>{(index+1)  + PAGE_COUNT * (page.current - 1)}</td>
                         <td>
                           {item.level === 30 ? 'info': item.level === 40 ? 'warning':'error'}
-                          <span>{item.time}</span>
+                          <span>{timeAgo(item.time)}</span>
                         </td>
                         <td>{item.msg}</td>
                         
@@ -188,4 +211,29 @@ const page = () => {
   );
 };
 
+function timeAgo(date) {
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+  let interval = Math.floor(seconds / 31536000);
+
+  if (interval > 1) {
+    return interval + " years ago";
+  }
+  interval = Math.floor(seconds / 2592000);
+  if (interval > 1) {
+    return interval + " months ago";
+  }
+  interval = Math.floor(seconds / 86400);
+  if (interval > 1) {
+    return interval + " days ago";
+  }
+  interval = Math.floor(seconds / 3600);
+  if (interval > 1) {
+    return interval + " hours ago";
+  }
+  interval = Math.floor(seconds / 60);
+  if (interval > 1) {
+    return interval + " minutes ago";
+  }
+  return Math.floor(seconds) + " seconds ago";
+}
 export default page;

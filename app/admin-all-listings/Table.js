@@ -183,7 +183,7 @@ const Table = ({ page, handleTotalPages,search,setSearch }) => {
               const inputDate = new Date(listing.createdAt);
               return (
                 <tr key={listing._id}>
-                  <td>{idx + 1}</td>
+                  <td>{(idx+1)  + PAGE_COUNT * (page.current - 1)}</td>
                   <td>
                     <img src={listing.listing_image} alt="default image" />
                     {listing.listing_name}{" "}

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { GetAllstates,GetCityByState,GetAreaByCity,GET_ALL_CATEGORY } from "@/lib/query";
 import { client } from "@/lib/apollo";
 const Location_Filter = ({formData,InputChange,setFormData,errors,setErrors}) => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const divRef1 = useRef(null);
   const divRef2 = useRef(null);
   const divRef3 = useRef(null);
@@ -34,6 +35,7 @@ const Location_Filter = ({formData,InputChange,setFormData,errors,setErrors}) =>
     };
     
   }, []);
+
   const [state,setState] = useState();
   const [city,setCity] = useState();
   const [area,setArea] = useState();
@@ -363,8 +365,8 @@ const filteredtags = tags?.filter(option =>
                   <li className="active-result" data-option-array-index={0}>
                     Select State
                   </li>
-                  {filteredstate?.map(option =>(
-                  <li key={option._id} onClick={() => handleOptionClick(option,1)}  className="active-result" data-option-array-index={1}>
+                  {filteredstate?.map((option,index) =>(
+                  <li key={option._id} onMouseEnter={() => setHoveredIndex(index)}  onClick={() => handleOptionClick(option,1)}  className={`active-result ${hoveredIndex === index ? 'highlighted':''}`} data-option-array-index={1}>
                     {option.name}
                   </li>
                   ))}
@@ -412,8 +414,8 @@ const filteredtags = tags?.filter(option =>
                 <ul className="chosen-results">
                   {searchState.value.length > 0 ? (
                     <>
-                    {filteredcity?.map(option =>(
-                  <li key={option._id} onClick={() => handleOptionClick(option,2)}  className="active-result" data-option-array-index={1}>
+                    {filteredcity?.map((option,index) =>(
+                  <li key={option._id} onMouseEnter={() => setHoveredIndex(index)}  onClick={() => handleOptionClick(option,2)}  className={`active-result ${hoveredIndex === index ? 'highlighted':''}`} data-option-array-index={1}>
                     {option.name}
                   </li>
                   ))}
@@ -467,8 +469,8 @@ const filteredtags = tags?.filter(option =>
                 </div>
                 <ul className="chosen-results">
                   {searchCity.value.length > 0 ? (<>
-                    {filteredarea?.map(option =>(
-                  <li key={option._id} onClick={() => handleOptionClick(option,3)}  className="active-result" data-option-array-index={1}>
+                    {filteredarea?.map((option,index) =>(
+                  <li key={option._id} onMouseEnter={() => setHoveredIndex(index)} onClick={() => handleOptionClick(option,3)}  className={`active-result ${hoveredIndex === index ? 'highlighted':''}`} data-option-array-index={1}>
                     {option.name}
                   </li>
                   ))}
@@ -522,8 +524,8 @@ const filteredtags = tags?.filter(option =>
                   />
                 </div>
                 <ul className="chosen-results">
-                  {filteredcat?.map(option =>(
-                  <li key={option._id} onClick={() => handleOptionClick(option,4)}  className="active-result" data-option-array-index={1}>
+                  {filteredcat?.map((option,index) =>(
+                  <li key={option._id} onMouseEnter={() => setHoveredIndex(index)} onClick={() => handleOptionClick(option,4)}  className={`active-result ${hoveredIndex === index ? 'highlighted':''}`} data-option-array-index={1}>
                     {option.name}
                   </li>
                   ))}
@@ -569,8 +571,8 @@ const filteredtags = tags?.filter(option =>
                   />
                 </div>
                 <ul className="chosen-results">
-                  {filteredsubcat?.map(option =>(
-                  <li key={option._id} onClick={() => handleOptionClick(option,5)}  className="active-result" data-option-array-index={1}>
+                  {filteredsubcat?.map((option,index) =>(
+                  <li key={option._id} onMouseEnter={() => setHoveredIndex(index)} onClick={() => handleOptionClick(option,5)}  className={`active-result ${hoveredIndex === index ? 'highlighted':''}`} data-option-array-index={1}>
                     {option.subcategory_name}
                   </li>
                   ))}
@@ -627,8 +629,8 @@ const filteredtags = tags?.filter(option =>
               </ul>
               <div className="chosen-drop">
                 <ul className="chosen-results">
-                  {filteredtags?.map(option =>(
-                  <li key={option} onClick={() => handleOptionClick(option,6)}  className="active-result" data-option-array-index={0}>
+                  {filteredtags?.map((option,index) =>(
+                  <li key={option} onMouseEnter={() => setHoveredIndex(index)} onClick={() => handleOptionClick(option,6)}  className={`active-result ${hoveredIndex === index ? 'highlighted':''}`} data-option-array-index={0}>
                     {option}
                   </li>
                   ))}
