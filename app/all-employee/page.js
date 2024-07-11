@@ -116,6 +116,11 @@ const page = () => {
       emp.createdAt.toLowerCase().includes(lowercasedSearch)
     );
     setFilteredEmp(filtered);
+    if(filtered.length > 0 ){
+      handleTotalPages(
+        Math.ceil(filtered.length / PAGE_COUNT)
+      );
+    }
   }, [search, employee]);
 
   const paginatedEmployee = filteredemp?.slice(start, end);
@@ -166,7 +171,7 @@ const page = () => {
                   <tbody>
                     {paginatedEmployee?.map((item, index) => (
                       <tr key={item._id}>
-                        <td>{index + 1}</td>
+                        <td>{(index+1)  + PAGE_COUNT * (page.current - 1)}</td>
                         <td>
                           <CldImage
                             width="36"

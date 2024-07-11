@@ -10,9 +10,24 @@ import { useSession } from "next-auth/react";
 import { client } from "@/lib/apollo";
 import { CREATE_CLAIMABLE_LISTING } from "@/lib/mutation";
 import UploadGallery from "@/components/Layout/UploadGallery";
+import MultiDatePicker from "@/components/MultiDatePicker";
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import MyTimePicker from "@/components/TimePicker";
+import BasicTimePicker from "@/components/TimePicker";
+import BasicTimePicker2 from "@/components/TimePicker2";
 const page = () => {
   const { data: session } = useSession();
   const [success, setSuccess] = useState(false);
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
   const router = useRouter();
 
   const [inputCount, setInputCount] = useState(1);
@@ -39,11 +54,17 @@ const page = () => {
     listing_detail: "",
     service_location: [],
     service_provided: [],
+    business_time:{
+      week_off:[],
+      month_off:[],
+      open_time:'',
+      close_time:'',
+    },
     offer: {
       offer_name: "",
       offer_amount: "",
       offer_description: "",
-      offer_type:"percent",
+      offer_type: "percent",
       offer_image: "",
     },
     youtube_link: "",
@@ -106,7 +127,7 @@ const page = () => {
     }
   };
   const handleInputChange = (event, index) => {
-    const { name, value } = event.target;
+    const { name, value,type,checked } = event.target;
     if (name === "service_location") {
       // Update service_location with the array of locations
       const locationsArray = value.split(",");
@@ -147,6 +168,26 @@ const page = () => {
           [name]: value, // Update the specific field
         },
       }));
+    }
+    else if(type === 'checkbox'){
+      if (checked) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          business_time: {
+            ...prevFormData.business_time,
+            week_off:[...prevFormData.business_time.week_off,value]
+          },
+        }));
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          business_time:{
+            ...prevFormData.business_time,
+          week_off: prevFormData.business_time.week_off.filter(
+            (item) => item !== value
+          ),}
+        }));
+      }
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -325,30 +366,6 @@ const page = () => {
                             </div>
                           </div>
                         </div>
-                        {/*FILED END*/}
-                        {/*FILED START*/}
-                        {/* <div className="row">
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="text"
-                                name="listing_lat"
-                                className="form-control"
-                                placeholder="Latitude i.e 40.730610"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="text"
-                                name="listing_lng"
-                                className="form-control"
-                                placeholder="Longitude i.e -73.935242"
-                              />
-                            </div>
-                          </div>
-                        </div> */}
 
                         <Location_Filter
                           formData={formData}
@@ -498,6 +515,47 @@ const page = () => {
                             </div>
                           </div>
                         </div>
+                        <div className="row">
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>Weekly Off</label>
+                              <ul>
+                                {days.map((item, index) => (
+                                  <li key={index}>
+                                    <div className="chbox">
+                                      <input
+                                        type="checkbox"
+                                        name="admin_user_options"
+                                        checked={formData.business_time.week_off.includes(item
+                                        )}
+                                        value={item}
+                                        onChange={handleInputChange}
+                                        id={index}
+                                      />
+                                      <label htmlFor={index}>{item} </label>
+                                    </div>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div>
+                            <div className="form-group">
+                              <label className="mr-2">Monthly Off</label>
+                              <MultiDatePicker formData={formData} setFormData={setFormData}  />
+                            </div>
+                              <div className="form-group">
+                              <BasicTimePicker title="open on" formData={formData} setFormData={setFormData} />
+                              </div>
+                              <div className="form-group">
+                                <BasicTimePicker2 title= "close on" formData={formData} setFormData={setFormData} />
+                              </div>
+                            
+                            </div>
+                           
+                          </div>
+                        </div>
                       </div>
                       {/*FILED END*/}
                     </div>
@@ -614,16 +672,21 @@ const page = () => {
                                 </div>
                               </div>
                               <div className="col-md-3">
-                              <div className="form-group">
-                            <select name="offer_type" required="required"  value={formData.offer.offer_type} onChange={handleInputChange}  className="form-control !w-[60px] ">
-                              <option value="percent"> %</option>
-                              <option value="flate"> ₹</option>
-                              
-                            </select>
-                          </div>
+                                <div className="form-group">
+                                  <select
+                                    name="offer_type"
+                                    required="required"
+                                    value={formData.offer.offer_type}
+                                    onChange={handleInputChange}
+                                    className="form-control !w-[60px] "
+                                  >
+                                    <option value="percent"> %</option>
+                                    <option value="flate"> ₹</option>
+                                  </select>
+                                </div>
                               </div>
                             </div>
-                            
+
                             {/*FILED END*/}
                             {/*FILED START*/}
                             <div className="row">
@@ -663,7 +726,8 @@ const page = () => {
                                           ...prevFormData,
                                           offer: {
                                             ...prevFormData.offer, // Spread the existing offers object
-                                            offer_image:  result?.info?.secure_url, // Update the specific field
+                                            offer_image:
+                                              result?.info?.secure_url, // Update the specific field
                                           },
                                         }));
                                         toast.success(
