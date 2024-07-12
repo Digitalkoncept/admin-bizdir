@@ -86,10 +86,10 @@ const page = () => {
       const levelText = log.level === 30 ? 'info' : log.level === 40 ? 'warning' : 'error';
 
       return (
-        levelText.toLowerCase().includes(lowercasedSearch) ||
-        log.msg.toLowerCase().includes(lowercasedSearch) ||
-        timeAgo(log.time).toLowerCase().includes(lowercasedSearch) ||
-        log.ip.toLowerCase().includes(lowercasedSearch)
+        levelText?.toLowerCase().includes(lowercasedSearch) ||
+        log?.msg?.toLowerCase().includes(lowercasedSearch) ||
+        timeAgo(log.time)?.toLowerCase().includes(lowercasedSearch) ||
+        log?.ip?.toLowerCase().includes(lowercasedSearch)
       );
     });
 
