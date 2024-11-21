@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Approve_Modal from "@/components/Admin/Approve_Modal";
+
 import { client } from "@/lib/apollo";
 import { GET_ALL_LISTING } from "@/lib/query";
 import { APPROVE_LISTING_STATUS } from "@/lib/mutation";
@@ -16,7 +17,7 @@ const Table = ({ page, handleTotalPages }) => {
   const [showModal, setShowModal] = useState(null);
   const [message, setMessage] = useState("");
   const [approvalStatus, setApprovalStatus] = useState("pending");
-
+  console.log(session)
   const openModal = (item) => {
     setShowModal(item);
   };
@@ -68,7 +69,12 @@ const Table = ({ page, handleTotalPages }) => {
       console.error("Error submitting form:", error);
     }
   };
-
+  const [formData,setFormData] = useState({
+    role:session.user.role,
+    approver_id:session.user.id,
+    approvalStatus:'pending',
+    message:'',
+  })
   useEffect(() => {
     if (status === "authenticated") getListingData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,31 +82,17 @@ const Table = ({ page, handleTotalPages }) => {
 
   const handleApprove = async (e, id) => {
     e.preventDefault();
-    setApprovalStatus("approved");
+    setFormData((prevData) => ({
+      ...prevData,
+      approvalStatus: "approved",
+      message:message,
+    }));
     setShowModal(false);
-    // try {
-    //   const res = await fetch(
-    //     process.env.BACKEND_URL + "/api/listing/approve_status/" + id,
-    //     {
-    //       method: "PATCH",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: "Bearer " + session.jwt,
-    //       },
-    //       body: JSON.stringify({ message, approvalStatus: "approved" }),
-    //     }
-    //   );
-    //   getListingData();
-    //   setMessage("");
-    //   setApprovalStatus("pending");
-    // } catch (error) {
-    //   console.error(error);
-    // }
     try {
       const { data, errors } = await client.mutate({
         mutation: APPROVE_LISTING_STATUS,
         // need to do
-        variables: { id, data: formData },
+        variables: { approveListingStatusId:id, data: formData },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -112,7 +104,7 @@ const Table = ({ page, handleTotalPages }) => {
         throw new Error("Something went wrong");
       }
 
-      toast.success("Listing created successfully");
+      toast.success("Listing approved  successfully");
       console.log(data);
     } catch (error) {
       console.error("Error submitting form:", error);
