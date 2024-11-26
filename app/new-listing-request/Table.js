@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Approve_Modal from "@/components/Admin/Approve_Modal";
-
+import { toast } from "react-toastify";
 import { client } from "@/lib/apollo";
 import { GET_ALL_LISTING } from "@/lib/query";
 import { APPROVE_LISTING_STATUS } from "@/lib/mutation";
@@ -72,7 +72,7 @@ const Table = ({ page, handleTotalPages }) => {
   const [formData,setFormData] = useState({
     role:session.user.role,
     approver_id:session.user.id,
-    approvalStatus:'pending',
+    approvalStatus:'',
     message:'',
   })
   useEffect(() => {
@@ -82,17 +82,19 @@ const Table = ({ page, handleTotalPages }) => {
 
   const handleApprove = async (e, id) => {
     e.preventDefault();
-    setFormData((prevData) => ({
-      ...prevData,
+    const updatedFormData = {
+      ...formData,
       approvalStatus: "approved",
-      message:message,
-    }));
+    };
     setShowModal(false);
     try {
       const { data, errors } = await client.mutate({
         mutation: APPROVE_LISTING_STATUS,
         // need to do
-        variables: { approveListingStatusId:id, data: formData },
+        variables: { 
+          approveListingStatusId: id, 
+          approverData: updatedFormData, 
+        },
         context: {
           headers: {
             Authorization: `Bearer ${session.jwt}`,
@@ -100,14 +102,16 @@ const Table = ({ page, handleTotalPages }) => {
         },
       });
 
-      if (errors || data.createClaimableListing.code !== 201) {
+      if (errors || data.approveListingStatus.code !== 200) {
+        toast.error("something went wrong");
         throw new Error("Something went wrong");
       }
-
+      getListingData();
       toast.success("Listing approved  successfully");
       console.log(data);
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error("something went wrong");
     }
   };
 
@@ -234,8 +238,13 @@ const Table = ({ page, handleTotalPages }) => {
                               id="description"
                               rows={4}
                               name="message"
-                              value={message}
-                              onChange={(e) => setMessage(e.target.value)}
+                              value={formData.message}
+                              onChange={(e) =>
+                                setFormData((prevData) => ({
+                                  ...prevData,
+                                  message: e.target.value, // Update the message field in formData
+                                }))
+                              }
                               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500   "
                               placeholder="write a description here"
                             />
