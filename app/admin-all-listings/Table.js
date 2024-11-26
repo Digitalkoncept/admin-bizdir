@@ -210,7 +210,7 @@ const Table = ({ page, handleTotalPages,search,setSearch }) => {
                   </td>
                   <td>
                     <Link
-                      href={`/update-listing/${listing._id}`}
+                      href={`/edit-listing/${listing._id}`}
                       className="db-list-edit"
                     >
                       Edit

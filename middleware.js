@@ -44,7 +44,7 @@ export default withAuth(
         '/all-users': 'view users',
         '/admin-all-listings': 'view listings',
         '/add-new-listing': 'add listing',
-        '/update-listing':'update listings',
+        '/edit-listing':'update listings',
         '/new-listing-request': 'view listing request',
         '/all-listing-category': 'view listing category',
         '/new-claim-request': 'view claim request',
