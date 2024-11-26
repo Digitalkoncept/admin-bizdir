@@ -52,7 +52,59 @@ const page = ({params}) => {
     map_url: "",
   });
 
+  const getListing = async () => {
+    try {
+      const { data, errors } = await client.query({
+        query: GET_LISTING_BY_ID,
+        variables: { id: params.id },
+      });
 
+      if (errors || data.getListing.code !== 200) {
+        throw new Error("Something went wrong");
+      }
+      const {listing} = await data.getListing;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+    listing_name: listing.listing_name,
+    phone_number: listing.phone_number,
+    listing_email: listing.listing_email,
+    whatsapp_number: listing.whatsapp_number,
+    website: listing.website,
+    listing_address: listing.listing_address,
+    listing_image: listing.listing_image,
+    cover_image: listing.cover_image,
+    country: listing.country,
+    state: listing.state,
+    subcategory: listing.subcategory,
+    area: listing.area,
+    city: listing.city,
+    category: listing.category,
+    gallery_images: listing.gallery_images,
+    subcategory: listing.subcategory,
+    tags: listing.tags,
+    listing_detail: listing.listing_detail,
+    service_location: listing.service_location,
+    service_provided: listing.service_provided.map(item =>({name:item.name})),
+    offer: {
+      offer_name: listing.offer.offer_name,
+      offer_amount: listing.offer.offer_amount,
+      offer_description: listing.offer.offer_description,
+      offer_type: listing.offer.offer_type,
+      offer_image: listing.offer.offer_image,
+    },
+    youtube_link: listing.youtube_link,
+    map_url: listing.map_url,
+    }));
+      console.log(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+  useEffect(() => {
+    getListing();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   console.log('listing data => ',formData)
   const [errors, setErrors] = useState({});
